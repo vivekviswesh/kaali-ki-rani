@@ -1,0 +1,36 @@
+# Task Checklist - Structured Telemetry & ML Logging
+
+- [x] **Step 1: Implement Structured Telemetry Logger**
+  - [x] Add `logTelemetry` to `server/src/utils/logger.js` to record player decisions in raw JSON
+  - [x] Integrate telemetry events (`match_start`, `hand_start`, `bid`, `declare`, `play_card`, `hand_over`) in `server/src/room.js`
+- [x] **Step 2: Implement Telemetry Log Analyzer**
+  - [x] Create `server/src/utils/analyzer.js` to compile `.json` records into a dataset of Bids, Declarations, and Plays
+  - [x] Add `npm run analyze` script to `server/package.json`
+- [x] **Step 3: Verification & Deploy**
+  - [x] Run backend tests to ensure telemetry hooks do not alter engine state
+  - [x] Verify client production builds
+  - [x] Push commits to deploy update
+- [x] **Step 4: Layout Bug Fix**
+  - [x] Restrict Bidding and Declaration overlay boundaries (set bottom to 155px) to prevent blurring of the player's hand cards during bidding
+- [x] **Step 5: Hand Ending Logic and Scoreboard Auto-Open Fixes**
+  - [x] Resolve `checkHandEnded()` premature hand ending bug (use actual defender points instead of subtracting from 150) in client/server `game.js`
+  - [x] Implement automatic scoreboard pop-up trigger in `GameBoard.jsx` when hand state becomes `HAND_OVER` or `MATCH_OVER`
+  - [x] Verify deployments are complete and online
+- [x] **Step 6: Points Overlay Visibility Bug Fix**
+  - [x] Move South player HUD spot upward from `bottom: 1.25rem` to `bottom: 10.5rem` to prevent the player cards dock from covering and obscuring player scores/points
+  - [x] Verify deployments are complete and online
+- [x] **Step 7: Trick Reviews and Action Logs Popup**
+  - [x] Delay trick clearing on the table (keep 4 cards on board until next trick starts) in client/server `game.js`
+  - [x] Expose `lastTrick` in client/server `getStateForPlayer`
+  - [x] Add "👁️ Last Trick" review button and card row floating widget in `GameBoard.jsx`
+  - [x] Replace header logs-copying with a full scrollable, dark monospace action logs popup window in `App.jsx`
+  - [x] Verify deployments are complete and online
+- [x] **Step 8: Lead Card Suit Selection Fix**
+  - [x] Update `getLegalCardIndices` in `GameBoard.jsx` to treat `currentTrick.length === 4` as a trick start, unlocking any card in hand for play
+  - [x] Update `makeBotPlay` and `getLegalCards` in client/server `bot.js` to treat `currentTrick.length === 4` as a new trick, preventing bots from getting stuck
+  - [x] Verify deployments are complete and online
+- [x] **Step 9: Version Control Displays**
+  - [x] Create version history registry JSON file (`version_history.json`)
+  - [x] Expose clickable deployed version badge in footer
+  - [x] Render scrollable version history release logs modal popup
+  - [x] Verify deployments are complete and online

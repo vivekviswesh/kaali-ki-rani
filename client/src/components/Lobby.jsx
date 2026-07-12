@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Play, Users, UserPlus, Info, BookOpen } from 'lucide-react';
+import versionHistory from '../version_history.json';
 
-export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer }) {
+export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory }) {
   const [playerName, setPlayerName] = useState(localStorage.getItem('kkr_player_name') || '');
   const [roomCode, setRoomCode] = useState('');
   const [timeoutSec, setTimeoutSec] = useState('20');
@@ -190,7 +191,22 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer })
             <BookOpen size={12} />
             How to Play
           </button>
-          <span>v1.0.0</span>
+          <span 
+            onClick={onShowVersionHistory}
+            style={{ 
+              color: '#34d399', 
+              cursor: 'pointer', 
+              fontWeight: 800, 
+              background: 'rgba(52, 211, 153, 0.1)', 
+              padding: '2px 6px', 
+              borderRadius: '4px',
+              border: '1px solid rgba(52, 211, 153, 0.2)',
+              textDecoration: 'underline'
+            }}
+            title="View Release History"
+          >
+            {versionHistory.currentVersion}
+          </span>
         </div>
 
         {/* Rules Modal Overlay */}

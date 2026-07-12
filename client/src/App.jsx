@@ -382,6 +382,7 @@ export default function App() {
           onCreateRoom={createOnlineRoom}
           onJoinRoom={joinOnlineRoom}
           onStartSinglePlayer={startSinglePlayer}
+          onShowVersionHistory={() => setShowVersionHistory(true)}
         />
       ) : (
         <div className="flex-col animate-pop-in" style={{ width: '100%', maxWidth: '100%', padding: '0.75rem', gap: '0.75rem' }}>
