@@ -1,7 +1,6 @@
 import React from 'react';
-import { Crown, RotateCcw, Home, Award, HelpCircle } from 'lucide-react';
+import { Crown, RotateCcw, Home } from 'lucide-react';
 import { GAME_STATES } from '../engine/constants.js';
-import { formatCard } from '../engine/deck.js';
 
 export default function Scoreboard({ gameState, mySeat, onAction, onBackToLobby }) {
   const { 
@@ -21,55 +20,50 @@ export default function Scoreboard({ gameState, mySeat, onAction, onBackToLobby 
   const isHandOver = currentGameState === GAME_STATES.HAND_OVER;
   const isMatchOver = currentGameState === GAME_STATES.MATCH_OVER;
 
-  // Find winner if match over
+  // Find leader
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+  const leaderScore = sortedPlayers[0]?.score || 0;
   const matchWinner = sortedPlayers[0];
 
   // Calculate bidding side total points vs defending side
   const biddingPoints = handPoints[bidWinnerSeat] + (isSolo ? 0 : (partnerSeat !== null ? handPoints[partnerSeat] : 0));
   const defendingPoints = 150 - biddingPoints;
-
   const isBiddingSuccess = biddingPoints >= currentHighestBid;
 
-  const suitEmoji = {
-    S: '♠',
-    H: '♥',
-    D: '♦',
-    C: '♣'
-  };
+  const suitEmoji = { S: '♠', H: '♥', D: '♦', C: '♣' };
+  const suitColors = { S: '#818cf8', H: '#f43f5e', D: '#f59e0b', C: '#10b981' };
 
   return (
-    <div className="w-full flex flex-col gap-4 animate-slide-up">
+    <div className="flex-col animate-slide-up" style={{ gap: '1rem', width: '100%' }}>
       
-      {/* Mini HUD Info (Sticky Top/Side during gameplay) */}
-      <div className="glass-panel rounded-2xl border border-slate-700/50 p-4">
-        <div className="flex justify-between items-center border-b border-slate-800 pb-2 mb-2">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Scores & Game Info</span>
-          <span className="bg-slate-900 border border-slate-800 text-[10px] text-slate-400 font-bold px-2 py-0.5 rounded-full">
+      {/* Match Scores Leaderboard */}
+      <div className="glass-panel" style={{ padding: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <div className="flex-row justify-between items-center" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.5rem', marginBottom: '0.75rem' }}>
+          <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Leaderboard</span>
+          <span style={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.08)', fontSize: '0.6rem', fontWeight: 700, padding: '0.125rem 0.5rem', borderRadius: '9999px', color: '#94a3b8' }}>
             Hand #{handCount + 1}
           </span>
         </div>
         
-        {/* Match Scores */}
-        <div className="space-y-2">
+        {/* Match Scores List */}
+        <div className="flex-col" style={{ gap: '0.625rem' }}>
           {players.map((p, idx) => {
-            const isLeading = p.score === sortedPlayers[0].score && p.score > 0;
+            const isLeading = p.score === leaderScore && p.score > 0;
+            const isMe = idx === mySeat;
             return (
-              <div key={idx} className="flex flex-col gap-1">
-                <div className="flex justify-between text-xs font-medium">
-                  <span className="flex items-center gap-1">
-                    {idx === mySeat && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>}
-                    <span className={idx === mySeat ? 'text-emerald-400 font-bold' : 'text-slate-300'}>
-                      {p.name} {p.isBot ? '(Bot)' : ''}
-                    </span>
-                    {isLeading && <Crown size={12} className="text-yellow-400" />}
+              <div key={idx} className="score-row-item">
+                <div className="score-line-details">
+                  <span className="flex-row items-center" style={{ gap: '0.25rem', color: isMe ? '#10b981' : '#cbd5e1', fontWeight: isMe ? 700 : 500 }}>
+                    {isMe && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }}></span>}
+                    <span>{p.name} {p.isBot ? '🤖' : ''}</span>
+                    {isLeading && <Crown size={11} style={{ color: '#fbbf24', marginLeft: '0.125rem' }} />}
                   </span>
-                  <span className="font-extrabold text-slate-100">{p.score} / 1000</span>
+                  <span style={{ fontWeight: 800, color: '#f8fafc' }}>{p.score} / 1000</span>
                 </div>
                 {/* Score bar */}
-                <div className="w-full h-1 bg-slate-950 rounded-full overflow-hidden">
+                <div className="score-progress-track">
                   <div 
-                    className={`h-full rounded-full transition-all duration-500 ${isLeading ? 'bg-yellow-400' : 'bg-indigo-500'}`}
+                    className={`score-progress-bar ${isLeading ? 'leader' : ''}`}
                     style={{ width: `${Math.min(100, (p.score / 1000) * 100)}%` }}
                   ></div>
                 </div>
@@ -79,58 +73,53 @@ export default function Scoreboard({ gameState, mySeat, onAction, onBackToLobby 
         </div>
       </div>
 
-      {/* Hand Status Overlay / Panel */}
+      {/* Hand Status details */}
       {currentHighestBid > 0 && currentGameState !== GAME_STATES.BIDDING && (
-        <div className="glass-panel rounded-2xl border border-slate-700/50 p-4 space-y-3">
-          <div className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2 mb-2">
-            Declaration & Partnership
+        <div className="glass-panel flex-col" style={{ padding: '1rem', border: '1px solid rgba(255,255,255,0.05)', gap: '0.75rem' }}>
+          <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.5rem', fontSize: '0.65rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Round Info
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="bg-slate-950/40 p-2 rounded-xl border border-slate-950">
-              <span className="text-slate-500 text-[10px] font-semibold block uppercase">Trump Suit</span>
-              <span className={`text-base font-extrabold flex items-center gap-1 ${
-                trumpSuit === 'H' || trumpSuit === 'D' ? 'text-rose-500' : 'text-slate-300'
-              }`}>
-                {suitEmoji[trumpSuit]} {trumpSuit === 'S' ? 'Spades' : trumpSuit === 'H' ? 'Hearts' : trumpSuit === 'D' ? 'Diamonds' : 'Clubs'}
+          <div className="grid-2">
+            <div className="info-box-item flex-col flex-center">
+              <span style={{ fontSize: '0.55rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Trump Suit</span>
+              <span className="info-box-value flex-row items-center" style={{ gap: '0.25rem', color: suitColors[trumpSuit], fontSize: '1rem' }}>
+                <span>{suitEmoji[trumpSuit]}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#cbd5e1' }}>{trumpSuit === 'S' ? 'Spades' : trumpSuit === 'H' ? 'Hearts' : trumpSuit === 'D' ? 'Diamonds' : 'Clubs'}</span>
               </span>
             </div>
 
-            <div className="bg-slate-950/40 p-2 rounded-xl border border-slate-950">
-              <span className="text-slate-500 text-[10px] font-semibold block uppercase">Partner Card</span>
-              <span className="text-sm font-extrabold text-yellow-400 flex items-center gap-1">
+            <div className="info-box-item flex-col flex-center">
+              <span style={{ fontSize: '0.55rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Partner Card</span>
+              <span className="info-box-value" style={{ color: '#fbbf24', fontSize: '0.9rem' }}>
                 {partnerCard ? `${partnerCard.rank}${suitEmoji[partnerCard.suit]}` : 'TBD'}
               </span>
             </div>
           </div>
 
-          <div className="bg-slate-950/30 p-2 rounded-xl border border-slate-950 space-y-2 text-xs">
-            <div className="flex justify-between">
-              <span className="text-slate-400 font-semibold">Bid Target:</span>
-              <span className="font-extrabold text-yellow-400">{currentHighestBid} pts</span>
+          <div className="flex-col" style={{ background: 'rgba(2, 6, 23, 0.3)', padding: '0.625rem', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.03)', gap: '0.375rem', fontSize: '0.75rem' }}>
+            <div className="justify-between">
+              <span style={{ color: '#94a3b8' }}>Bid Target:</span>
+              <span style={{ fontWeight: 800, color: '#fbbf24' }}>{currentHighestBid} pts</span>
             </div>
             
-            <div className="flex justify-between items-center border-t border-slate-800/60 pt-1.5">
-              <span className="text-slate-400 font-semibold">Bidding Side Points:</span>
-              <span className="font-black text-slate-100">
-                {biddingPoints} pts
-              </span>
+            <div className="justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.375rem', marginTop: '0.125rem' }}>
+              <span style={{ color: '#cbd5e1', fontWeight: 600 }}>Bidders Points:</span>
+              <span style={{ fontWeight: 850, color: '#f8fafc' }}>{biddingPoints} pts</span>
             </div>
 
-            <div className="flex justify-between items-center">
-              <span className="text-slate-400 font-semibold">Defending Side Points:</span>
-              <span className="font-black text-slate-400">
-                {defendingPoints} pts
-              </span>
+            <div className="justify-between">
+              <span style={{ color: '#94a3b8' }}>Defenders Points:</span>
+              <span style={{ fontWeight: 800, color: '#94a3b8' }}>{defendingPoints} pts</span>
             </div>
             
-            <div className="border-t border-slate-800/60 pt-1.5 flex justify-between">
-              <span className="text-slate-500">Partner Status:</span>
-              <span className="font-bold text-slate-300">
+            <div className="justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.375rem', marginTop: '0.125rem', fontSize: '0.7rem' }}>
+              <span style={{ color: '#64748b' }}>Partner Status:</span>
+              <span style={{ fontWeight: 700, color: '#cbd5e1' }}>
                 {isSolo 
                   ? 'Solo Bid (1v3)' 
                   : partnerSeat !== null 
-                    ? `Revealed: ${players[partnerSeat]?.name}` 
+                    ? `Revealed: ${players[partnerSeat]?.name.split(' ')[0]}` 
                     : 'Hidden'}
               </span>
             </div>
@@ -140,92 +129,113 @@ export default function Scoreboard({ gameState, mySeat, onAction, onBackToLobby 
 
       {/* Hand Over Dialog Modal */}
       {isHandOver && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md glass-panel rounded-3xl p-6 border border-emerald-500/20 shadow-2xl text-center animate-pop-in">
-            <div className={`w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl ${
-              isBiddingSuccess ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
-            }`}>
+        <div className="modal-overlay-blur">
+          <div className="modal-window-card animate-pop-in" style={{ padding: '2rem' }}>
+            <div style={{
+              width: '3.5rem',
+              height: '3.5rem',
+              borderRadius: '50%',
+              background: isBiddingSuccess ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
+              color: isBiddingSuccess ? '#10b981' : '#f43f5e',
+              fontSize: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1rem'
+            }}>
               {isBiddingSuccess ? '🎉' : '❌'}
             </div>
             
-            <h2 className="text-2xl font-black mb-1">
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '0.25rem', color: '#f8fafc' }}>
               {isBiddingSuccess ? 'Bid Secured!' : 'Bid Failed!'}
             </h2>
-            <p className="text-slate-400 text-xs mb-4">
-              Bidding Side got {biddingPoints} / {currentHighestBid} points.
+            <p style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '1.25rem' }}>
+              Bidding Side captured {biddingPoints} / {currentHighestBid} points.
             </p>
 
-            <div className="bg-slate-950/60 rounded-2xl p-4 border border-slate-900 mb-6 text-left space-y-2 text-xs">
-              <div className="flex justify-between font-bold border-b border-slate-800 pb-1.5 text-slate-400">
+            <div className="flex-col" style={{ background: 'rgba(2, 6, 23, 0.5)', borderRadius: '1rem', padding: '0.875rem', border: '1px solid rgba(255,255,255,0.04)', marginBottom: '1.5rem', fontSize: '0.75rem', textAlign: 'left', gap: '0.375rem' }}>
+              <div className="justify-between" style={{ fontWeight: 800, color: '#64748b', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.375rem', marginBottom: '0.125rem' }}>
                 <span>Player Roles</span>
-                <span>Hand Points Won</span>
+                <span>Points Won</span>
               </div>
-              <div className="flex justify-between">
+              <div className="justify-between">
                 <span>Bid Winner: {players[bidWinnerSeat]?.name}</span>
-                <span className="font-bold">{handPoints[bidWinnerSeat]} pts</span>
+                <span style={{ fontWeight: 700 }}>{handPoints[bidWinnerSeat]} pts</span>
               </div>
               {!isSolo && (
-                <div className="flex justify-between">
+                <div className="justify-between">
                   <span>Partner: {players[partnerSeat]?.name}</span>
-                  <span className="font-bold">{handPoints[partnerSeat]} pts</span>
+                  <span style={{ fontWeight: 700 }}>{handPoints[partnerSeat]} pts</span>
                 </div>
               )}
-              <div className="flex justify-between text-slate-400 border-t border-slate-800/60 pt-1.5">
+              <div className="justify-between" style={{ color: '#94a3b8', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.375rem', marginTop: '0.125rem' }}>
                 <span>Opponents:</span>
-                <span className="font-bold">{defendingPoints} pts</span>
+                <span style={{ fontWeight: 700 }}>{defendingPoints} pts</span>
               </div>
             </div>
 
             <button
               onClick={() => onAction('next_hand')}
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-1.5 transition active:scale-[0.98]"
+              className="btn btn-success"
+              style={{ width: '100%', padding: '0.875rem' }}
             >
-              <RotateCcw size={16} />
+              <RotateCcw size={14} style={{ marginRight: '0.375rem' }} />
               Start Next Hand
             </button>
           </div>
         </div>
       )}
 
-      {/* Match Over / Winner Dialog Modal */}
+      {/* Match Over Modal */}
       {isMatchOver && (
-        <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md glass-panel rounded-3xl p-8 border border-yellow-500/30 shadow-2xl text-center animate-pop-in">
-            <div className="w-20 h-20 bg-yellow-500/10 border-2 border-yellow-500/40 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(234,179,8,0.2)]">
-              <Crown size={40} className="text-yellow-400 animate-bounce" />
+        <div className="modal-overlay-blur">
+          <div className="modal-window-card animate-pop-in" style={{ padding: '2.5rem 2rem', border: '1px solid rgba(251, 191, 36, 0.3)' }}>
+            <div style={{
+              width: '4.5rem',
+              height: '4.5rem',
+              background: 'rgba(251, 191, 36, 0.1)',
+              border: '2px solid rgba(251, 191, 36, 0.3)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#fbbf24',
+              margin: '0 auto 1.25rem',
+              boxShadow: '0 0 20px rgba(251, 191, 36, 0.15)'
+            }}>
+              <Crown size={36} />
             </div>
 
-            <h1 className="text-3xl font-black tracking-tight text-yellow-400 mb-1">
-              Match Completed!
+            <h1 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#fbbf24', marginBottom: '0.25rem' }}>
+              Match Finished!
             </h1>
-            <p className="text-slate-300 text-sm font-semibold mb-6">
+            <p style={{ color: '#f8fafc', fontWeight: 700, fontSize: '0.95rem', marginBottom: '1.5rem' }}>
               👑 {matchWinner?.name} Wins the Match! 👑
             </p>
 
-            <div className="bg-slate-950/60 rounded-2xl p-4 border border-slate-900 mb-8 space-y-3">
-              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block text-left">Final Scores</span>
+            <div className="flex-col" style={{ background: 'rgba(2, 6, 23, 0.5)', borderRadius: '1rem', padding: '1rem', border: '1px solid rgba(255,255,255,0.04)', marginBottom: '2rem', gap: '0.5rem', textAlign: 'left', fontSize: '0.8rem' }}>
+              <span style={{ color: '#64748b', fontSize: '0.6rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem', display: 'block' }}>Final Scores</span>
               {players.map((p, idx) => (
-                <div key={idx} className="flex justify-between items-center text-sm font-medium">
-                  <span className="text-slate-300 flex items-center gap-1.5">
-                    {p.name} {p.isBot ? '(Bot)' : ''}
-                    {p.id === matchWinner.id && <Crown size={12} className="text-yellow-400" />}
+                <div key={idx} className="justify-between items-center" style={{ fontWeight: p.id === matchWinner.id ? 800 : 500 }}>
+                  <span className="flex-row items-center" style={{ gap: '0.25rem', color: p.id === matchWinner.id ? '#fbbf24' : '#cbd5e1' }}>
+                    {p.name} {p.isBot ? '🤖' : ''}
+                    {p.id === matchWinner.id && <Crown size={10} />}
                   </span>
-                  <span className={`font-black ${p.id === matchWinner.id ? 'text-yellow-400' : 'text-slate-100'}`}>
+                  <span style={{ color: p.id === matchWinner.id ? '#fbbf24' : '#f8fafc', fontWeight: 800 }}>
                     {p.score} pts
                   </span>
                 </div>
               ))}
             </div>
 
-            <div className="flex gap-4">
-              <button
-                onClick={onBackToLobby}
-                className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-1.5 transition active:scale-[0.98]"
-              >
-                <Home size={16} />
-                Lobby
-              </button>
-            </div>
+            <button
+              onClick={onBackToLobby}
+              className="btn btn-secondary"
+              style={{ width: '100%', padding: '0.875rem' }}
+            >
+              <Home size={14} style={{ marginRight: '0.375rem' }} />
+              Back to Lobby
+            </button>
           </div>
         </div>
       )}

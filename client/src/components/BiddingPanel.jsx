@@ -3,7 +3,7 @@ import { ArrowUp, CornerDownRight } from 'lucide-react';
 
 export default function BiddingPanel({ gameState, mySeat, onBid }) {
   const { biddingState, activeSeat, players, bidStarterSeat } = gameState;
-  const { currentHighestBid, currentHighestBidderSeat, history, passedPlayers } = biddingState;
+  const { currentHighestBid, currentHighestBidderSeat, history } = biddingState;
 
   const isActive = activeSeat === mySeat;
   const isBidStarter = mySeat === bidStarterSeat;
@@ -32,20 +32,20 @@ export default function BiddingPanel({ gameState, mySeat, onBid }) {
   const highestBidderName = currentHighestBidderSeat !== null ? players[currentHighestBidderSeat]?.name : 'None';
 
   return (
-    <div className="w-full max-w-md mx-auto glass-panel rounded-2xl border border-slate-700/60 p-5 flex flex-col gap-4 animate-pop-in">
+    <div className="glass-panel animate-pop-in" style={{ width: '100%', padding: '1.25rem', border: '1px solid rgba(255,255,255,0.06)' }}>
       
       {/* Current Bid Display */}
-      <div className="flex justify-between items-center bg-slate-950/60 rounded-xl p-3 border border-slate-800">
-        <div>
-          <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block">Current Highest Bid</span>
-          <span className="text-2xl font-black text-yellow-400">
+      <div className="flex-row justify-between items-center" style={{ background: 'rgba(2, 6, 23, 0.6)', borderRadius: '0.75rem', padding: '0.75rem', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1rem' }}>
+        <div className="flex-col">
+          <span style={{ color: '#64748b', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Current Highest Bid</span>
+          <span style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fbbf24' }}>
             {hasNoBids ? 'No Bid' : `${currentHighestBid} pts`}
           </span>
         </div>
         {currentHighestBidderSeat !== null && (
-          <div className="text-right">
-            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block">Bidder</span>
-            <span className="text-slate-100 font-bold text-sm bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-lg">
+          <div style={{ textAlign: 'right' }}>
+            <span style={{ color: '#64748b', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Bidder</span>
+            <span style={{ display: 'inline-block', color: '#f8fafc', fontWeight: 700, fontSize: '0.75rem', background: '#0f172a', border: '1px solid rgba(255,255,255,0.08)', px: '0.5rem', padding: '0.125rem 0.5rem', borderRadius: '0.5rem', marginTop: '0.125rem' }}>
               {highestBidderName}
             </span>
           </div>
@@ -53,44 +53,49 @@ export default function BiddingPanel({ gameState, mySeat, onBid }) {
       </div>
 
       {/* Bidding History Log */}
-      <div className="bg-slate-950/40 rounded-xl p-3 border border-slate-800/60 h-32 overflow-y-auto flex flex-col gap-1.5">
-        <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1 block">Bidding History</span>
+      <div className="flex-col" style={{ background: 'rgba(2, 6, 23, 0.4)', borderRadius: '0.75rem', padding: '0.75rem', border: '1px solid rgba(255,255,255,0.04)', height: '120px', overflowY: 'auto', marginBottom: '1rem' }}>
+        <span style={{ color: '#64748b', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Bidding History</span>
+        
         {history.length === 0 ? (
-          <div className="text-slate-500 text-xs text-center py-6">No bids placed yet. Bidding starts with {players[bidStarterSeat]?.name}.</div>
+          <div style={{ color: '#475569', fontSize: '0.75rem', textAlign: 'center', margin: 'auto 0', padding: '1rem 0' }}>
+            No bids placed yet. Bidding starts with {players[bidStarterSeat]?.name}.
+          </div>
         ) : (
-          history.map((h, i) => {
-            const bidder = players[h.seat];
-            const isPass = h.bid === 'pass';
-            return (
-              <div key={i} className="flex justify-between items-center text-xs text-slate-300">
-                <span className="flex items-center gap-1">
-                  <CornerDownRight size={10} className="text-slate-500" />
-                  <span className="font-medium">{bidder?.name}</span>
-                </span>
-                <span className={`font-bold ${isPass ? 'text-slate-500 italic' : 'text-emerald-400'}`}>
-                  {isPass ? 'Pass' : `Bid ${h.bid}`}
-                </span>
-              </div>
-            );
-          })
+          <div className="flex-col" style={{ gap: '0.375rem' }}>
+            {history.map((h, i) => {
+              const bidder = players[h.seat];
+              const isPass = h.bid === 'pass';
+              return (
+                <div key={i} className="flex-row justify-between items-center" style={{ fontSize: '0.75rem', color: '#cbd5e1' }}>
+                  <span className="flex-row items-center" style={{ gap: '0.25rem' }}>
+                    <CornerDownRight size={10} style={{ color: '#475569' }} />
+                    <span style={{ fontWeight: 500 }}>{bidder?.name}</span>
+                  </span>
+                  <span style={{ fontWeight: 700, color: isPass ? '#64748b' : '#34d399' }}>
+                    {isPass ? 'Pass' : `Bid ${h.bid}`}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
 
       {/* Action Controls */}
-      <div className="mt-2">
+      <div>
         {isActive ? (
-          <div className="space-y-4">
-            <div className="text-center">
-              <span className="text-emerald-400 font-bold text-xs uppercase tracking-wider animate-pulse">Your Turn to Bid</span>
+          <div className="flex-col" style={{ gap: '0.75rem' }}>
+            <div style={{ textAlign: 'center' }}>
+              <span style={{ color: '#10b981', fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your Turn to Bid</span>
             </div>
 
-            <form onSubmit={handleSubmitBid} className="space-y-4">
+            <form onSubmit={handleSubmitBid} className="flex-col" style={{ gap: '1rem' }}>
               {/* Bid Selector (Slider) */}
               {selectedBid <= 150 ? (
-                <div className="space-y-2 bg-slate-950/20 p-3 rounded-xl border border-slate-800/80">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-300 text-xs font-semibold">Your Bid:</span>
-                    <span className="text-lg font-black text-emerald-400">{selectedBid}</span>
+                <div className="form-slider-container flex-col" style={{ gap: '0.5rem' }}>
+                  <div className="flex-row justify-between items-center">
+                    <span style={{ color: '#cbd5e1', fontSize: '0.75rem', fontWeight: 600 }}>Your Bid:</span>
+                    <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#10b981' }}>{selectedBid}</span>
                   </div>
                   <input
                     type="range"
@@ -99,39 +104,37 @@ export default function BiddingPanel({ gameState, mySeat, onBid }) {
                     step={5}
                     value={selectedBid}
                     onChange={(e) => setSelectedBid(parseInt(e.target.value, 10))}
-                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                    className="form-slider"
                   />
-                  <div className="flex justify-between text-[10px] text-slate-500 font-bold">
+                  <div className="flex-row justify-between" style={{ fontSize: '0.65rem', color: '#475569', fontWeight: 700 }}>
                     <span>MIN: {minLegalBid}</span>
                     <span>MAX: 150</span>
                   </div>
                 </div>
               ) : (
-                <div className="text-slate-400 text-xs text-center p-3 bg-slate-950/40 rounded-xl border border-slate-800">
+                <div style={{ color: '#94a3b8', fontSize: '0.75rem', textAlign: 'center', padding: '0.75rem', background: 'rgba(2, 6, 23, 0.4)', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.05)' }}>
                   Bid limit of 150 reached. You must pass.
                 </div>
               )}
 
               {/* Action Buttons */}
-              <div className="flex gap-3">
+              <div className="flex-row" style={{ gap: '0.75rem' }}>
                 <button
                   type="button"
                   onClick={handlePass}
                   disabled={isBidStarter && hasNoBids}
-                  className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition ${
-                    isBidStarter && hasNoBids
-                      ? 'bg-slate-800/40 text-slate-600 cursor-not-allowed'
-                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 active:scale-[0.98]'
-                  }`}
+                  className="btn btn-secondary"
+                  style={{ flex: 1, padding: '0.75rem' }}
                 >
                   Pass
                 </button>
                 {selectedBid <= 150 && (
                   <button
                     type="submit"
-                    className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-1 shadow-lg active:scale-[0.98] transition"
+                    className="btn btn-primary"
+                    style={{ flex: 1, padding: '0.75rem' }}
                   >
-                    <ArrowUp size={16} />
+                    <ArrowUp size={14} style={{ marginRight: '0.25rem' }} />
                     Bid {selectedBid}
                   </button>
                 )}
@@ -139,8 +142,8 @@ export default function BiddingPanel({ gameState, mySeat, onBid }) {
             </form>
           </div>
         ) : (
-          <div className="text-center py-4 bg-slate-950/30 border border-slate-800/40 rounded-xl text-slate-400 text-xs font-semibold">
-            Waiting for <span className="text-indigo-400">{activePlayerName}</span> to act...
+          <div style={{ textAlign: 'center', padding: '0.75rem 0', background: 'rgba(2, 6, 23, 0.3)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '0.75rem', color: '#94a3b8', fontSize: '0.75rem', fontWeight: 600 }}>
+            Waiting for <span style={{ color: '#818cf8' }}>{activePlayerName}</span> to act...
           </div>
         )}
       </div>

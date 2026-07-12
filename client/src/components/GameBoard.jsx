@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Card from './Card';
-import { LogOut, Volume2, VolumeX, History, Send } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { GAME_STATES } from '../engine/constants.js';
 
 export default function GameBoard({ 
@@ -15,14 +15,13 @@ export default function GameBoard({
     players, 
     activeSeat, 
     hand, 
-    allHands,
     trickPlayState, 
     declarationState,
     handPoints,
     partnership
   } = gameState;
 
-  const { currentTrick, leadSeat } = trickPlayState;
+  const { currentTrick } = trickPlayState;
   const { trumpSuit, partnerCard } = declarationState;
 
   const [selectedCard, setSelectedCard] = useState(null);
@@ -86,52 +85,76 @@ export default function GameBoard({
     setSelectedCard(null);
   };
 
-  // Positions on the board for relative seats
-  const positionClasses = {
-    south: 'player-south absolute flex flex-col items-center gap-1.5',
-    north: 'player-north absolute flex flex-col items-center gap-1.5',
-    west: 'player-west absolute flex flex-row items-center gap-2',
-    east: 'player-east absolute flex flex-row-reverse items-center gap-2'
-  };
-
-  // Central trick positions for played cards
-  const trickCardPositions = {
-    south: 'bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 rotate-0 scale-95',
-    north: 'top-8 sm:top-12 left-1/2 -translate-x-1/2 rotate-180 scale-95',
-    west: 'left-8 sm:left-12 top-1/2 -translate-y-1/2 -rotate-90 scale-95',
-    east: 'right-8 sm:right-12 top-1/2 -translate-y-1/2 rotate-95 scale-95'
-  };
-
   // Convert suits to symbols
   const suitEmoji = { S: '♠', H: '♥', D: '♦', C: '♣' };
+  const suitColors = { S: '#818cf8', H: '#f43f5e', D: '#f59e0b', C: '#10b981' };
 
   return (
-    <div className="relative w-full h-[70vh] min-h-[500px] felt-table rounded-3xl border border-emerald-500/20 shadow-2xl overflow-hidden animate-pop-in">
+    <div className="trick-table-arena felt-table animate-pop-in">
       
       {/* HUD Info Header */}
-      <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-20 pointer-events-none">
+      <div className="flex-row justify-between" style={{
+        position: 'absolute',
+        top: '1rem',
+        left: '1rem',
+        right: '1rem',
+        zIndex: 25,
+        pointerEvents: 'none'
+      }}>
         {/* Leaving button */}
         <button
           onClick={onLeave}
-          className="pointer-events-auto bg-slate-900/80 border border-slate-700/80 hover:bg-rose-950/40 hover:border-rose-800/80 p-2 rounded-xl text-slate-300 hover:text-rose-400 transition"
+          className="btn btn-secondary flex-center"
+          style={{
+            pointerEvents: 'auto',
+            padding: '0.5rem',
+            background: 'rgba(15, 23, 42, 0.85)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '0.75rem',
+            width: '2.25rem',
+            height: '2.25rem'
+          }}
           title="Leave Room"
         >
-          <LogOut size={16} />
+          <LogOut size={14} />
         </button>
 
         {/* Declared Partner/Trump Tags */}
-        <div className="flex gap-2">
+        <div className="flex-row" style={{ gap: '0.5rem' }}>
           {trumpSuit && (
-            <div className="bg-slate-900/90 border border-slate-700/80 px-3 py-1 rounded-xl text-xs font-bold text-slate-100 flex items-center gap-1 shadow-md">
-              <span className="text-slate-400 font-medium">Trump:</span>
-              <span className={trumpSuit === 'H' || trumpSuit === 'D' ? 'text-rose-500' : 'text-indigo-400'}>
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.9)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              padding: '0.25rem 0.75rem',
+              borderRadius: '0.75rem',
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
+            }}>
+              <span style={{ color: '#94a3b8', fontWeight: 500 }}>Trump:</span>
+              <span style={{ color: suitColors[trumpSuit], fontSize: '0.9rem' }}>
                 {suitEmoji[trumpSuit]}
               </span>
             </div>
           )}
           {partnerCard && (
-            <div className="bg-slate-900/90 border border-slate-700/80 px-3 py-1 rounded-xl text-xs font-bold text-yellow-400 flex items-center gap-1 shadow-md">
-              <span className="text-slate-400 font-medium">Partner:</span>
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.9)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              padding: '0.25rem 0.75rem',
+              borderRadius: '0.75rem',
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              color: '#fbbf24',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
+            }}>
+              <span style={{ color: '#94a3b8', fontWeight: 500 }}>Partner:</span>
               <span>
                 {partnerCard.rank}{suitEmoji[partnerCard.suit]}
               </span>
@@ -141,17 +164,17 @@ export default function GameBoard({
       </div>
 
       {/* Central Table Felt Card Area */}
-      <div className="absolute inset-20 sm:inset-28 rounded-full border border-emerald-950/60 bg-emerald-950/20 shadow-inner flex items-center justify-center">
+      <div className="center-felt-circle">
         {/* Render Played Cards in current trick */}
         {currentTrick.map(({ seat, card }) => {
           const relPos = getRelativePosition(seat);
           return (
             <div 
               key={seat} 
-              className={`absolute transition-all duration-300 ${trickCardPositions[relPos]}`}
+              className={`played-trick-card ${relPos}`}
             >
               <Card card={card} isPlayable={false} />
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-slate-950 border border-slate-800 text-[9px] px-1 rounded font-bold text-slate-300 shadow">
+              <div className="played-card-label">
                 {players[seat]?.name.split(' ')[0]}
               </div>
             </div>
@@ -160,12 +183,12 @@ export default function GameBoard({
 
         {/* Empty state instruction inside table */}
         {currentTrick.length === 0 && activeSeat !== null && (
-          <div className="text-center select-none opacity-40">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider block text-emerald-400">
+          <div className="center-text-overlay">
+            <span style={{ fontSize: '0.6rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#10b981', display: 'block' }}>
               Trick {trickPlayState.trickCount + 1}
             </span>
-            <span className="text-xs font-bold text-slate-300 mt-1 block">
-              {activeSeat === mySeat ? 'Your Lead' : `${players[activeSeat]?.name}'s Turn`}
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', marginTop: '0.125rem', display: 'block' }}>
+              {activeSeat === mySeat ? 'Your Lead' : `${players[activeSeat]?.name.split(' ')[0]}'s Lead`}
             </span>
           </div>
         )}
@@ -175,10 +198,9 @@ export default function GameBoard({
       {players.map((player, seatIdx) => {
         const relPos = getRelativePosition(seatIdx);
         const isCurrentTurn = activeSeat === seatIdx;
-        const score = player.score;
         const wonPoints = handPoints[seatIdx];
 
-        // Is partner?
+        // Role details
         const isSelf = seatIdx === mySeat;
         const isRevealedPartner = partnership.partnerSeat === seatIdx;
         const isSelfBidWinner = partnership.bidWinnerSeat === seatIdx;
@@ -187,44 +209,50 @@ export default function GameBoard({
         if (isSelfBidWinner) roleTag = '👑 Bidder';
         else if (isRevealedPartner) roleTag = '🤝 Partner';
 
-        // Styling classes
-        const glowClass = isCurrentTurn ? 'glow-green border-emerald-400 scale-105' : 'border-slate-800';
-
         return (
-          <div key={seatIdx} className={positionClasses[relPos]}>
+          <div key={seatIdx} className={`player-spot ${relPos}`}>
             {/* Player Avatar Panel */}
-            <div className={`glass-panel border-2 ${glowClass} rounded-2xl p-2 px-3 flex flex-col items-center relative transition shadow-md`}>
+            <div className={`player-avatar-hud ${isCurrentTurn ? 'active-turn' : ''}`}>
               
-              {/* Timeout ring / timer number */}
+              {/* Timeout countdown badge */}
               {isCurrentTurn && countdown > 0 && (
-                <div className="absolute -top-3 -right-3 bg-emerald-500 text-slate-950 font-black text-[10px] w-6 h-6 rounded-full flex items-center justify-center border border-emerald-300 shadow animate-pulse">
+                <div className="timer-badge">
                   {countdown}
                 </div>
               )}
 
               {/* Player Name */}
-              <span className={`text-[11px] sm:text-xs font-bold flex items-center gap-1 ${isSelf ? 'text-emerald-400' : 'text-slate-100'}`}>
-                {player.name} {player.isBot ? '🤖' : ''}
-              </span>
+              <div className="player-name">
+                {player.name.split(' ')[0]} {player.isBot ? '🤖' : ''}
+              </div>
 
               {/* Role Tags */}
               {roleTag && (
-                <span className="text-[9px] font-extrabold bg-slate-950 border border-slate-800 text-yellow-400 px-1 rounded mt-0.5 uppercase tracking-wide">
+                <div className="player-role-badge">
                   {roleTag}
-                </span>
+                </div>
               )}
 
               {/* Hand points tracker for current round */}
-              <span className="text-[10px] text-slate-400 font-bold mt-0.5">
-                Points: <b className="text-slate-200">{wonPoints}</b>
-              </span>
+              <div className="player-points">
+                Points: <b style={{ color: '#e2e8f0' }}>{wonPoints}</b>
+              </div>
             </div>
 
-            {/* Redacted other player card counts (Mini representations) */}
+            {/* Redacted other player card counts (Mini cards representations) */}
             {!isSelf && relPos !== 'south' && (
-              <div className="flex gap-0.5 mt-1 justify-center max-w-[80px]">
+              <div className="flex-row justify-center" style={{ gap: '2px', maxWidth: '80px', flexWrap: 'wrap', marginTop: '0.25rem' }}>
                 {Array.from({ length: gameState.handsCount[seatIdx] || 0 }).map((_, cIdx) => (
-                  <div key={cIdx} className="w-1.5 h-3 bg-slate-800 border border-slate-700/60 rounded-sm"></div>
+                  <div 
+                    key={cIdx} 
+                    style={{
+                      width: '6px',
+                      height: '12px',
+                      background: '#1e293b',
+                      border: '1px solid rgba(255,255,255,0.06)',
+                      borderRadius: '1px'
+                    }}
+                  ></div>
                 ))}
               </div>
             )}
@@ -233,11 +261,11 @@ export default function GameBoard({
       })}
 
       {/* Action Logs Box (overlay at bottom left) */}
-      <div className="absolute bottom-4 left-4 glass-panel max-w-[200px] sm:max-w-[280px] h-20 sm:h-24 rounded-2xl border border-slate-800 p-2 overflow-y-auto z-20 pointer-events-auto">
-        <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Game Feed</span>
-        <div className="space-y-1">
-          {actionLog.slice(-5).map((log, i) => (
-            <p key={i} className="text-[9px] sm:text-[10px] text-slate-300 leading-tight">
+      <div className="feed-log-overlay">
+        <div className="feed-title">Game Feed</div>
+        <div className="flex-col">
+          {actionLog.slice(-4).map((log, i) => (
+            <p key={i} className="feed-row">
               {log}
             </p>
           ))}
@@ -245,23 +273,20 @@ export default function GameBoard({
       </div>
 
       {/* Play area HUD for South player hand */}
-      <div className="absolute bottom-4 right-4 left-[220px] sm:left-[300px] flex justify-end items-end z-20 gap-3 pointer-events-none">
-        {/* Your hand dock */}
-        <div className="pointer-events-auto flex items-end justify-center gap-1 sm:gap-2 max-w-full overflow-x-auto p-2 scrollbar-none">
-          {hand.map((card, idx) => {
-            const isPlayable = activeSeat === mySeat && legalIndices.includes(idx);
-            return (
-              <div key={idx} className="transition-transform duration-200">
-                <Card
-                  card={card}
-                  isPlayable={isPlayable}
-                  isSelected={selectedCard === idx}
-                  onClick={() => handleCardClick(card, idx)}
-                />
-              </div>
-            );
-          })}
-        </div>
+      <div className="player-hand-dock">
+        {hand.map((card, idx) => {
+          const isPlayable = activeSeat === mySeat && legalIndices.includes(idx);
+          return (
+            <div key={idx} style={{ flexShrink: 0 }}>
+              <Card
+                card={card}
+                isPlayable={isPlayable}
+                isSelected={selectedCard === idx}
+                onClick={() => handleCardClick(card, idx)}
+              />
+            </div>
+          );
+        })}
       </div>
 
     </div>

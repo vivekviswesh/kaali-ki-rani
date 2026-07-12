@@ -39,91 +39,85 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer })
   };
 
   return (
-    <div className="min-h-screen felt-table flex items-center justify-center p-4">
-      <div className="w-full max-w-lg glass-panel rounded-3xl p-6 sm:p-8 animate-pop-in relative z-10 border border-emerald-500/20">
+    <div className="felt-table flex-center" style={{ minHeight: '100vh', padding: '1rem' }}>
+      <div className="glass-panel animate-pop-in" style={{ width: '100%', maxWidth: '480px', padding: '2rem', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
         
         {/* Title Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-2">
-            <span className="text-3xl text-yellow-400">👑</span>
-            <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-yellow-300 via-amber-400 to-emerald-400 bg-clip-text text-transparent">
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div className="flex-row flex-center" style={{ gap: '0.5rem', marginBottom: '0.5rem' }}>
+            <span style={{ fontSize: '2rem' }}>👑</span>
+            <h1 style={{ 
+              fontSize: '2.25rem', 
+              fontWeight: 900, 
+              background: 'linear-gradient(135deg, #fcd34d 0%, #fbbf24 50%, #34d399 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              letterSpacing: '-0.02em'
+            }}>
               KAALI KI RANI
             </h1>
           </div>
-          <p className="text-slate-300 text-sm font-medium">Queen of Spades Bidding & Trick-Taking Game</p>
+          <p style={{ color: '#94a3b8', fontSize: '0.85rem', fontWeight: 500 }}>
+            Queen of Spades Bidding & Trick-Taking Game
+          </p>
         </div>
 
         {/* Player Name Input */}
-        <div className="mb-6">
-          <label className="block text-slate-300 text-sm font-semibold mb-2">Your Name</label>
+        <div className="form-group">
+          <label className="form-label">Your Name</label>
           <input
             type="text"
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
             placeholder="Enter player name..."
-            className="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"
+            className="form-input"
             maxLength={12}
           />
         </div>
 
         {/* Tab Selection */}
-        <div className="flex border-b border-slate-700/60 mb-6">
+        <div className="flex-row" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', marginBottom: '1.5rem' }}>
           <button
             onClick={() => setActiveTab('single')}
-            className={`flex-1 py-3 text-sm font-semibold flex justify-center items-center gap-2 border-b-2 transition ${
-              activeTab === 'single'
-                ? 'border-yellow-400 text-yellow-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
+            className={`btn-tab ${activeTab === 'single' ? 'active-single' : ''}`}
           >
-            <Play size={16} />
+            <Play size={14} style={{ marginRight: '0.25rem' }} />
             Single Player
           </button>
           <button
             onClick={() => setActiveTab('create')}
-            className={`flex-1 py-3 text-sm font-semibold flex justify-center items-center gap-2 border-b-2 transition ${
-              activeTab === 'create'
-                ? 'border-emerald-400 text-emerald-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
+            className={`btn-tab ${activeTab === 'create' ? 'active-create' : ''}`}
           >
-            <Users size={16} />
+            <Users size={14} style={{ marginRight: '0.25rem' }} />
             Create Online
           </button>
           <button
             onClick={() => setActiveTab('join')}
-            className={`flex-1 py-3 text-sm font-semibold flex justify-center items-center gap-2 border-b-2 transition ${
-              activeTab === 'join'
-                ? 'border-indigo-400 text-indigo-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
+            className={`btn-tab ${activeTab === 'join' ? 'active-join' : ''}`}
           >
-            <UserPlus size={16} />
+            <UserPlus size={14} style={{ marginRight: '0.25rem' }} />
             Join Room
           </button>
         </div>
 
         {/* Tab Panels */}
         {activeTab === 'single' && (
-          <form onSubmit={handleSinglePlayer} className="space-y-4 animate-slide-up">
-            <p className="text-slate-300 text-sm leading-relaxed">
-              Play offline instantly against three heuristic AI computer bots. Perfect for practicing and quick games!
+          <form onSubmit={handleSinglePlayer} className="flex-col animate-slide-up" style={{ gap: '1rem' }}>
+            <p style={{ color: '#cbd5e1', fontSize: '0.875rem', lineHeight: 1.5 }}>
+              Play offline instantly against three smart computer bots. Perfect for practicing and quick games!
             </p>
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-400 hover:to-amber-400 text-slate-950 font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-lg transition active:scale-[0.98]"
-            >
-              <Play size={18} fill="currentColor" />
+            <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.875rem' }}>
+              <Play size={16} fill="currentColor" style={{ marginRight: '0.375rem' }} />
               Play vs Bots
             </button>
           </form>
         )}
 
         {activeTab === 'create' && (
-          <form onSubmit={handleCreate} className="space-y-4 animate-slide-up">
+          <form onSubmit={handleCreate} className="flex-col animate-slide-up" style={{ gap: '1.25rem' }}>
             <div>
-              <label className="block text-slate-300 text-xs font-bold uppercase mb-2">Turn Timeout</label>
-              <div className="grid grid-cols-4 gap-2">
+              <label className="form-label" style={{ marginBottom: '0.5rem' }}>Turn Timeout</label>
+              <div className="grid-4">
                 {[
                   { value: '10', label: '10s' },
                   { value: '20', label: '20s' },
@@ -134,11 +128,14 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer })
                     key={opt.value}
                     type="button"
                     onClick={() => setTimeoutSec(opt.value)}
-                    className={`py-2 text-xs font-semibold rounded-lg border transition ${
-                      timeoutSec === opt.value
-                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold'
-                        : 'border-slate-700 bg-slate-950/40 text-slate-400 hover:text-slate-200'
-                    }`}
+                    className="btn"
+                    style={{
+                      padding: '0.5rem 0',
+                      fontSize: '0.75rem',
+                      background: timeoutSec === opt.value ? 'rgba(16, 185, 129, 0.15)' : 'rgba(2, 6, 23, 0.4)',
+                      border: `1px solid ${timeoutSec === opt.value ? '#10b981' : 'rgba(255,255,255,0.08)'}`,
+                      color: timeoutSec === opt.value ? '#10b981' : '#94a3b8'
+                    }}
                   >
                     {opt.label}
                   </button>
@@ -146,47 +143,51 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer })
               </div>
             </div>
             
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-lg transition active:scale-[0.98]"
-            >
-              <Users size={18} />
+            <button type="submit" className="btn btn-success" style={{ width: '100%', padding: '0.875rem' }}>
+              <Users size={16} style={{ marginRight: '0.375rem' }} />
               Create Multiplayer Room
             </button>
           </form>
         )}
 
         {activeTab === 'join' && (
-          <form onSubmit={handleJoin} className="space-y-4 animate-slide-up">
+          <form onSubmit={handleJoin} className="flex-col animate-slide-up" style={{ gap: '1.25rem' }}>
             <div>
-              <label className="block text-slate-300 text-xs font-bold uppercase mb-2">Room Code</label>
+              <label className="form-label" style={{ marginBottom: '0.5rem' }}>Room Code</label>
               <input
                 type="text"
                 value={roomCode}
                 onChange={(e) => setRoomCode(e.target.value)}
                 placeholder="ABCD"
-                className="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-4 py-3 text-center text-2xl font-bold tracking-widest text-indigo-400 uppercase placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition"
+                className="form-input"
+                style={{
+                  textAlign: 'center',
+                  fontSize: '1.5rem',
+                  fontWeight: 900,
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color: '#818cf8',
+                  padding: '0.5rem 1rem'
+                }}
                 maxLength={4}
               />
             </div>
             
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-lg transition active:scale-[0.98]"
-            >
-              <UserPlus size={18} />
+            <button type="submit" className="btn btn-indigo" style={{ width: '100%', padding: '0.875rem' }}>
+              <UserPlus size={16} style={{ marginRight: '0.375rem' }} />
               Join Room
             </button>
           </form>
         )}
 
-        {/* Footer / Quick Info & Rules */}
-        <div className="mt-8 border-t border-slate-700/40 pt-4 flex justify-between items-center text-xs text-slate-400">
+        {/* Footer info */}
+        <div className="flex-row justify-between items-center" style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1rem', fontSize: '0.75rem', color: '#64748b' }}>
           <button 
             onClick={() => setShowRules(true)}
-            className="flex items-center gap-1 hover:text-yellow-400 transition font-semibold"
+            className="flex-row items-center"
+            style={{ background: 'none', border: 'none', color: '#fbbf24', cursor: 'pointer', fontWeight: 600, gap: '0.25rem' }}
           >
-            <BookOpen size={14} />
+            <BookOpen size={12} />
             How to Play
           </button>
           <span>v1.0.0</span>
@@ -194,49 +195,50 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer })
 
         {/* Rules Modal Overlay */}
         {showRules && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto">
-              <h2 className="text-xl font-bold text-yellow-400 mb-4 flex items-center gap-1.5 border-b border-slate-800 pb-2">
-                <Info size={18} />
+          <div className="modal-overlay-blur">
+            <div className="modal-window-card" style={{ maxWidth: '440px', textAlign: 'left' }}>
+              <h2 className="flex-row items-center" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fbbf24', gap: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                <Info size={16} />
                 Game Rules Summary
               </h2>
               
-              <div className="space-y-4 text-slate-300 text-xs sm:text-sm leading-relaxed">
+              <div className="flex-col" style={{ gap: '1rem', color: '#cbd5e1', fontSize: '0.8rem', lineHeight: 1.4, maxHeight: '60vh', overflowY: 'auto', paddingRight: '0.25rem' }}>
                 <div>
-                  <h3 className="font-bold text-slate-100 mb-1">Point Card Values</h3>
-                  <div className="grid grid-cols-2 gap-2 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800">
-                    <div>♠Q (Kaali Ki Rani): <b className="text-yellow-400">30 pts</b></div>
-                    <div>Aces (Any Suit): <b className="text-slate-100">15 pts</b></div>
-                    <div>10s (Any Suit): <b className="text-slate-100">10 pts</b></div>
-                    <div>5s (Any Suit): <b className="text-slate-100">5 pts</b></div>
+                  <h3 style={{ fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>Point Card Values</h3>
+                  <div className="grid-2" style={{ background: 'rgba(2, 6, 23, 0.4)', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div>♠Q (Kaali Ki Rani): <b style={{ color: '#fbbf24' }}>30 pts</b></div>
+                    <div>Aces (Any Suit): <b>15 pts</b></div>
+                    <div>10s (Any Suit): <b>10 pts</b></div>
+                    <div>5s (Any Suit): <b>5 pts</b></div>
                   </div>
-                  <p className="text-[10px] text-slate-400 mt-1">Total points in deck = 150 points.</p>
+                  <p style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '0.25rem' }}>Total points in deck = 150 points.</p>
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-slate-100 mb-1">Bidding Phase</h3>
-                  <p>Players bid from 75 to 150. The bid starter must bid at least 75. Passed players are locked out. Bidding ends when all other players pass. The bid winner chooses a partner card and the trump suit.</p>
+                  <h3 style={{ fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>Bidding Phase</h3>
+                  <p>Players bid from 75 to 150. The bid starter must open bidding at 75+. Passed players are locked out. Bidding ends when all other players pass. The bid winner chooses a partner card and the trump suit.</p>
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-slate-100 mb-1">Partnership & Trump</h3>
+                  <h3 style={{ fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>Partnership & Trump</h3>
                   <p>The partner holding the named card plays secretly. No one knows who the partner is until that card is played! If the bid winner names a card they hold themselves, they play solo (1 vs 3).</p>
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-slate-100 mb-1">Gameplay</h3>
+                  <h3 style={{ fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>Gameplay</h3>
                   <p>Follow suit is mandatory. If you have no cards of the led suit, you can play trump or discard. High card of led suit wins unless trumped. Winner of trick leads next.</p>
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-slate-100 mb-1">Scoring</h3>
+                  <h3 style={{ fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>Scoring</h3>
                   <p>Partnership wins: Bid Winner gets 2× bid, Partner gets 1× bid. If they fail: Opponents get full bid value each. Match ends when a player reaches 1000 points.</p>
                 </div>
               </div>
 
               <button
                 onClick={() => setShowRules(false)}
-                className="mt-6 w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2.5 px-4 rounded-xl transition"
+                className="btn btn-secondary"
+                style={{ width: '100%', marginTop: '1.25rem', padding: '0.625rem' }}
               >
                 Close
               </button>

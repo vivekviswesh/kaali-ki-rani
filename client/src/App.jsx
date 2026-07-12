@@ -30,11 +30,9 @@ export default function App() {
   // HUD Feed Log
   const [actionLog, setActionLog] = useState([]);
   
-  // Networking Sockets
+  // Sockets & Engine refs
   const socketRef = useRef(null);
   const localGameRef = useRef(null);
-
-  // Bot timer ref to prevent leaks
   const botTimerRef = useRef(null);
 
   // Confetti celebrations
@@ -219,7 +217,6 @@ export default function App() {
     setPlayerName(name);
     setIsSinglePlayer(false);
     
-    // Connect Socket
     const socket = io(SERVER_URL, { transports: ['websocket'] });
     socketRef.current = socket;
 
@@ -318,7 +315,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between">
+    <div className="flex-col" style={{ minHeight: '100vh', justifyContent: 'space-between', background: '#020617' }}>
       
       {!inGame ? (
         <Lobby
@@ -327,25 +324,33 @@ export default function App() {
           onStartSinglePlayer={startSinglePlayer}
         />
       ) : (
-        <div className="flex-1 flex flex-col max-w-7xl mx-auto w-full p-4 gap-4">
+        <div className="flex-col animate-pop-in" style={{ width: '100%', maxWidth: '1280px', margin: '0 auto', padding: '1rem', gap: '1rem' }}>
+          
           {/* Header Bar */}
-          <header className="flex justify-between items-center glass-panel rounded-2xl px-6 py-3 border border-slate-700/50">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">👑</span>
-              <span className="font-extrabold tracking-wider bg-gradient-to-r from-yellow-400 to-emerald-400 bg-clip-text text-transparent text-sm sm:text-base">
+          <header className="app-header-bar glass-panel">
+            <div className="flex-row items-center" style={{ gap: '0.5rem' }}>
+              <span style={{ fontSize: '1.25rem' }}>👑</span>
+              <span style={{ 
+                fontWeight: 900, 
+                letterSpacing: '0.05em', 
+                background: 'linear-gradient(135deg, #fbbf24 0%, #34d399 100%)', 
+                WebkitBackgroundClip: 'text', 
+                WebkitTextFillColor: 'transparent',
+                fontSize: '1rem'
+              }}>
                 KAALI KI RANI
               </span>
             </div>
             
             {roomCode ? (
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-slate-400 font-bold uppercase">Room:</span>
-                <span className="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-3 py-1 rounded-xl text-sm font-black tracking-widest">
+              <div className="flex-row items-center" style={{ gap: '0.5rem' }}>
+                <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase' }}>Room:</span>
+                <span style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '0.25rem 0.75rem', borderRadius: '0.75rem', fontSize: '0.85rem', fontWeight: 900, letterSpacing: '0.1em' }}>
                   {roomCode}
                 </span>
               </div>
             ) : (
-              <span className="text-xs text-yellow-400/90 font-extrabold uppercase bg-yellow-500/10 border border-yellow-500/20 px-3 py-1 rounded-xl">
+              <span style={{ fontSize: '0.65rem', color: '#fbbf24', fontWeight: 800, textTransform: 'uppercase', background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.2)', padding: '0.25rem 0.75rem', borderRadius: '0.75rem' }}>
                 Offline Play
               </span>
             )}
@@ -353,44 +358,56 @@ export default function App() {
 
           {/* Lobby Waiting Panel (Only online before start) */}
           {gameState && gameState.gameState === GAME_STATES.LOBBY && (
-            <div className="flex-1 glass-panel rounded-3xl border border-slate-800 p-8 flex flex-col items-center justify-center text-center max-w-md mx-auto my-12 animate-pop-in">
-              <div className="w-16 h-16 bg-slate-900 border border-slate-800 rounded-full flex items-center justify-center text-2xl mb-4 shadow">👥</div>
-              <h2 className="text-xl font-bold mb-2">Room Lobby</h2>
-              <p className="text-slate-400 text-xs mb-6">
+            <div className="glass-panel animate-pop-in" style={{ width: '100%', maxWidth: '440px', margin: '3rem auto', padding: '2rem', border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
+              <div style={{
+                width: '3.5rem',
+                height: '3.5rem',
+                background: 'rgba(2, 6, 23, 0.5)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+                margin: '0 auto 1rem'
+              }}>👥</div>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#f8fafc', marginBottom: '0.5rem' }}>Room Lobby</h2>
+              <p style={{ color: '#cbd5e1', fontSize: '0.8rem', lineHeight: 1.4, marginBottom: '1.5rem' }}>
                 Waiting for players to join. You can fill remaining empty slots with bots and start playing!
               </p>
 
-              <div className="w-full bg-slate-950/60 rounded-xl p-4 border border-slate-900 mb-6 text-left space-y-2 text-xs">
-                <span className="text-slate-500 font-bold uppercase tracking-wider block border-b border-slate-900 pb-1">Players Connected</span>
+              <div className="flex-col" style={{ background: 'rgba(2, 6, 23, 0.6)', borderRadius: '1rem', padding: '1rem', border: '1px solid rgba(255,255,255,0.04)', marginBottom: '1.5rem', textAlign: 'left', fontSize: '0.75rem', gap: '0.5rem' }}>
+                <span style={{ color: '#64748b', fontStyle: 'normal', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.25rem', display: 'block' }}>Players Connected</span>
                 {gameState.players.map((p, idx) => (
-                  <div key={idx} className="flex justify-between font-medium">
+                  <div key={idx} className="justify-between" style={{ color: '#cbd5e1', fontWeight: 600 }}>
                     <span>{p.name}</span>
-                    <span className="text-emerald-400">Ready</span>
+                    <span style={{ color: '#10b981' }}>Connected</span>
                   </div>
                 ))}
                 {Array.from({ length: 4 - gameState.players.length }).map((_, i) => (
-                  <div key={i} className="text-slate-600 italic">Empty Slot (will be filled with Bot)</div>
+                  <div key={i} style={{ color: '#475569', fontStyle: 'italic' }}>Empty Slot (will be filled with Bot)</div>
                 ))}
               </div>
 
               {gameState.players[0]?.id === socketRef.current?.id || mySeat === 0 ? (
                 <button
                   onClick={startOnlineGame}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg active:scale-[0.98] transition"
+                  className="btn btn-success"
+                  style={{ width: '100%', padding: '0.875rem' }}
                 >
                   Start Match (Fill Bots)
                 </button>
               ) : (
-                <p className="text-slate-500 text-xs italic">Only the host can start the match.</p>
+                <p style={{ color: '#64748b', fontSize: '0.75rem', fontStyle: 'italic' }}>Only the host can start the match.</p>
               )}
             </div>
           )}
 
           {/* Core Game UI Grid */}
           {gameState && gameState.gameState !== GAME_STATES.LOBBY && (
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <div className="game-grid-system">
               {/* Central Game Board */}
-              <div className="lg:col-span-3 flex flex-col gap-4">
+              <div className="flex-col" style={{ gap: '1rem' }}>
                 <GameBoard
                   gameState={gameState}
                   mySeat={mySeat}
@@ -402,7 +419,7 @@ export default function App() {
               </div>
 
               {/* Sidebar Panel containing Scoreboard, Bidding or Declarations */}
-              <div className="flex flex-col gap-4">
+              <div className="flex-col" style={{ gap: '1rem' }}>
                 {/* 1. Scoreboard (Always visible in-game) */}
                 <Scoreboard
                   gameState={gameState}
@@ -435,7 +452,7 @@ export default function App() {
       )}
       
       {/* Footer copyright */}
-      <footer className="py-4 text-center text-[10px] text-slate-600">
+      <footer style={{ py: '1rem', padding: '1rem 0', textAlign: 'center', fontSize: '10px', color: '#475569' }}>
         Kaali Ki Rani PWA © 2026. Made with ❤️ for card game lovers.
       </footer>
     </div>
