@@ -449,22 +449,22 @@ body {
   align-items: center;
 }
 .played-trick-card.south {
-  bottom: 120px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
 }
 .played-trick-card.north {
-  top: 120px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%) rotate(180deg);
 }
 .played-trick-card.west {
-  left: 120px;
+  left: 20px;
   top: 50%;
   transform: translateY(-50%) rotate(90deg);
 }
 .played-trick-card.east {
-  right: 120px;
+  right: 20px;
   top: 50%;
   transform: translateY(-50%) rotate(-90deg);
 }

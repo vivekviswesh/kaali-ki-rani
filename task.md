@@ -38,3 +38,9 @@
 - [x] **Step 10: Bot Turn Lifecycle Fix**
   - [x] Update bot auto-play `useEffect` trigger hook in `App.jsx` to trigger on changes in `trickPlayState.currentTrick.length` and other dependencies to prevent freezes when the same bot wins and has to lead the next trick
   - [x] Verify deployments are complete and online
+- [x] **Step 11: End-of-Game Reviews and HUD Bid Progress Indicators**
+  - [x] Enlarge `Last Trick` pop-up width and add winner highlight styling (gold border, winner name badge) in `GameBoard.jsx`
+  - [x] Add scrollable play-by-play Trick History review block inside the Hand Over victory/defeat scoreboard in `Scoreboard.jsx`
+  - [x] Reveal secret partner seat on server/client game end if the partner card was never played in client/server `game.js`
+  - [x] Implement target bid progress text (e.g. Bid: 30/95) and progress bar on bidder/partner HUD elements in `GameBoard.jsx`
+  - [x] Verify deployments are complete and online

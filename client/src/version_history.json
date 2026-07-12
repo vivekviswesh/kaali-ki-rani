@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v1.6.0",
+  "currentVersion": "v1.6.1",
   "history": [
+    {
+      "version": "v1.6.1",
+      "date": "2026-07-12",
+      "summary": "Played Card Felt Positioning",
+      "changes": [
+        "Reposition played trick cards on the table to float outward from the center (20px instead of 120px) to sit in front of the players who played them and avoid card overlaps"
+      ]
+    },
     {
       "version": "v1.6.0",
       "date": "2026-07-12",
