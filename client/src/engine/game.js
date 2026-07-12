@@ -238,6 +238,11 @@ export class Game {
       throw new Error('Not this player\'s turn.');
     }
 
+    // Clear previous completed trick from the table when the new trick's lead card is played
+    if (this.trickPlayState.currentTrick.length === 4) {
+      this.trickPlayState.currentTrick = [];
+    }
+
     // Check if player has card
     const playerHand = this.hands[seat];
     const cardIndex = playerHand.findIndex(c => c.rank === card.rank && c.suit === card.suit);
@@ -313,7 +318,9 @@ export class Game {
     this.trickPlayState.trickCount++;
     this.trickPlayState.leadSeat = winnerSeat;
     this.activeSeat = winnerSeat;
-    this.trickPlayState.currentTrick = [];
+    
+    // Save to lastTrick so players can review it later
+    this.trickPlayState.lastTrick = [...trick];
 
     // Check early resolution
     if (this.checkHandEnded()) {
@@ -444,6 +451,7 @@ export class Game {
       declarationState: this.declarationState,
       trickPlayState: {
         currentTrick: this.trickPlayState.currentTrick,
+        lastTrick: this.trickPlayState.lastTrick || [],
         leadSeat: this.trickPlayState.leadSeat,
         trickCount: this.trickPlayState.trickCount,
         history: this.trickPlayState.history

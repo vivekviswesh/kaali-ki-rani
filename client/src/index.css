@@ -328,7 +328,7 @@ body {
 }
 
 .player-spot.south {
-  bottom: 9.5rem;
+  bottom: 10.5rem;
   left: 50%;
   transform: translateX(-50%);
   flex-direction: column;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import confetti from 'canvas-confetti';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, X } from 'lucide-react';
 
 import Lobby from './components/Lobby';
 import GameBoard from './components/GameBoard';
@@ -32,6 +32,7 @@ export default function App() {
   
   // Clipboard feedback
   const [copied, setCopied] = useState(false);
+  const [showLogsPopup, setShowLogsPopup] = useState(false);
   
   // HUD Feed Log
   const [actionLog, setActionLog] = useState([]);
@@ -407,7 +408,7 @@ export default function App() {
                   {gameId}
                 </span>
                 <button 
-                  onClick={copyLogs}
+                  onClick={() => setShowLogsPopup(true)}
                   style={{
                     background: 'rgba(255, 255, 255, 0.05)',
                     border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -533,6 +534,98 @@ export default function App() {
         </div>
       )}
       
+      {/* Logs Viewer Modal Popup */}
+      {showLogsPopup && (
+        <div 
+          className="flex-center animate-fade-in" 
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(2, 6, 23, 0.65)',
+            backdropFilter: 'blur(8px)',
+            zIndex: 100,
+            padding: '1.25rem'
+          }}
+        >
+          <div 
+            className="glass-panel animate-pop-in flex-col" 
+            style={{
+              width: '100%',
+              maxWidth: '560px',
+              maxHeight: '80vh',
+              background: '#090d16',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '1.25rem',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)',
+              padding: '1.25rem',
+              gap: '1rem',
+              pointerEvents: 'auto'
+            }}
+          >
+            {/* Modal Header */}
+            <div className="justify-between items-center" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.75rem' }}>
+              <div className="flex-row items-center" style={{ gap: '0.5rem' }}>
+                <span style={{ fontSize: '1.1rem' }}>📋</span>
+                <span style={{ fontWeight: 800, color: '#f8fafc', fontSize: '0.95rem' }}>Game Logs: {gameId}</span>
+              </div>
+              <button 
+                onClick={() => setShowLogsPopup(false)}
+                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Scrollable logs box */}
+            <div 
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                background: 'rgba(2, 6, 23, 0.7)',
+                border: '1px solid rgba(255,255,255,0.04)',
+                borderRadius: '0.75rem',
+                padding: '0.75rem',
+                fontFamily: 'monospace',
+                fontSize: '0.75rem',
+                color: '#10b981',
+                lineHeight: 1.5,
+                textAlign: 'left',
+                minHeight: '220px'
+              }}
+            >
+              {getClientLogs(gameId) ? (
+                getClientLogs(gameId).split('\n').map((line, idx) => (
+                  <div key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)', padding: '0.125rem 0' }}>
+                    {line}
+                  </div>
+                ))
+              ) : (
+                <div style={{ color: '#475569', fontStyle: 'italic' }}>No logs recorded for this game.</div>
+              )}
+            </div>
+
+            {/* Modal Footer Actions */}
+            <div className="flex-row justify-end" style={{ gap: '0.5rem', paddingTop: '0.25rem' }}>
+              <button
+                onClick={copyLogs}
+                className="btn btn-secondary flex-center"
+                style={{ gap: '0.375rem', padding: '0.5rem 1rem', fontSize: '0.8rem', cursor: 'pointer' }}
+              >
+                {copied ? <Check size={14} /> : <Copy size={14} />}
+                <span>{copied ? 'Copied to Clipboard!' : 'Copy Logs'}</span>
+              </button>
+              <button
+                onClick={() => setShowLogsPopup(false)}
+                className="btn btn-success"
+                style={{ padding: '0.5rem 1.25rem', fontSize: '0.8rem', cursor: 'pointer' }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer copyright */}
       <footer style={{ padding: '0.5rem 0', textAlign: 'center', fontSize: '9px', color: '#475569' }}>
         Kaali Ki Rani PWA © 2026. Made with ❤️ for card game lovers.

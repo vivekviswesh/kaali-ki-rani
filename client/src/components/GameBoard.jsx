@@ -30,6 +30,7 @@ export default function GameBoard({
   const [selectedCard, setSelectedCard] = useState(null);
   const [countdown, setCountdown] = useState(0);
   const [showScoreboard, setShowScoreboard] = useState(false);
+  const [showLastTrick, setShowLastTrick] = useState(false);
 
   // Automatically open scoreboard when hand or match ends
   useEffect(() => {
@@ -165,6 +166,30 @@ export default function GameBoard({
             </div>
           )}
 
+          {/* Toggle Last Trick Button */}
+          {gameState.trickPlayState.lastTrick && gameState.trickPlayState.lastTrick.length === 4 && (
+            <button
+              onClick={() => setShowLastTrick(!showLastTrick)}
+              className="btn"
+              style={{
+                padding: '0.25rem 0.625rem',
+                background: showLastTrick ? 'rgba(59, 130, 246, 0.15)' : 'rgba(15, 23, 42, 0.85)',
+                border: `1px solid ${showLastTrick ? '#3b82f6' : 'rgba(255,255,255,0.08)'}`,
+                borderRadius: '0.75rem',
+                color: showLastTrick ? '#3b82f6' : '#f8fafc',
+                fontSize: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem',
+                height: '2.25rem',
+                fontWeight: 700
+              }}
+            >
+              <HelpCircle size={14} />
+              <span>Last Trick</span>
+            </button>
+          )}
+
           {/* Toggle Scoreboard Widget Button */}
           <button
             onClick={() => setShowScoreboard(!showScoreboard)}
@@ -217,6 +242,44 @@ export default function GameBoard({
           </div>
           <div style={{ pointerEvents: 'auto' }}>
             {scoreboardWidget}
+          </div>
+        </div>
+      )}
+      {/* Floating Collapsible Last Trick Panel */}
+      {showLastTrick && gameState.trickPlayState.lastTrick && gameState.trickPlayState.lastTrick.length === 4 && (
+        <div 
+          className="glass-panel animate-pop-in" 
+          style={{
+            position: 'absolute',
+            top: '4.5rem',
+            left: '1rem',
+            width: '280px',
+            zIndex: 40,
+            padding: '0.75rem',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 8px 32px 0 rgba(0,0,0,0.5)',
+            background: 'rgba(9, 13, 22, 0.95)'
+          }}
+        >
+          <div className="flex-row justify-between items-center" style={{ paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 900, color: '#3b82f6' }}>👁️ Last Trick Played</span>
+            <button 
+              onClick={() => setShowLastTrick(false)}
+              style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
+            >
+              <X size={14} />
+            </button>
+          </div>
+          
+          <div className="flex-row justify-between" style={{ gap: '0.5rem', overflowX: 'auto', padding: '0.25rem 0' }}>
+            {gameState.trickPlayState.lastTrick.map(({ seat, card }) => (
+              <div key={seat} className="flex-col items-center" style={{ gap: '0.375rem' }}>
+                <span style={{ fontSize: '9px', fontWeight: 700, color: '#94a3b8', maxWidth: '60px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {players[seat]?.name.split(' ')[0]}
+                </span>
+                <Card card={card} isPlayable={false} />
+              </div>
+            ))}
           </div>
         </div>
       )}
