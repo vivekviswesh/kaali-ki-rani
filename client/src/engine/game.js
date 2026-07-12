@@ -5,6 +5,7 @@ import {
   TOTAL_POINTS,
   WINNING_SCORE,
   SUITS,
+  RANK_VALUES,
   getCardPoints
 } from './constants.js';
 import { createDeck, shuffleDeck, dealCards, sortHand, formatCard } from './deck.js';

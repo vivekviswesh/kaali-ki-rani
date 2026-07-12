@@ -35,13 +35,13 @@ export function evaluateBidStrength(hand) {
 
   // Base bid calculation
   // 75 is the minimum bid
-  if (score < 25) {
+  if (score < 35) {
     return 0; // Bot prefers to pass if weak
   }
   
-  // Scale bid value based on hand score
-  const calculatedBid = 75 + Math.floor((score - 25) / 1.5) * 5;
-  return Math.min(130, Math.max(75, calculatedBid)); // Cap bot bids at 130 unless they have a monster hand
+  // Scale bid value realistically (5 points for every 3 points of score above 35)
+  const calculatedBid = 75 + Math.floor((score - 35) / 3) * 5;
+  return Math.min(130, Math.max(75, calculatedBid));
 }
 
 /**
