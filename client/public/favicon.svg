@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <!-- Background -->
+  <rect width="512" height="512" rx="128" fill="#020617" />
+  <rect width="496" height="496" x="8" y="8" rx="120" fill="none" stroke="#10b981" stroke-width="4" opacity="0.3" />
+  
+  <!-- Outer Glow Filter -->
+  <defs>
+    <filter id="glow-spade" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Glowing Spade Symbol -->
+  <path d="M 256 120 
+           C 200 240, 130 250, 130 310 
+           C 130 360, 180 390, 230 370 
+           L 235 365 
+           L 220 420 
+           C 210 440, 180 435, 170 440 
+           L 170 450 
+           L 342 450 
+           L 342 440 
+           C 332 435, 302 440, 292 420 
+           L 277 365 
+           L 282 370 
+           C 332 390, 382 360, 382 310 
+           C 382 250, 312 240, 256 120 Z" 
+        fill="#4f46e5" 
+        filter="url(#glow-spade)" 
+        opacity="0.9" />
+
+  <!-- Gold Crown on top of Spade -->
+  <path d="M 190 200 
+           L 210 240 
+           L 256 195 
+           L 302 240 
+           L 322 200 
+           L 332 270 
+           L 180 270 Z" 
+        fill="#fbbf24" 
+        stroke="#f59e0b" 
+        stroke-width="3" 
+        stroke-linejoin="round" />
+        
+  <!-- Crown Jewels -->
+  <circle cx="190" cy="195" r="5" fill="#ef4444" />
+  <circle cx="256" cy="190" r="6" fill="#10b981" />
+  <circle cx="322" cy="195" r="5" fill="#ef4444" />
+  <circle cx="256" cy="245" r="5" fill="#3b82f6" />
+
+  <!-- Elegant text -->
+  <text x="256" y="335" 
+        font-family="'Outfit', 'Inter', sans-serif" 
+        font-size="44" 
+        font-weight="900" 
+        fill="#ffffff" 
+        text-anchor="middle" 
+        letter-spacing="2">KALI KI RANI</text>
+</svg>
