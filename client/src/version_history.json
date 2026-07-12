@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v1.7.0",
+  "currentVersion": "v1.7.1",
   "history": [
+    {
+      "version": "v1.7.1",
+      "date": "2026-07-12",
+      "summary": "Visual Card Spacing Outside Center",
+      "changes": [
+        "Reposition played trick cards on the table to float clearly outside the center circle boundaries (-45px offset) to sit right in front of corresponding player avatar HUDs"
+      ]
+    },
     {
       "version": "v1.7.0",
       "date": "2026-07-12",

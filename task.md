@@ -47,3 +47,6 @@
 - [x] **Step 12: Played Card Felt Table Positioning Fix**
   - [x] Reposition played card offsets in `index.css` from `120px` to `20px` to shift cards outward from the center, grouping them directly in front of the respective player seats
   - [x] Verify deployments are complete and online
+- [x] **Step 13: Large Center Split Scoreboard Verdict overlay**
+  - [x] Redesign Hand Over victory overlay window in `Scoreboard.jsx` to be wider (`780px` wide) and centered, splitting card results to a two-column layout (roles/verdict on left, spacious trick logs on right)
+  - [x] Verify deployments are complete and online
