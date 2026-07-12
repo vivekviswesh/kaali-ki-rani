@@ -125,7 +125,8 @@ export function makeBotDeclaration(hand) {
 /**
  * Selects a card to play.
  */
-export function makeBotPlay(hand, currentTrick, trumpSuit, partnerCard, partnerSeat, bidWinnerSeat, botSeat) {
+export function makeBotPlay(hand, trickParam, trumpSuit, partnerCard, partnerSeat, bidWinnerSeat, botSeat) {
+  const currentTrick = trickParam.length === 4 ? [] : trickParam;
   const legalCards = getLegalCards(hand, currentTrick);
   if (legalCards.length === 0) return null;
   
@@ -254,7 +255,7 @@ export function makeBotPlay(hand, currentTrick, trumpSuit, partnerCard, partnerS
  * Filter legal cards to play.
  */
 function getLegalCards(hand, currentTrick) {
-  if (currentTrick.length === 0) {
+  if (currentTrick.length === 0 || currentTrick.length === 4) {
     return [...hand];
   }
   const leadCard = currentTrick[0].card;

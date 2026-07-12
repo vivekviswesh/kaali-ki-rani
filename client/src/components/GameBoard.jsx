@@ -66,7 +66,7 @@ export default function GameBoard({
 
   // Evaluate legal card indices
   const getLegalCardIndices = () => {
-    if (currentTrick.length === 0) {
+    if (currentTrick.length === 0 || currentTrick.length === 4) {
       return hand.map((_, i) => i);
     }
     const leadCard = currentTrick[0].card;
