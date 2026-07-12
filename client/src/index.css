@@ -683,15 +683,8 @@ body {
 }
 
 .game-grid-system {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  display: block;
   width: 100%;
-}
-@media (min-width: 1024px) {
-  .game-grid-system {
-    grid-template-columns: 3fr 1fr;
-  }
 }
 
 /* Micro-animations */

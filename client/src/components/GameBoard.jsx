@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Card from './Card';
-import { LogOut } from 'lucide-react';
+import { LogOut, Trophy, HelpCircle, X } from 'lucide-react';
 import { GAME_STATES } from '../engine/constants.js';
 
 export default function GameBoard({ 
@@ -9,7 +9,10 @@ export default function GameBoard({
   onPlayCard, 
   onLeave, 
   timerState,
-  actionLog = []
+  actionLog = [],
+  scoreboardWidget,
+  biddingWidget,
+  declarationWidget
 }) {
   const { 
     players, 
@@ -26,12 +29,9 @@ export default function GameBoard({
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [countdown, setCountdown] = useState(0);
+  const [showScoreboard, setShowScoreboard] = useState(false);
 
   // Map seats relative to mySeat
-  // 0 -> South (me)
-  // 1 -> West
-  // 2 -> North
-  // 3 -> East
   const getRelativePosition = (seat) => {
     const diff = (seat - mySeat + 4) % 4;
     if (diff === 0) return 'south';
@@ -56,10 +56,9 @@ export default function GameBoard({
     }
   }, [timerState, activeSeat]);
 
-  // Evaluate which cards in hand are legal
+  // Evaluate legal card indices
   const getLegalCardIndices = () => {
     if (currentTrick.length === 0) {
-      // Any card is legal to lead
       return hand.map((_, i) => i);
     }
     const leadCard = currentTrick[0].card;
@@ -70,7 +69,6 @@ export default function GameBoard({
     if (followIndices.length > 0) {
       return followIndices;
     }
-    // Void in lead suit, all cards are legal
     return hand.map((_, i) => i);
   };
 
@@ -80,17 +78,15 @@ export default function GameBoard({
     if (activeSeat !== mySeat) return;
     if (!legalIndices.includes(index)) return;
 
-    // Direct play
     onPlayCard(card);
     setSelectedCard(null);
   };
 
-  // Convert suits to symbols
   const suitEmoji = { S: '♠', H: '♥', D: '♦', C: '♣' };
   const suitColors = { S: '#818cf8', H: '#f43f5e', D: '#f59e0b', C: '#10b981' };
 
   return (
-    <div className="trick-table-arena felt-table animate-pop-in">
+    <div className="trick-table-arena felt-table animate-pop-in" style={{ height: 'calc(100vh - 120px)', minHeight: '520px' }}>
       
       {/* HUD Info Header */}
       <div className="flex-row justify-between" style={{
@@ -101,7 +97,7 @@ export default function GameBoard({
         zIndex: 25,
         pointerEvents: 'none'
       }}>
-        {/* Leaving button */}
+        {/* Leave button */}
         <button
           onClick={onLeave}
           className="btn btn-secondary flex-center"
@@ -119,20 +115,21 @@ export default function GameBoard({
           <LogOut size={14} />
         </button>
 
-        {/* Declared Partner/Trump Tags */}
-        <div className="flex-row" style={{ gap: '0.5rem' }}>
+        {/* Declared Partner/Trump Tags + Scoreboard Toggle */}
+        <div className="flex-row items-center" style={{ gap: '0.5rem', pointerEvents: 'auto' }}>
           {trumpSuit && (
             <div style={{
               background: 'rgba(15, 23, 42, 0.9)',
               border: '1px solid rgba(255,255,255,0.08)',
-              padding: '0.25rem 0.75rem',
+              padding: '0.25rem 0.625rem',
               borderRadius: '0.75rem',
               fontSize: '0.75rem',
               fontWeight: 800,
               display: 'flex',
               alignItems: 'center',
               gap: '0.25rem',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
+              boxShadow: '0 4px 6px rgba(0,0,0,0.2)',
+              color: '#f8fafc'
             }}>
               <span style={{ color: '#94a3b8', fontWeight: 500 }}>Trump:</span>
               <span style={{ color: suitColors[trumpSuit], fontSize: '0.9rem' }}>
@@ -144,7 +141,7 @@ export default function GameBoard({
             <div style={{
               background: 'rgba(15, 23, 42, 0.9)',
               border: '1px solid rgba(255,255,255,0.08)',
-              padding: '0.25rem 0.75rem',
+              padding: '0.25rem 0.625rem',
               borderRadius: '0.75rem',
               fontSize: '0.75rem',
               fontWeight: 800,
@@ -160,10 +157,64 @@ export default function GameBoard({
               </span>
             </div>
           )}
+
+          {/* Toggle Scoreboard Widget Button */}
+          <button
+            onClick={() => setShowScoreboard(!showScoreboard)}
+            className="btn"
+            style={{
+              padding: '0.25rem 0.625rem',
+              background: showScoreboard ? 'rgba(16, 185, 129, 0.15)' : 'rgba(15, 23, 42, 0.85)',
+              border: `1px solid ${showScoreboard ? '#10b981' : 'rgba(255,255,255,0.08)'}`,
+              borderRadius: '0.75rem',
+              color: showScoreboard ? '#10b981' : '#f8fafc',
+              fontSize: '0.75rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              height: '2.25rem',
+              fontWeight: 700
+            }}
+          >
+            <Trophy size={14} />
+            <span>Leaderboard</span>
+          </button>
         </div>
       </div>
 
-      {/* Central Table Felt Card Area */}
+      {/* Floating Collapsible Scoreboard Widget */}
+      {showScoreboard && (
+        <div 
+          className="glass-panel animate-pop-in" 
+          style={{
+            position: 'absolute',
+            top: '4.5rem',
+            right: '1rem',
+            width: '280px',
+            maxHeight: '80%',
+            overflowY: 'auto',
+            zIndex: 40,
+            padding: '0.5rem',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 8px 32px 0 rgba(0,0,0,0.5)'
+          }}
+        >
+          <div className="flex-row justify-between items-center" style={{ padding: '0.5rem 0.5rem 0.25rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 900, color: '#fbbf24' }}>🏆 Match Info</span>
+            <button 
+              onClick={() => setShowScoreboard(false)}
+              style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
+            >
+              <X size={14} />
+            </button>
+          </div>
+          <div style={{ pointerEvents: 'auto' }}>
+            {scoreboardWidget}
+          </div>
+        </div>
+      )}
+
+      {/* Center Table Felt Card Area */}
       <div className="center-felt-circle">
         {/* Render Played Cards in current trick */}
         {currentTrick.map(({ seat, card }) => {
@@ -188,7 +239,7 @@ export default function GameBoard({
               Trick {trickPlayState.trickCount + 1}
             </span>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', marginTop: '0.125rem', display: 'block' }}>
-              {activeSeat === mySeat ? 'Your Lead' : `${players[activeSeat]?.name.split(' ')[0]}'s Lead`}
+              {activeSeat === mySeat ? 'Your Turn' : `${players[activeSeat]?.name.split(' ')[0]}'s Turn`}
             </span>
           </div>
         )}
@@ -223,7 +274,7 @@ export default function GameBoard({
 
               {/* Player Name */}
               <div className="player-name">
-                {player.name.split(' ')[0]} {player.isBot ? '🤖' : ''}
+                {player.name} {player.isBot ? '🤖' : ''}
               </div>
 
               {/* Role Tags */}
@@ -239,7 +290,7 @@ export default function GameBoard({
               </div>
             </div>
 
-            {/* Redacted other player card counts (Mini cards representations) */}
+            {/* Redacted other player card counts */}
             {!isSelf && relPos !== 'south' && (
               <div className="flex-row justify-center" style={{ gap: '2px', maxWidth: '80px', flexWrap: 'wrap', marginTop: '0.25rem' }}>
                 {Array.from({ length: gameState.handsCount[seatIdx] || 0 }).map((_, cIdx) => (
@@ -261,19 +312,38 @@ export default function GameBoard({
       })}
 
       {/* Action Logs Box (overlay at bottom left) */}
-      <div className="feed-log-overlay">
+      <div className="feed-log-overlay" style={{ height: '70px', width: '220px' }}>
         <div className="feed-title">Game Feed</div>
         <div className="flex-col">
-          {actionLog.slice(-4).map((log, i) => (
-            <p key={i} className="feed-row">
+          {actionLog.slice(-3).map((log, i) => (
+            <p key={i} className="feed-row" style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
               {log}
             </p>
           ))}
         </div>
       </div>
 
+      {/* Central Overlays for Bidding & Declarations (Overlayed in center for layout immersion) */}
+      {(biddingWidget || declarationWidget) && (
+        <div 
+          className="flex-center" 
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'rgba(2, 6, 23, 0.45)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 35
+          }}
+        >
+          <div style={{ pointerEvents: 'auto', width: '100%', maxWidth: '340px' }}>
+            {biddingWidget}
+            {declarationWidget}
+          </div>
+        </div>
+      )}
+
       {/* Play area HUD for South player hand */}
-      <div className="player-hand-dock">
+      <div className="player-hand-dock" style={{ bottom: '0.5rem' }}>
         {hand.map((card, idx) => {
           const isPlayable = activeSeat === mySeat && legalIndices.includes(idx);
           return (
