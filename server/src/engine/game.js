@@ -333,16 +333,24 @@ export class Game {
     // Points captured by bidding team
     const bidWinner = this.partnership.bidWinnerSeat;
     const partner = this.partnership.actualPartnerSeat;
+    const isSolo = this.partnership.isSolo;
     
-    const biddingTeamPoints = this.handPoints[bidWinner] + (this.partnership.isSolo ? 0 : this.handPoints[partner]);
-    const defendingTeamPoints = TOTAL_POINTS - biddingTeamPoints;
+    const biddingTeamPoints = this.handPoints[bidWinner] + (isSolo ? 0 : this.handPoints[partner]);
+    
+    // Points actually captured by defending team
+    let defendingTeamPoints = 0;
+    for (let i = 0; i < 4; i++) {
+      if (i !== bidWinner && (isSolo || i !== partner)) {
+        defendingTeamPoints += this.handPoints[i];
+      }
+    }
 
     // 1. Bid secured
     if (biddingTeamPoints >= bidValue) {
       return true;
     }
 
-    // 2. Bid mathematically dead (opponents points > 150 - bid + 5 => >= 150 - bid + 5)
+    // 2. Bid mathematically dead (opponents points >= 150 - bid + 5)
     if (defendingTeamPoints >= (TOTAL_POINTS - bidValue + 5)) {
       return true;
     }

@@ -31,6 +31,13 @@ export default function GameBoard({
   const [countdown, setCountdown] = useState(0);
   const [showScoreboard, setShowScoreboard] = useState(false);
 
+  // Automatically open scoreboard when hand or match ends
+  useEffect(() => {
+    if (gameState.gameState === GAME_STATES.HAND_OVER || gameState.gameState === GAME_STATES.MATCH_OVER) {
+      setShowScoreboard(true);
+    }
+  }, [gameState.gameState]);
+
   // Map seats relative to mySeat
   const getRelativePosition = (seat) => {
     const diff = (seat - mySeat + 4) % 4;
