@@ -2,7 +2,7 @@ import { Game } from './engine/game.js';
 import { GAME_STATES } from './engine/constants.js';
 import { formatCard } from './engine/deck.js';
 import { makeBotBid, makeBotDeclaration, makeBotPlay } from './bot.js';
-import { generateBotName, logGameEvent } from './utils/logger.js';
+import { generateBotName, logGameEvent, logTelemetry } from './utils/logger.js';
 
 export class Room {
   constructor(roomCode, io, settings = {}) {
@@ -99,7 +99,11 @@ export class Room {
     }));
 
     logGameEvent(this.gameId, `Starting Match. Seating arrangement: ${this.seats.map((s, idx) => `Seat ${idx}:${s.name}`).join(', ')}`);
+    logTelemetry(this.gameId, 'match_start', { players: enginePlayers });
+    
     this.game.startMatch(enginePlayers);
+    logTelemetry(this.gameId, 'hand_start', { handCount: this.game.handCount, hands: this.game.hands });
+    
     this.broadcastState();
     this.runTurnCycle();
   }
@@ -112,6 +116,7 @@ export class Room {
       this.game.players.forEach(p => {
         logGameEvent(this.gameId, `  Player ${p.name}: ${p.score} points`);
       });
+      logTelemetry(this.gameId, 'match_over', { players: this.game.players });
       this.broadcastState();
       return;
     }
@@ -172,6 +177,9 @@ export class Room {
           }
         }
         
+        // Log telemetry BEFORE state modification to record options
+        logTelemetry(this.gameId, 'bid', { seat, bid, currentHighestBid: this.game.biddingState.currentHighestBid, hand: [...hand] });
+        
         this.game.placeBid(seat, bid);
         logGameEvent(this.gameId, `Bid action: Seat ${seat} (${this.seats[seat].name}) ${bid === 'pass' ? 'passed' : 'bid ' + bid}`);
 
@@ -184,6 +192,9 @@ export class Room {
 
       } else if (gameState === GAME_STATES.DECLARATION) {
         const dec = makeBotDeclaration(hand);
+        
+        logTelemetry(this.gameId, 'declare', { seat, partnerCard: dec.partnerCard, trumpSuit: dec.trumpSuit, hand: [...hand] });
+        
         this.game.declare(seat, dec.partnerCard, dec.trumpSuit);
         logGameEvent(this.gameId, `Declaration action: Seat ${seat} (${this.seats[seat].name}) declared Trump: ${dec.trumpSuit}, Partner Card: ${formatCard(dec.partnerCard)}`);
 
@@ -205,12 +216,10 @@ export class Room {
         let cardToPlay = null;
         const isBot = this.seats[seat].isBot;
 
-        // Wrap bot play logic in a strict try-catch block for fail-safe play
         try {
           if (isBot) {
             cardToPlay = makeBotPlay(hand, currentTrick, trumpSuit, partnerCard, partnerSeat, bidWinnerSeat, seat);
           } else {
-            // Timed out or disconnected human
             const leadCard = currentTrick.length > 0 ? currentTrick[0].card : null;
             const legalCards = hand.filter(c => !leadCard || c.suit === leadCard.suit);
             const choices = legalCards.length > 0 ? legalCards : hand;
@@ -221,7 +230,6 @@ export class Room {
             throw new Error('makeBotPlay returned null or empty card.');
           }
         } catch (botErr) {
-          // Fail-safe: Play the first legal card to keep the game moving and avoid hangs!
           const leadCard = currentTrick.length > 0 ? currentTrick[0].card : null;
           const legalCards = hand.filter(c => !leadCard || c.suit === leadCard.suit);
           const choices = legalCards.length > 0 ? legalCards : hand;
@@ -231,6 +239,18 @@ export class Room {
         }
 
         const isPartnerCard = partnerCard && (cardToPlay.rank === partnerCard.rank && cardToPlay.suit === partnerCard.suit);
+
+        // Log telemetry BEFORE state changes
+        logTelemetry(this.gameId, 'play_card', {
+          seat,
+          cardPlayed: cardToPlay,
+          handBefore: [...hand],
+          currentTrick: [...currentTrick],
+          trumpSuit,
+          partnerCard,
+          partnerSeat,
+          bidWinnerSeat
+        });
 
         this.game.playCard(seat, cardToPlay);
         logGameEvent(this.gameId, `Play action: Seat ${seat} (${this.seats[seat].name}) played ${formatCard(cardToPlay)}`);
@@ -256,6 +276,17 @@ export class Room {
       
       if (oldState === GAME_STATES.TRICK_PLAY && newState === GAME_STATES.HAND_OVER) {
         logGameEvent(this.gameId, `Hand Completed. Hand Points: ${this.game.handPoints.map((pts, idx) => `Seat ${idx}:${pts}`).join(', ')}`);
+        
+        logTelemetry(this.gameId, 'hand_over', {
+          handCount: this.game.handCount,
+          handPoints: [...this.game.handPoints],
+          scores: this.game.players.map(p => p.score),
+          currentHighestBid: this.game.biddingState.currentHighestBid,
+          bidWinnerSeat: this.game.partnership.bidWinnerSeat,
+          partnerSeat: this.game.partnership.partnerSeat,
+          isSolo: this.game.partnership.isSolo
+        });
+
         this.game.players.forEach(p => {
           logGameEvent(this.gameId, `  Player ${p.name} updated score: ${p.score}`);
         });
@@ -265,6 +296,9 @@ export class Room {
           handPoints: this.game.handPoints,
           message: `Hand over. scores updated.`
         });
+        
+        // Log telemetry for the new hand start
+        logTelemetry(this.gameId, 'hand_start', { handCount: this.game.handCount, hands: this.game.hands });
       }
 
       this.broadcastState();
@@ -282,6 +316,8 @@ export class Room {
     if (this.game.activeSeat !== seat) throw new Error('Not your turn.');
 
     if (type === 'bid') {
+      logTelemetry(this.gameId, 'bid', { seat, bid: data.bid, currentHighestBid: this.game.biddingState.currentHighestBid, hand: [...this.game.hands[seat]] });
+      
       this.game.placeBid(seat, data.bid);
       logGameEvent(this.gameId, `Player action: Seat ${seat} (${this.seats[seat].name}) ${data.bid === 'pass' ? 'passed' : 'bid ' + data.bid}`);
 
@@ -292,6 +328,8 @@ export class Room {
         message: `${this.seats[seat].name} ${data.bid === 'pass' ? 'passed' : 'bid ' + data.bid}`
       });
     } else if (type === 'declare') {
+      logTelemetry(this.gameId, 'declare', { seat, partnerCard: data.partnerCard, trumpSuit: data.trumpSuit, hand: [...this.game.hands[seat]] });
+      
       this.game.declare(seat, data.partnerCard, data.trumpSuit);
       logGameEvent(this.gameId, `Player action: Seat ${seat} (${this.seats[seat].name}) declared Trump: ${data.trumpSuit}, Partner Card: ${formatCard(data.partnerCard)}`);
 
@@ -306,6 +344,17 @@ export class Room {
       const card = data.card;
       const partnerCard = this.game.declarationState.partnerCard;
       const isPartnerCard = partnerCard && (card.rank === partnerCard.rank && card.suit === partnerCard.suit);
+
+      logTelemetry(this.gameId, 'play_card', {
+        seat,
+        cardPlayed: card,
+        handBefore: [...this.game.hands[seat]],
+        currentTrick: [...this.game.trickPlayState.currentTrick],
+        trumpSuit: this.game.declarationState.trumpSuit,
+        partnerCard,
+        partnerSeat: this.game.partnership.partnerSeat,
+        bidWinnerSeat: this.game.partnership.bidWinnerSeat
+      });
 
       this.game.playCard(seat, card);
       logGameEvent(this.gameId, `Player action: Seat ${seat} (${this.seats[seat].name}) played ${formatCard(card)}`);
@@ -328,11 +377,28 @@ export class Room {
       if (this.game.gameState === GAME_STATES.HAND_OVER) {
         logGameEvent(this.gameId, `Starting Hand #${this.game.handCount + 1}`);
         this.game.startHand();
+        logTelemetry(this.gameId, 'hand_start', { handCount: this.game.handCount, hands: this.game.hands });
+        
         this.io.to(this.roomCode).emit('game_action', {
           action: 'next_hand',
           message: `Next hand started!`
         });
       }
+    }
+
+    const oldState = this.game.gameState;
+    
+    // Hand Completed check
+    if (type === 'play_card' && oldState === GAME_STATES.HAND_OVER) {
+      logTelemetry(this.gameId, 'hand_over', {
+        handCount: this.game.handCount,
+        handPoints: [...this.game.handPoints],
+        scores: this.game.players.map(p => p.score),
+        currentHighestBid: this.game.biddingState.currentHighestBid,
+        bidWinnerSeat: this.game.partnership.bidWinnerSeat,
+        partnerSeat: this.game.partnership.partnerSeat,
+        isSolo: this.game.partnership.isSolo
+      });
     }
 
     this.broadcastState();
@@ -345,7 +411,7 @@ export class Room {
         const playerState = this.game.getStateForPlayer(seatIndex);
         this.io.to(player.socketId).emit('state_update', {
           roomCode: this.roomCode,
-          gameId: this.gameId, // transmit gameId to client
+          gameId: this.gameId,
           mySeat: seatIndex,
           gameState: playerState,
           seats: this.seats.map(s => s ? { name: s.name, isBot: s.isBot, isDisconnected: s.isDisconnected } : null),

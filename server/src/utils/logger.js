@@ -33,3 +33,23 @@ export function logGameEvent(gameId, message) {
     console.error('Failed writing game logs to file:', err.message);
   }
 }
+
+// Log Structured Telemetry for Machine Learning Training
+export function logTelemetry(gameId, eventType, payload) {
+  try {
+    const logDir = './logs';
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir);
+    }
+    const record = {
+      gameId,
+      timestamp: new Date().toISOString(),
+      event: eventType,
+      payload
+    };
+    const logLine = JSON.stringify(record) + '\n';
+    fs.appendFileSync(path.join(logDir, `${gameId}.json`), logLine);
+  } catch (err) {
+    console.error('Failed writing telemetry logs:', err.message);
+  }
+}
