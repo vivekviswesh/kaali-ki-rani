@@ -329,9 +329,12 @@ export default function GameBoard({
           className="flex-center" 
           style={{
             position: 'absolute',
-            inset: 0,
-            background: 'rgba(2, 6, 23, 0.45)',
-            backdropFilter: 'blur(4px)',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: '155px', // Leave cards dock unblurred and fully visible
+            background: 'rgba(2, 6, 23, 0.35)',
+            backdropFilter: 'blur(3px)',
             zIndex: 35
           }}
         >
