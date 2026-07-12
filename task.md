@@ -35,3 +35,6 @@
   - [x] Render scrollable version history release logs modal popup
   - [x] Update Lobby version displays to dynamically read version and open history logs popup callback
   - [x] Verify deployments are complete and online
+- [x] **Step 10: Bot Turn Lifecycle Fix**
+  - [x] Update bot auto-play `useEffect` trigger hook in `App.jsx` to trigger on changes in `trickPlayState.currentTrick.length` and other dependencies to prevent freezes when the same bot wins and has to lead the next trick
+  - [x] Verify deployments are complete and online

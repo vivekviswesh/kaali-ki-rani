@@ -246,43 +246,72 @@ export default function GameBoard({
         </div>
       )}
       {/* Floating Collapsible Last Trick Panel */}
-      {showLastTrick && gameState.trickPlayState.lastTrick && gameState.trickPlayState.lastTrick.length === 4 && (
-        <div 
-          className="glass-panel animate-pop-in" 
-          style={{
-            position: 'absolute',
-            top: '4.5rem',
-            left: '1rem',
-            width: '280px',
-            zIndex: 40,
-            padding: '0.75rem',
-            border: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: '0 8px 32px 0 rgba(0,0,0,0.5)',
-            background: 'rgba(9, 13, 22, 0.95)'
-          }}
-        >
-          <div className="flex-row justify-between items-center" style={{ paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 900, color: '#3b82f6' }}>👁️ Last Trick Played</span>
-            <button 
-              onClick={() => setShowLastTrick(false)}
-              style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
-            >
-              <X size={14} />
-            </button>
+      {showLastTrick && gameState.trickPlayState.lastTrick && gameState.trickPlayState.lastTrick.length === 4 && (() => {
+        const lastHistoryItem = gameState.trickPlayState.history[gameState.trickPlayState.history.length - 1];
+        const lastWinnerSeat = lastHistoryItem ? lastHistoryItem.winnerSeat : null;
+        return (
+          <div 
+            className="glass-panel animate-pop-in" 
+            style={{
+              position: 'absolute',
+              top: '4.5rem',
+              left: '1rem',
+              width: '360px',
+              zIndex: 40,
+              padding: '0.75rem',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 8px 32px 0 rgba(0,0,0,0.5)',
+              background: 'rgba(9, 13, 22, 0.95)'
+            }}
+          >
+            <div className="flex-row justify-between items-center" style={{ paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', marginBottom: '0.75rem' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 900, color: '#3b82f6' }}>👁️ Last Trick Played</span>
+              <button 
+                onClick={() => setShowLastTrick(false)}
+                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
+              >
+                <X size={14} />
+              </button>
+            </div>
+            
+            <div className="flex-row justify-between" style={{ gap: '0.5rem', overflowX: 'auto', padding: '0.25rem 0' }}>
+              {gameState.trickPlayState.lastTrick.map(({ seat, card }) => {
+                const isWinner = seat === lastWinnerSeat;
+                return (
+                  <div 
+                    key={seat} 
+                    className="flex-col items-center" 
+                    style={{ 
+                      gap: '0.375rem',
+                      padding: '0.375rem',
+                      borderRadius: '0.5rem',
+                      border: isWinner ? '1.5px solid rgba(251, 191, 36, 0.5)' : '1.5px solid transparent',
+                      background: isWinner ? 'rgba(251, 191, 36, 0.05)' : 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <span style={{ 
+                      fontSize: '9px', 
+                      fontWeight: 700, 
+                      color: isWinner ? '#fbbf24' : '#94a3b8', 
+                      maxWidth: '65px', 
+                      overflow: 'hidden', 
+                      textOverflow: 'ellipsis', 
+                      whiteSpace: 'nowrap',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2px'
+                    }}>
+                      {isWinner && '🏆 '}{players[seat]?.name.split(' ')[0]}
+                    </span>
+                    <Card card={card} isPlayable={false} />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-          
-          <div className="flex-row justify-between" style={{ gap: '0.5rem', overflowX: 'auto', padding: '0.25rem 0' }}>
-            {gameState.trickPlayState.lastTrick.map(({ seat, card }) => (
-              <div key={seat} className="flex-col items-center" style={{ gap: '0.375rem' }}>
-                <span style={{ fontSize: '9px', fontWeight: 700, color: '#94a3b8', maxWidth: '60px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {players[seat]?.name.split(' ')[0]}
-                </span>
-                <Card card={card} isPlayable={false} />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Center Table Felt Card Area */}
       <div className="center-felt-circle">
@@ -330,6 +359,34 @@ export default function GameBoard({
         if (isSelfBidWinner) roleTag = '👑 Bidder';
         else if (isRevealedPartner) roleTag = '🤝 Partner';
 
+        let showProgressInfo = false;
+        let progressPoints = 0;
+        let progressPercent = 0;
+        let progressText = '';
+
+        const bidValue = gameState.biddingState?.currentHighestBid || 0;
+        if (gameState.gameState !== GAME_STATES.LOBBY && gameState.gameState !== GAME_STATES.BIDDING && bidValue > 0) {
+          const bidderSeat = partnership.bidWinnerSeat;
+          const partnerSeat = partnership.partnerSeat;
+          const bidderPoints = handPoints[bidderSeat] || 0;
+          const partnerPoints = partnerSeat !== null ? (handPoints[partnerSeat] || 0) : 0;
+          const teamPointsCombined = bidderPoints + partnerPoints;
+
+          if (isSelfBidWinner || isRevealedPartner) {
+            showProgressInfo = true;
+            if (partnerSeat === null) {
+              if (isSelfBidWinner) {
+                progressPoints = wonPoints || 0;
+                progressText = `Bid: ${progressPoints}/${bidValue}`;
+              }
+            } else {
+              progressPoints = teamPointsCombined;
+              progressText = `Team: ${progressPoints}/${bidValue}`;
+            }
+            progressPercent = Math.min(100, (progressPoints / bidValue) * 100);
+          }
+        }
+
         return (
           <div key={seatIdx} className={`player-spot ${relPos}`}>
             {/* Player Avatar Panel */}
@@ -355,8 +412,16 @@ export default function GameBoard({
               )}
 
               {/* Hand points tracker for current round */}
-              <div className="player-points">
-                Points: <b style={{ color: '#e2e8f0' }}>{wonPoints}</b>
+              <div className="player-points flex-col items-center" style={{ gap: '0.125rem' }}>
+                <div>Points: <b style={{ color: '#e2e8f0' }}>{wonPoints || 0}</b></div>
+                {showProgressInfo && (
+                  <div className="flex-col items-center" style={{ width: '100%', marginTop: '0.25rem', gap: '0.125rem' }}>
+                    <span style={{ fontSize: '8px', color: '#fbbf24', fontWeight: 800 }}>{progressText}</span>
+                    <div style={{ width: '60px', height: '4px', background: 'rgba(255,255,255,0.15)', borderRadius: '2px', overflow: 'hidden' }}>
+                      <div style={{ width: `${progressPercent}%`, height: '100%', background: '#34d399', borderRadius: '2px', transition: 'width 0.3s ease' }} />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

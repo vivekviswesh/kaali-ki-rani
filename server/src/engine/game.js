@@ -422,7 +422,9 @@ export class Game {
     
     // Hide partner seat if not yet revealed
     const partnerRevealed = this.partnership.partnerSeat !== null || isOverOrDec;
-    const clientPartnerSeat = partnerRevealed ? this.partnership.partnerSeat : null;
+    const clientPartnerSeat = partnerRevealed 
+      ? (this.partnership.partnerSeat !== null ? this.partnership.partnerSeat : this.partnership.actualPartnerSeat) 
+      : null;
     
     // Hide other player cards
     const clientHands = this.hands.map((hand, index) => {

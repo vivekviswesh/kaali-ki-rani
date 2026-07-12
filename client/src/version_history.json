@@ -1,6 +1,17 @@
 {
-  "currentVersion": "v1.5.1",
+  "currentVersion": "v1.6.0",
   "history": [
+    {
+      "version": "v1.6.0",
+      "date": "2026-07-12",
+      "summary": "Trick History Reviews & Progress Tracking",
+      "changes": [
+        "Enlarge 'Last Trick' pop-up and apply prominent gold border/trophy highlighting to the trick winner",
+        "Add scrollable Play-by-Play Trick History reviews inside the Hand Over victory/defeat scoreboard modal",
+        "Expose and resolve secret partner seat on server/client game end if the partner card was never played",
+        "Implement target bid progress text (e.g. Bid: 30/95) and graphical green progress bar on bidder/partner HUD avatar spots"
+      ]
+    },
     {
       "version": "v1.5.1",
       "date": "2026-07-12",

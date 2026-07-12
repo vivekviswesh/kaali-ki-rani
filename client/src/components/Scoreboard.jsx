@@ -153,7 +153,7 @@ export default function Scoreboard({ gameState, mySeat, onAction, onBackToLobby 
               Bidding Side captured {biddingPoints} / {currentHighestBid} points.
             </p>
 
-            <div className="flex-col" style={{ background: 'rgba(2, 6, 23, 0.5)', borderRadius: '1rem', padding: '0.875rem', border: '1px solid rgba(255,255,255,0.04)', marginBottom: '1.5rem', fontSize: '0.75rem', textAlign: 'left', gap: '0.375rem' }}>
+            <div className="flex-col" style={{ background: 'rgba(2, 6, 23, 0.5)', borderRadius: '1rem', padding: '0.875rem', border: '1px solid rgba(255,255,255,0.04)', marginBottom: '1rem', fontSize: '0.75rem', textAlign: 'left', gap: '0.375rem' }}>
               <div className="justify-between" style={{ fontWeight: 800, color: '#64748b', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.375rem', marginBottom: '0.125rem' }}>
                 <span>Player Roles</span>
                 <span>Points Won</span>
@@ -164,14 +164,85 @@ export default function Scoreboard({ gameState, mySeat, onAction, onBackToLobby 
               </div>
               {!isSolo && (
                 <div className="justify-between">
-                  <span>Partner: {players[partnerSeat]?.name}</span>
-                  <span style={{ fontWeight: 700 }}>{handPoints[partnerSeat]} pts</span>
+                  <span>Partner: {players[partnerSeat]?.name || 'Unknown'}</span>
+                  <span style={{ fontWeight: 700 }}>{handPoints[partnerSeat] || 0} pts</span>
                 </div>
               )}
               <div className="justify-between" style={{ color: '#94a3b8', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.375rem', marginTop: '0.125rem' }}>
                 <span>Opponents:</span>
                 <span style={{ fontWeight: 700 }}>{defendingPoints} pts</span>
               </div>
+            </div>
+
+            {/* Play-by-play Trick History List */}
+            <div 
+              className="flex-col" 
+              style={{ 
+                background: 'rgba(2, 6, 23, 0.4)', 
+                borderRadius: '1rem', 
+                padding: '0.875rem', 
+                border: '1px solid rgba(255,255,255,0.04)', 
+                marginBottom: '1.5rem', 
+                fontSize: '0.75rem', 
+                textAlign: 'left',
+                maxHeight: '160px',
+                overflowY: 'auto',
+                gap: '0.5rem'
+              }}
+            >
+              <div style={{ fontWeight: 800, color: '#3b82f6', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.375rem', marginBottom: '0.125rem' }}>
+                📜 Play-by-Play Trick History
+              </div>
+              {gameState.trickPlayState.history && gameState.trickPlayState.history.length > 0 ? (
+                gameState.trickPlayState.history.map((trickItem, tIdx) => {
+                  const winnerName = players[trickItem.winnerSeat]?.name.split(' ')[0];
+                  return (
+                    <div 
+                      key={tIdx} 
+                      className="flex-col" 
+                      style={{ 
+                        paddingBottom: '0.5rem', 
+                        borderBottom: tIdx < gameState.trickPlayState.history.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
+                        gap: '0.25rem'
+                      }}
+                    >
+                      <div className="justify-between" style={{ fontSize: '0.65rem', color: '#64748b' }}>
+                        <span>Trick #{tIdx + 1}</span>
+                        <span style={{ color: '#fbbf24', fontWeight: 700 }}>🏆 Winner: {winnerName} (+{trickItem.points} pts)</span>
+                      </div>
+                      
+                      <div className="flex-row" style={{ gap: '0.375rem', overflowX: 'auto', padding: '0.125rem 0' }}>
+                        {trickItem.cardsPlayed.map(({ seat, card }, cIdx) => {
+                          const isWinner = seat === trickItem.winnerSeat;
+                          const cardStr = `${card.rank}${suitEmoji[card.suit]}`;
+                          return (
+                            <span 
+                              key={cIdx} 
+                              style={{ 
+                                background: isWinner ? 'rgba(251, 191, 36, 0.15)' : 'rgba(255,255,255,0.05)', 
+                                border: `1px solid ${isWinner ? '#fbbf24' : 'rgba(255,255,255,0.08)'}`,
+                                borderRadius: '4px',
+                                padding: '2px 6px',
+                                color: isWinner ? '#fbbf24' : '#cbd5e1',
+                                fontSize: '0.65rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '2px',
+                                whiteSpace: 'nowrap'
+                              }}
+                            >
+                              <span style={{ fontWeight: 800 }}>{players[seat]?.name.split(' ')[0].substring(0, 4)}:</span>
+                              <span style={{ color: suitColors[card.suit], fontWeight: 900 }}>{cardStr}</span>
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div style={{ color: '#475569', fontStyle: 'italic' }}>No tricks played in this hand.</div>
+              )}
             </div>
 
             <button
