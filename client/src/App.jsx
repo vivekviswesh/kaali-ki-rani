@@ -183,7 +183,14 @@ export default function App() {
     return () => {
       if (botTimerRef.current) clearTimeout(botTimerRef.current);
     };
-  }, [gameState?.activeSeat, gameState?.gameState, isSinglePlayer]);
+  }, [
+    gameState?.activeSeat, 
+    gameState?.gameState, 
+    isSinglePlayer,
+    gameState?.trickPlayState?.currentTrick?.length,
+    gameState?.biddingState?.history?.length,
+    gameState?.declarationState?.partnerCard
+  ]);
 
   // SINGLE PLAYER ACTIONS
   const startSinglePlayer = (name) => {

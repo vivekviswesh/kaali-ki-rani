@@ -33,4 +33,5 @@
   - [x] Create version history registry JSON file (`version_history.json`)
   - [x] Expose clickable deployed version badge in footer
   - [x] Render scrollable version history release logs modal popup
+  - [x] Update Lobby version displays to dynamically read version and open history logs popup callback
   - [x] Verify deployments are complete and online

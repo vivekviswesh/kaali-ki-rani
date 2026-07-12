@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v1.5.0",
+  "currentVersion": "v1.5.1",
   "history": [
+    {
+      "version": "v1.5.1",
+      "date": "2026-07-12",
+      "summary": "Bot Play Lifecycle Fix",
+      "changes": [
+        "Fix React useEffect dependency gap causing bots to freeze when winning a trick and leading the next (added trickPlayState length and bidding logs history to dependencies list)"
+      ]
+    },
     {
       "version": "v1.5.0",
       "date": "2026-07-12",
