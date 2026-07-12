@@ -1,6 +1,15 @@
 {
-  "currentVersion": "v1.7.1",
+  "currentVersion": "v1.8.0",
   "history": [
+    {
+      "version": "v1.8.0",
+      "date": "2026-07-12",
+      "summary": "Centered Root-Level Dialog Overlays",
+      "changes": [
+        "Elevate 'Round Verdict' (Hand Over) and 'Match Over' overlays from the 280px drawer sub-context to the root level of App.jsx to avoid clipping and allow them to take full viewport space centered",
+        "Redesign 'Last Trick Played' panel as a prominent centered modal dialog with large card previews and a blur backdrop backdrop"
+      ]
+    },
     {
       "version": "v1.7.1",
       "date": "2026-07-12",

@@ -50,3 +50,6 @@
 - [x] **Step 13: Large Center Split Scoreboard Verdict overlay**
   - [x] Redesign Hand Over victory overlay window in `Scoreboard.jsx` to be wider (`780px` wide) and centered, splitting card results to a two-column layout (roles/verdict on left, spacious trick logs on right)
   - [x] Verify deployments are complete and online
+- [x] **Step 14: Visual Card Spacing Outside Center Boundaries**
+  - [x] Adjust played card positioning offsets in `index.css` to `-45px` relative to the center circle container so that they float fully outside the dashed green felt circle in front of corresponding player avatar HUDs
+  - [x] Verify deployments are complete and online
