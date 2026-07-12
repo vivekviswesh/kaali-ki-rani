@@ -13,6 +13,7 @@ import { Game } from './engine/game.js';
 import { GAME_STATES } from './engine/constants.js';
 import { makeBotBid, makeBotDeclaration, makeBotPlay } from './engine/bot.js';
 import { generateBotName, logClientEvent, getClientLogs } from './engine/logger.js';
+import versionHistory from './version_history.json';
 
 // Resolve Server URL with local dev fallback
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
@@ -33,6 +34,7 @@ export default function App() {
   // Clipboard feedback
   const [copied, setCopied] = useState(false);
   const [showLogsPopup, setShowLogsPopup] = useState(false);
+  const [showVersionHistory, setShowVersionHistory] = useState(false);
   
   // HUD Feed Log
   const [actionLog, setActionLog] = useState([]);
@@ -626,9 +628,128 @@ export default function App() {
         </div>
       )}
 
+      {/* Version History Modal Popup */}
+      {showVersionHistory && (
+        <div 
+          className="flex-center animate-fade-in" 
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(2, 6, 23, 0.65)',
+            backdropFilter: 'blur(8px)',
+            zIndex: 100,
+            padding: '1.25rem'
+          }}
+        >
+          <div 
+            className="glass-panel animate-pop-in flex-col" 
+            style={{
+              width: '100%',
+              maxWidth: '500px',
+              maxHeight: '80vh',
+              background: '#090d16',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '1.25rem',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)',
+              padding: '1.25rem',
+              gap: '1rem',
+              pointerEvents: 'auto'
+            }}
+          >
+            {/* Modal Header */}
+            <div className="justify-between items-center" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.75rem' }}>
+              <div className="flex-row items-center" style={{ gap: '0.5rem' }}>
+                <span style={{ fontSize: '1.1rem' }}>🚀</span>
+                <span style={{ fontWeight: 800, color: '#f8fafc', fontSize: '0.95rem' }}>Version & Release History</span>
+              </div>
+              <button 
+                onClick={() => setShowVersionHistory(false)}
+                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Scrollable history list */}
+            <div 
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                paddingRight: '0.25rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.875rem',
+                textAlign: 'left'
+              }}
+            >
+              {versionHistory.history.map((rel) => (
+                <div 
+                  key={rel.version} 
+                  style={{
+                    background: 'rgba(2, 6, 23, 0.4)',
+                    border: '1px solid rgba(255, 255, 255, 0.03)',
+                    borderRadius: '0.75rem',
+                    padding: '0.75rem'
+                  }}
+                >
+                  <div className="justify-between items-baseline" style={{ marginBottom: '0.375rem' }}>
+                    <span style={{ color: '#fbbf24', fontWeight: 900, fontSize: '0.8rem' }}>
+                      {rel.version}
+                    </span>
+                    <span style={{ color: '#475569', fontSize: '0.65rem', fontFamily: 'monospace' }}>
+                      {rel.date}
+                    </span>
+                  </div>
+                  <div style={{ color: '#cbd5e1', fontWeight: 700, fontSize: '0.75rem', marginBottom: '0.375rem' }}>
+                    {rel.summary}
+                  </div>
+                  <ul style={{ paddingLeft: '1rem', margin: 0, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    {rel.changes.map((change, cIdx) => (
+                      <li key={cIdx} style={{ color: '#94a3b8', fontSize: '0.7rem', listStyleType: 'disc' }}>
+                        {change}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex-row justify-end" style={{ paddingTop: '0.25rem' }}>
+              <button
+                onClick={() => setShowVersionHistory(false)}
+                className="btn btn-success"
+                style={{ padding: '0.5rem 1.5rem', fontSize: '0.8rem', cursor: 'pointer' }}
+              >
+                Got It
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer copyright */}
-      <footer style={{ padding: '0.5rem 0', textAlign: 'center', fontSize: '9px', color: '#475569' }}>
-        Kaali Ki Rani PWA © 2026. Made with ❤️ for card game lovers.
+      <footer style={{ padding: '0.5rem 0', textAlign: 'center', fontSize: '9px', color: '#475569', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+        <div>Kaali Ki Rani PWA © 2026. Made with ❤️ for card game lovers.</div>
+        <div>
+          Deployed Version:{" "}
+          <span 
+            onClick={() => setShowVersionHistory(true)}
+            style={{ 
+              color: '#34d399', 
+              cursor: 'pointer', 
+              fontWeight: 800, 
+              background: 'rgba(52, 211, 153, 0.1)', 
+              padding: '2px 6px', 
+              borderRadius: '4px',
+              border: '1px solid rgba(52, 211, 153, 0.2)',
+              textDecoration: 'underline'
+            }}
+            title="View Release History"
+          >
+            {versionHistory.currentVersion}
+          </span>
+        </div>
       </footer>
     </div>
   );

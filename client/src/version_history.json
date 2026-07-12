@@ -1,0 +1,95 @@
+{
+  "currentVersion": "v1.5.0",
+  "history": [
+    {
+      "version": "v1.5.0",
+      "date": "2026-07-12",
+      "summary": "Version Control & Release History",
+      "changes": [
+        "Create structured version history registry (version_history.json)",
+        "Expose current version badge in the footer",
+        "Introduce clickable release logs history viewer modal"
+      ]
+    },
+    {
+      "version": "v1.4.0",
+      "date": "2026-07-12",
+      "summary": "Trick Reviews & Logs Popup Terminal",
+      "changes": [
+        "Preserve completed trick cards on table until next trick starts",
+        "Add 'Last Trick' header review widget with seat-labeled card rows",
+        "Implement scrolling terminal-style Action Logs modal popup in header",
+        "Fix follow-suit bugs when leading subsequent tricks",
+        "Lift South seat HUD panel to bottom: 10.5rem to prevent overlaps"
+      ]
+    },
+    {
+      "version": "v1.3.1",
+      "date": "2026-07-12",
+      "summary": "Scoring Fixes & Auto-Reveal Scoreboard",
+      "changes": [
+        "Fix checkHandEnded scoring bug (use actual defender points sum instead of subtracting from 150)",
+        "Implement automatic scoreboard slide-open on HAND_OVER and MATCH_OVER states"
+      ]
+    },
+    {
+      "version": "v1.3.0",
+      "date": "2026-07-12",
+      "summary": "Trick Resolution Fixes & Bidding Calibration",
+      "changes": [
+        "Import RANK_VALUES in client/server game.js to resolve 4th card freezes",
+        "Recalibrate evaluateBidStrength for realistic bot bidding (pass weak hands, scale realistically)"
+      ]
+    },
+    {
+      "version": "v1.2.2",
+      "date": "2026-07-12",
+      "summary": "Overlay & HUD Layout Fixes",
+      "changes": [
+        "Set bottom boundaries on bidding overlays to unblur player card docks",
+        "Raise South player HUD positioning offset to avoid card overlaps"
+      ]
+    },
+    {
+      "version": "v1.2.1",
+      "date": "2026-07-12",
+      "summary": "ML Telemetry & Log Analyzer",
+      "changes": [
+        "Implement structured JSON telemetry logs logging on server",
+        "Write log analyzer script to compile JSON records into training dataset"
+      ]
+    },
+    {
+      "version": "v1.2.0",
+      "date": "2026-07-12",
+      "summary": "Immersive Overlays, Funny Bots & Game IDs",
+      "changes": [
+        "Change client board display to full screen width & height",
+        "Render scoreboard, bidding, and declaration selectors as felt overlays",
+        "Implement funny bot name generator with card/suit theme and _bot suffix",
+        "Assign unique tracker Game IDs to matches, shown in header bar",
+        "Add try-catch play fail-safe loops to prevent bot hangs"
+      ]
+    },
+    {
+      "version": "v1.1.0",
+      "date": "2026-07-12",
+      "summary": "Tailwind to Custom Vanilla CSS Migration",
+      "changes": [
+        "Rewrite styling system to pure custom radial Vanilla CSS (index.css)",
+        "Implement responsive circular layout spots for seats (North, South, East, West)",
+        "Refactor Card face graphics and Spade Queen crown colors"
+      ]
+    },
+    {
+      "version": "v1.0.0",
+      "date": "2026-07-12",
+      "summary": "Initial Scaffolding",
+      "changes": [
+        "Initialize client PWA scaffolding and express websocket rooms server",
+        "Build game mechanics state machine engine and basic AI bots",
+        "Implement unit test suite tests"
+      ]
+    }
+  ]
+}
