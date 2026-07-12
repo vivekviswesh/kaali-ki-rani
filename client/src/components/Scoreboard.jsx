@@ -130,129 +130,156 @@ export default function Scoreboard({ gameState, mySeat, onAction, onBackToLobby 
       {/* Hand Over Dialog Modal */}
       {isHandOver && (
         <div className="modal-overlay-blur">
-          <div className="modal-window-card animate-pop-in" style={{ padding: '2rem' }}>
-            <div style={{
-              width: '3.5rem',
-              height: '3.5rem',
-              borderRadius: '50%',
-              background: isBiddingSuccess ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
-              color: isBiddingSuccess ? '#10b981' : '#f43f5e',
-              fontSize: '1.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1rem'
-            }}>
-              {isBiddingSuccess ? '🎉' : '❌'}
-            </div>
+          <div className="modal-window-card animate-pop-in flex-col" style={{ padding: '1.5rem', maxWidth: '780px', width: '95%', gap: '1rem', textAlign: 'center' }}>
             
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '0.25rem', color: '#f8fafc' }}>
-              {isBiddingSuccess ? 'Bid Secured!' : 'Bid Failed!'}
-            </h2>
-            <p style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '1.25rem' }}>
-              Bidding Side captured {biddingPoints} / {currentHighestBid} points.
-            </p>
-
-            <div className="flex-col" style={{ background: 'rgba(2, 6, 23, 0.5)', borderRadius: '1rem', padding: '0.875rem', border: '1px solid rgba(255,255,255,0.04)', marginBottom: '1rem', fontSize: '0.75rem', textAlign: 'left', gap: '0.375rem' }}>
-              <div className="justify-between" style={{ fontWeight: 800, color: '#64748b', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.375rem', marginBottom: '0.125rem' }}>
-                <span>Player Roles</span>
-                <span>Points Won</span>
+            {/* Modal Title */}
+            <div className="justify-between items-center" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.75rem' }}>
+              <div className="flex-row items-center" style={{ gap: '0.5rem' }}>
+                <span style={{ fontSize: '1.25rem' }}>🏁</span>
+                <span style={{ fontWeight: 900, color: '#f8fafc', fontSize: '1.1rem' }}>Round Verdict</span>
               </div>
-              <div className="justify-between">
-                <span>Bid Winner: {players[bidWinnerSeat]?.name}</span>
-                <span style={{ fontWeight: 700 }}>{handPoints[bidWinnerSeat]} pts</span>
-              </div>
-              {!isSolo && (
-                <div className="justify-between">
-                  <span>Partner: {players[partnerSeat]?.name || 'Unknown'}</span>
-                  <span style={{ fontWeight: 700 }}>{handPoints[partnerSeat] || 0} pts</span>
-                </div>
-              )}
-              <div className="justify-between" style={{ color: '#94a3b8', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.375rem', marginTop: '0.125rem' }}>
-                <span>Opponents:</span>
-                <span style={{ fontWeight: 700 }}>{defendingPoints} pts</span>
-              </div>
+              <span style={{ background: 'rgba(251, 191, 36, 0.15)', border: '1px solid rgba(251, 191, 36, 0.3)', fontSize: '0.7rem', fontWeight: 800, padding: '0.25rem 0.625rem', borderRadius: '9999px', color: '#fbbf24' }}>
+                Hand #{handCount + 1}
+              </span>
             </div>
 
-            {/* Play-by-play Trick History List */}
+            {/* Split layout: Verdict on left, Trick list on right */}
             <div 
-              className="flex-col" 
-              style={{ 
-                background: 'rgba(2, 6, 23, 0.4)', 
-                borderRadius: '1rem', 
-                padding: '0.875rem', 
-                border: '1px solid rgba(255,255,255,0.04)', 
-                marginBottom: '1.5rem', 
-                fontSize: '0.75rem', 
-                textAlign: 'left',
-                maxHeight: '160px',
-                overflowY: 'auto',
-                gap: '0.5rem'
+              style={{
+                display: 'flex',
+                flexDirection: window.innerWidth < 640 ? 'column' : 'row',
+                gap: '1.25rem',
+                alignItems: 'stretch',
+                textAlign: 'left'
               }}
+              className="verdict-split-container"
             >
-              <div style={{ fontWeight: 800, color: '#3b82f6', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.375rem', marginBottom: '0.125rem' }}>
-                📜 Play-by-Play Trick History
-              </div>
-              {gameState.trickPlayState.history && gameState.trickPlayState.history.length > 0 ? (
-                gameState.trickPlayState.history.map((trickItem, tIdx) => {
-                  const winnerName = players[trickItem.winnerSeat]?.name.split(' ')[0];
-                  return (
-                    <div 
-                      key={tIdx} 
-                      className="flex-col" 
-                      style={{ 
-                        paddingBottom: '0.5rem', 
-                        borderBottom: tIdx < gameState.trickPlayState.history.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
-                        gap: '0.25rem'
-                      }}
-                    >
-                      <div className="justify-between" style={{ fontSize: '0.65rem', color: '#64748b' }}>
-                        <span>Trick #{tIdx + 1}</span>
-                        <span style={{ color: '#fbbf24', fontWeight: 700 }}>🏆 Winner: {winnerName} (+{trickItem.points} pts)</span>
-                      </div>
-                      
-                      <div className="flex-row" style={{ gap: '0.375rem', overflowX: 'auto', padding: '0.125rem 0' }}>
-                        {trickItem.cardsPlayed.map(({ seat, card }, cIdx) => {
-                          const isWinner = seat === trickItem.winnerSeat;
-                          const cardStr = `${card.rank}${suitEmoji[card.suit]}`;
-                          return (
-                            <span 
-                              key={cIdx} 
-                              style={{ 
-                                background: isWinner ? 'rgba(251, 191, 36, 0.15)' : 'rgba(255,255,255,0.05)', 
-                                border: `1px solid ${isWinner ? '#fbbf24' : 'rgba(255,255,255,0.08)'}`,
-                                borderRadius: '4px',
-                                padding: '2px 6px',
-                                color: isWinner ? '#fbbf24' : '#cbd5e1',
-                                fontSize: '0.65rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '2px',
-                                whiteSpace: 'nowrap'
-                              }}
-                            >
-                              <span style={{ fontWeight: 800 }}>{players[seat]?.name.split(' ')[0].substring(0, 4)}:</span>
-                              <span style={{ color: suitColors[card.suit], fontWeight: 900 }}>{cardStr}</span>
-                            </span>
-                          );
-                        })}
-                      </div>
+              {/* Left Panel: Verdict & Roles */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div style={{
+                  background: isBiddingSuccess ? 'rgba(16, 185, 129, 0.08)' : 'rgba(244, 63, 94, 0.08)',
+                  border: `1px solid ${isBiddingSuccess ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)'}`,
+                  borderRadius: '1rem',
+                  padding: '1.25rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '2.5rem' }}>{isBiddingSuccess ? '🎉' : '❌'}</div>
+                  <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: isBiddingSuccess ? '#34d399' : '#f43f5e', margin: 0 }}>
+                    {isBiddingSuccess ? 'Bid Secured!' : 'Bid Failed!'}
+                  </h2>
+                  <p style={{ color: '#94a3b8', fontSize: '0.75rem', margin: 0 }}>
+                    Bidders captured <b>{biddingPoints}</b> / <b>{currentHighestBid}</b> points.
+                  </p>
+                </div>
+
+                {/* Score breakdown list */}
+                <div className="flex-col" style={{ background: 'rgba(2, 6, 23, 0.5)', borderRadius: '1rem', padding: '0.875rem', border: '1px solid rgba(255,255,255,0.04)', fontSize: '0.75rem', gap: '0.375rem' }}>
+                  <div className="justify-between" style={{ fontWeight: 800, color: '#64748b', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.375rem', marginBottom: '0.125rem' }}>
+                    <span>Player Roles</span>
+                    <span>Points Won</span>
+                  </div>
+                  <div className="justify-between">
+                    <span style={{ color: '#fbbf24', fontWeight: 600 }}>👑 Bidder: {players[bidWinnerSeat]?.name}</span>
+                    <span style={{ fontWeight: 700, color: '#f8fafc' }}>{handPoints[bidWinnerSeat]} pts</span>
+                  </div>
+                  {!isSolo && (
+                    <div className="justify-between">
+                      <span style={{ color: '#818cf8', fontWeight: 600 }}>🤝 Partner: {players[partnerSeat]?.name || 'Unknown'}</span>
+                      <span style={{ fontWeight: 700, color: '#f8fafc' }}>{handPoints[partnerSeat] || 0} pts</span>
                     </div>
-                  );
-                })
-              ) : (
-                <div style={{ color: '#475569', fontStyle: 'italic' }}>No tricks played in this hand.</div>
-              )}
+                  )}
+                  <div className="justify-between" style={{ color: '#94a3b8', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.375rem', marginTop: '0.125rem' }}>
+                    <span>🛡️ Opponents:</span>
+                    <span style={{ fontWeight: 700 }}>{defendingPoints} pts</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Panel: Scrollable Play-by-Play Trick list */}
+              <div style={{ flex: 1.3, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div style={{ fontWeight: 800, color: '#3b82f6', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.375rem', fontSize: '0.75rem' }}>
+                  📜 Play-by-Play Trick History
+                </div>
+                <div 
+                  className="flex-col" 
+                  style={{ 
+                    maxHeight: '260px',
+                    overflowY: 'auto',
+                    gap: '0.625rem',
+                    paddingRight: '0.25rem'
+                  }}
+                >
+                  {gameState.trickPlayState.history && gameState.trickPlayState.history.length > 0 ? (
+                    gameState.trickPlayState.history.map((trickItem, tIdx) => {
+                      const winnerName = players[trickItem.winnerSeat]?.name.split(' ')[0];
+                      return (
+                        <div 
+                          key={tIdx} 
+                          className="flex-col" 
+                          style={{ 
+                            background: 'rgba(2, 6, 23, 0.4)',
+                            border: '1px solid rgba(255,255,255,0.03)',
+                            borderRadius: '0.75rem',
+                            padding: '0.5rem 0.625rem',
+                            gap: '0.375rem'
+                          }}
+                        >
+                          <div className="justify-between" style={{ fontSize: '0.65rem', color: '#64748b' }}>
+                            <span style={{ fontWeight: 700, color: '#94a3b8' }}>Trick #{tIdx + 1}</span>
+                            <span style={{ color: '#fbbf24', fontWeight: 800 }}>🏆 Winner: {winnerName} (+{trickItem.points} pts)</span>
+                          </div>
+                          
+                          <div className="flex-row" style={{ gap: '0.375rem', overflowX: 'auto', padding: '0.125rem 0' }}>
+                            {trickItem.cardsPlayed.map(({ seat, card }, cIdx) => {
+                              const isWinner = seat === trickItem.winnerSeat;
+                              const cardStr = `${card.rank}${suitEmoji[card.suit]}`;
+                              return (
+                                <span 
+                                  key={cIdx} 
+                                  style={{ 
+                                    background: isWinner ? 'rgba(251, 191, 36, 0.15)' : 'rgba(255,255,255,0.05)', 
+                                    border: `1px solid ${isWinner ? '#fbbf24' : 'rgba(255,255,255,0.08)'}`,
+                                    borderRadius: '4px',
+                                    padding: '2px 6px',
+                                    color: isWinner ? '#fbbf24' : '#cbd5e1',
+                                    fontSize: '0.65rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '2px',
+                                    whiteSpace: 'nowrap'
+                                  }}
+                                >
+                                  <span style={{ fontWeight: 800 }}>{players[seat]?.name.split(' ')[0].substring(0, 4)}:</span>
+                                  <span style={{ color: suitColors[card.suit], fontWeight: 900 }}>{cardStr}</span>
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div style={{ color: '#475569', fontStyle: 'italic', fontSize: '0.75rem' }}>No tricks played in this hand.</div>
+                  )}
+                </div>
+              </div>
             </div>
 
-            <button
-              onClick={() => onAction('next_hand')}
-              className="btn btn-success"
-              style={{ width: '100%', padding: '0.875rem' }}
-            >
-              <RotateCcw size={14} style={{ marginRight: '0.375rem' }} />
-              Start Next Hand
-            </button>
+            {/* Start Next Hand Button */}
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1rem', marginTop: '0.25rem' }}>
+              <button
+                onClick={() => onAction('next_hand')}
+                className="btn btn-success"
+                style={{ width: '100%', padding: '0.875rem', borderRadius: '0.75rem', fontWeight: 800 }}
+              >
+                <RotateCcw size={14} style={{ marginRight: '0.375rem' }} />
+                Start Next Hand
+              </button>
+            </div>
           </div>
         </div>
       )}

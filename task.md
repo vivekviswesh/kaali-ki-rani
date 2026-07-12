@@ -44,3 +44,6 @@
   - [x] Reveal secret partner seat on server/client game end if the partner card was never played in client/server `game.js`
   - [x] Implement target bid progress text (e.g. Bid: 30/95) and progress bar on bidder/partner HUD elements in `GameBoard.jsx`
   - [x] Verify deployments are complete and online
+- [x] **Step 12: Played Card Felt Table Positioning Fix**
+  - [x] Reposition played card offsets in `index.css` from `120px` to `20px` to shift cards outward from the center, grouping them directly in front of the respective player seats
+  - [x] Verify deployments are complete and online

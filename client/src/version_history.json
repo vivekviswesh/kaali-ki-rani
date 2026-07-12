@@ -1,6 +1,15 @@
 {
-  "currentVersion": "v1.6.1",
+  "currentVersion": "v1.7.0",
   "history": [
+    {
+      "version": "v1.7.0",
+      "date": "2026-07-12",
+      "summary": "Spacious Victory Verdict & Trick review Panel",
+      "changes": [
+        "Enlarge end-of-round victory modal size (780px wide) and position it in the center",
+        "Split verdict window into a side-by-side flex layout displaying visual results banner/role points on the left, and a large scrollable play-by-play Trick History log on the right"
+      ]
+    },
     {
       "version": "v1.6.1",
       "date": "2026-07-12",
