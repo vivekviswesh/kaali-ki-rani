@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v1.8.1",
+  "currentVersion": "v1.8.2",
   "history": [
+    {
+      "version": "v1.8.2",
+      "date": "2026-07-16",
+      "summary": "Vibrant High-Contrast PWA App Icon",
+      "changes": [
+        "Replace dark PWA app icons (192x192, 512x512) with a custom-generated, vibrant, high-contrast premium gold-trimmed spade design to make the Web App stand out clearly on iOS/mobile home screens"
+      ]
+    },
     {
       "version": "v1.8.1",
       "date": "2026-07-16",
