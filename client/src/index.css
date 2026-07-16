@@ -497,6 +497,11 @@ body {
   overflow-y: auto;
   z-index: 20;
 }
+@media (max-width: 640px) {
+  .feed-log-overlay {
+    display: none !important;
+  }
+}
 .feed-title {
   font-size: 0.55rem;
   font-weight: 800;
@@ -716,5 +721,17 @@ body {
 .history-toggle-header:hover {
   color: #60a5fa !important;
   opacity: 0.9;
+}
+
+/* Responsive visibility helpers */
+@media (max-width: 640px) {
+  .hidden-mobile {
+    display: none !important;
+  }
+}
+@media (min-width: 641px) {
+  .show-mobile {
+    display: none !important;
+  }
 }
 

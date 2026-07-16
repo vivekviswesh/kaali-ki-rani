@@ -12,7 +12,9 @@ export default function GameBoard({
   actionLog = [],
   scoreboardWidget,
   biddingWidget,
-  declarationWidget
+  declarationWidget,
+  showScoreboard,
+  setShowScoreboard
 }) {
   const { 
     players, 
@@ -29,7 +31,6 @@ export default function GameBoard({
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [countdown, setCountdown] = useState(0);
-  const [showScoreboard, setShowScoreboard] = useState(false);
   const [showLastTrick, setShowLastTrick] = useState(false);
 
   // Automatically open scoreboard when hand or match ends
@@ -126,7 +127,7 @@ export default function GameBoard({
         {/* Declared Partner/Trump Tags + Scoreboard Toggle */}
         <div className="flex-row items-center" style={{ gap: '0.5rem', pointerEvents: 'auto' }}>
           {trumpSuit && (
-            <div style={{
+            <div className="hidden-mobile" style={{
               background: 'rgba(15, 23, 42, 0.9)',
               border: '1px solid rgba(255,255,255,0.08)',
               padding: '0.25rem 0.625rem',
@@ -146,7 +147,7 @@ export default function GameBoard({
             </div>
           )}
           {partnerCard && (
-            <div style={{
+            <div className="hidden-mobile" style={{
               background: 'rgba(15, 23, 42, 0.9)',
               border: '1px solid rgba(255,255,255,0.08)',
               padding: '0.25rem 0.625rem',
@@ -193,7 +194,7 @@ export default function GameBoard({
           {/* Toggle Scoreboard Widget Button */}
           <button
             onClick={() => setShowScoreboard(!showScoreboard)}
-            className="btn"
+            className="btn hidden-mobile"
             style={{
               padding: '0.25rem 0.625rem',
               background: showScoreboard ? 'rgba(16, 185, 129, 0.15)' : 'rgba(15, 23, 42, 0.85)',

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import confetti from 'canvas-confetti';
-import { Copy, Check, X, RotateCcw, Crown, Home, ChevronDown, ChevronUp } from 'lucide-react';
+import { Copy, Check, X, RotateCcw, Crown, Home, ChevronDown, ChevronUp, Menu } from 'lucide-react';
 
 import Lobby from './components/Lobby';
 import GameBoard from './components/GameBoard';
@@ -17,6 +17,9 @@ import versionHistory from './version_history.json';
 
 // Resolve Server URL with local dev fallback
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+
+const suitEmoji = { S: '♠', H: '♥', D: '♦', C: '♣' };
+const suitColors = { S: '#818cf8', H: '#f43f5e', D: '#f59e0b', C: '#10b981' };
 
 export default function App() {
   // Game Setup States
@@ -36,6 +39,8 @@ export default function App() {
   const [showLogsPopup, setShowLogsPopup] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
   const [showVerdictHistory, setShowVerdictHistory] = useState(window.innerWidth >= 640);
+  const [showScoreboard, setShowScoreboard] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   
   // HUD Feed Log
   const [actionLog, setActionLog] = useState([]);
@@ -397,7 +402,7 @@ export default function App() {
         <div className="flex-col animate-pop-in" style={{ width: '100%', maxWidth: '100%', padding: '0.75rem', gap: '0.75rem' }}>
           
           {/* Header Bar */}
-          <header className="app-header-bar glass-panel" style={{ borderRadius: '1rem' }}>
+          <header className="app-header-bar glass-panel" style={{ borderRadius: '1rem', position: 'relative' }}>
             <div className="flex-row items-center" style={{ gap: '0.5rem' }}>
               <span style={{ fontSize: '1.25rem' }}>👑</span>
               <span style={{ 
@@ -412,45 +417,202 @@ export default function App() {
               </span>
             </div>
             
-            {/* Game ID & Copy Log Button */}
-            {gameId && (
-              <div className="flex-row items-center font-bold" style={{ gap: '0.375rem', fontSize: '0.7rem', color: '#94a3b8' }}>
-                <span>ID:</span>
-                <span style={{ color: '#fbbf24', fontFamily: 'monospace', background: 'rgba(2, 6, 23, 0.4)', padding: '0.125rem 0.375rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.04)' }}>
-                  {gameId}
-                </span>
-                <button 
-                  onClick={() => setShowLogsPopup(true)}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                    borderRadius: '4px',
-                    padding: '0.125rem 0.375rem',
-                    color: copied ? '#10b981' : '#f8fafc',
-                    cursor: 'pointer',
+            {/* Mobile-only: Trump & Partner info in the middle */}
+            {gameState && gameState.declarationState && (gameState.declarationState.trumpSuit || gameState.declarationState.partnerCard) && (
+              <div className="show-mobile flex-row items-center" style={{ gap: '0.375rem', zIndex: 10 }}>
+                {gameState.declarationState.trumpSuit && (
+                  <span style={{ 
+                    background: 'rgba(15, 23, 42, 0.85)', 
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: '0.5rem', 
+                    padding: '0.25rem 0.5rem', 
+                    fontSize: '0.65rem', 
+                    fontWeight: 800,
+                    color: suitColors[gameState.declarationState.trumpSuit],
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.25rem'
-                  }}
-                  title="Copy Game Log"
-                >
-                  {copied ? <Check size={10} /> : <Copy size={10} />}
-                  <span>{copied ? 'Copied' : 'Logs'}</span>
-                </button>
+                    gap: '2px'
+                  }}>
+                    🎺 {suitEmoji[gameState.declarationState.trumpSuit]}
+                  </span>
+                )}
+                {gameState.declarationState.partnerCard && (
+                  <span style={{ 
+                    background: 'rgba(15, 23, 42, 0.85)', 
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: '0.5rem', 
+                    padding: '0.25rem 0.5rem', 
+                    fontSize: '0.65rem', 
+                    fontWeight: 800,
+                    color: '#fbbf24',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2px'
+                  }}>
+                    🤝 {gameState.declarationState.partnerCard.rank}{suitEmoji[gameState.declarationState.partnerCard.suit]}
+                  </span>
+                )}
               </div>
             )}
+            
+            {/* Desktop-only: Game ID, Logs, Room Code / Offline play */}
+            <div className="hidden-mobile flex-row items-center" style={{ gap: '1rem' }}>
+              {gameId && (
+                <div className="flex-row items-center font-bold" style={{ gap: '0.375rem', fontSize: '0.7rem', color: '#94a3b8' }}>
+                  <span>ID:</span>
+                  <span style={{ color: '#fbbf24', fontFamily: 'monospace', background: 'rgba(2, 6, 23, 0.4)', padding: '0.125rem 0.375rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.04)' }}>
+                    {gameId}
+                  </span>
+                  <button 
+                    onClick={() => setShowLogsPopup(true)}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      borderRadius: '4px',
+                      padding: '0.125rem 0.375rem',
+                      color: copied ? '#10b981' : '#f8fafc',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem'
+                    }}
+                    title="Copy Game Log"
+                  >
+                    {copied ? <Check size={10} /> : <Copy size={10} />}
+                    <span>{copied ? 'Copied' : 'Logs'}</span>
+                  </button>
+                </div>
+              )}
 
-            {roomCode ? (
-              <div className="flex-row items-center" style={{ gap: '0.375rem' }}>
-                <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase' }}>Room:</span>
-                <span style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '0.25rem 0.5rem', borderRadius: '0.5rem', fontSize: '0.75rem', fontWeight: 900, letterSpacing: '0.05em' }}>
-                  {roomCode}
+              {roomCode ? (
+                <div className="flex-row items-center" style={{ gap: '0.375rem' }}>
+                  <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase' }}>Room:</span>
+                  <span style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '0.25rem 0.5rem', borderRadius: '0.5rem', fontSize: '0.75rem', fontWeight: 900, letterSpacing: '0.05em' }}>
+                    {roomCode}
+                  </span>
+                </div>
+              ) : (
+                <span style={{ fontSize: '0.65rem', color: '#fbbf24', fontWeight: 800, textTransform: 'uppercase', background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.2)', padding: '0.25rem 0.5rem', borderRadius: '0.5rem' }}>
+                  Offline Play
                 </span>
+              )}
+            </div>
+
+            {/* Mobile-only: Hamburger Menu Trigger */}
+            <div className="show-mobile">
+              <button
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '0.5rem',
+                  color: '#cbd5e1',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0.375rem'
+                }}
+              >
+                {showMobileMenu ? <X size={16} /> : <Menu size={16} />}
+              </button>
+            </div>
+
+            {/* Mobile Dropdown Menu */}
+            {showMobileMenu && (
+              <div 
+                className="glass-panel animate-pop-in flex-col"
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  right: 0,
+                  marginTop: '0.5rem',
+                  width: '200px',
+                  zIndex: 50,
+                  padding: '0.75rem',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  boxShadow: '0 8px 32px 0 rgba(0,0,0,0.5)',
+                  gap: '0.75rem',
+                  textAlign: 'left'
+                }}
+              >
+                {/* Game ID */}
+                {gameId && (
+                  <div className="flex-col" style={{ gap: '0.25rem' }}>
+                    <span style={{ fontSize: '0.55rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase' }}>Game ID</span>
+                    <span style={{ color: '#fbbf24', fontFamily: 'monospace', fontSize: '0.7rem', background: 'rgba(2, 6, 23, 0.4)', padding: '0.25rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.04)', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {gameId}
+                    </span>
+                  </div>
+                )}
+
+                {/* Connection Details */}
+                <div className="flex-col" style={{ gap: '0.25rem' }}>
+                  <span style={{ fontSize: '0.55rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase' }}>Connection</span>
+                  {roomCode ? (
+                    <span style={{ color: '#818cf8', fontSize: '0.7rem', fontWeight: 700 }}>
+                      Room: {roomCode}
+                    </span>
+                  ) : (
+                    <span style={{ color: '#fbbf24', fontSize: '0.7rem', fontWeight: 700 }}>
+                      Offline Play
+                    </span>
+                  )}
+                </div>
+
+                <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.08)', margin: 0 }} />
+
+                {/* View Logs Action */}
+                <button
+                  onClick={() => {
+                    setShowLogsPopup(true);
+                    setShowMobileMenu(false);
+                  }}
+                  className="btn"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    fontSize: '0.7rem',
+                    padding: '0.375rem 0.5rem',
+                    width: '100%',
+                    justifyContent: 'flex-start',
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: '0.375rem',
+                    color: '#f8fafc',
+                    fontWeight: 700
+                  }}
+                >
+                  <Copy size={12} />
+                  <span>View Logs</span>
+                </button>
+
+                {/* Show Scoreboard / Leaderboard Action */}
+                <button
+                  onClick={() => {
+                    setShowScoreboard(true);
+                    setShowMobileMenu(false);
+                  }}
+                  className="btn"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    fontSize: '0.7rem',
+                    padding: '0.375rem 0.5rem',
+                    width: '100%',
+                    justifyContent: 'flex-start',
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: '0.375rem',
+                    color: '#fbbf24',
+                    fontWeight: 700
+                  }}
+                >
+                  <Trophy size={12} />
+                  <span>Leaderboard</span>
+                </button>
               </div>
-            ) : (
-              <span style={{ fontSize: '0.65rem', color: '#fbbf24', fontWeight: 800, textTransform: 'uppercase', background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.2)', padding: '0.25rem 0.5rem', borderRadius: '0.5rem' }}>
-                Offline Play
-              </span>
             )}
           </header>
 
@@ -513,6 +675,8 @@ export default function App() {
                   onLeave={leaveGame}
                   timerState={timerState}
                   actionLog={actionLog}
+                  showScoreboard={showScoreboard}
+                  setShowScoreboard={setShowScoreboard}
                   scoreboardWidget={
                     <Scoreboard
                       gameState={gameState}

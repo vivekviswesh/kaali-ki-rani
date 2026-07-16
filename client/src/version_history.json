@@ -1,6 +1,16 @@
 {
-  "currentVersion": "v1.8.2",
+  "currentVersion": "v1.8.3",
   "history": [
+    {
+      "version": "v1.8.3",
+      "date": "2026-07-16",
+      "summary": "Mobile Spacing & Responsive Menu Bar",
+      "changes": [
+        "Hide bottom Game Feed overlay on mobile devices to prevent player deck overlaps",
+        "Bury Logs, Game ID and Leaderboard actions into a responsive hamburger dropdown menu on mobile screens",
+        "Relocate Trump Suit and Partner Card badges to the top header bar on mobile to eliminate overlap with the North player avatar HUD"
+      ]
+    },
     {
       "version": "v1.8.2",
       "date": "2026-07-16",
