@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import confetti from 'canvas-confetti';
-import { Copy, Check, X, RotateCcw, Crown, Home, ChevronDown, ChevronUp, Menu } from 'lucide-react';
+import { Copy, Check, X, RotateCcw, Crown, Home, ChevronDown, ChevronUp, Menu, Trophy } from 'lucide-react';
 
 import Lobby from './components/Lobby';
 import GameBoard from './components/GameBoard';

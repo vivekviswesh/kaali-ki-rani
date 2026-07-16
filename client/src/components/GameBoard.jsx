@@ -443,7 +443,7 @@ export default function GameBoard({
 
             {/* Redacted other player card counts */}
             {!isSelf && relPos !== 'south' && (
-              <div className="flex-row justify-center" style={{ gap: '2px', maxWidth: '80px', flexWrap: 'wrap', marginTop: '0.25rem' }}>
+              <div className="flex-row justify-center hidden-mobile" style={{ gap: '2px', maxWidth: '80px', flexWrap: 'wrap', marginTop: '0.25rem' }}>
                 {Array.from({ length: gameState.handsCount[seatIdx] || 0 }).map((_, cIdx) => (
                   <div 
                     key={cIdx} 

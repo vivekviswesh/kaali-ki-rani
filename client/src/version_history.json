@@ -1,6 +1,18 @@
 {
-  "currentVersion": "v1.8.3",
+  "currentVersion": "v1.8.4",
   "history": [
+    {
+      "version": "v1.8.4",
+      "date": "2026-07-16",
+      "summary": "Mobile Menu Crash Fix & Layout Tuning",
+      "changes": [
+        "Import missing Trophy icon in App.jsx to resolve the mobile menu crash/unresponsive blank screen bug",
+        "Make playing card base size smaller on mobile (56px x 84px) to fit hands without overlaps",
+        "Tweak played card positions on mobile to align inside the smaller 170px center circle to prevent overlap with East/West player HUDs",
+        "Surface player name elements largely with bold font weight (800) and ellipsis truncation to avoid bot name overflows",
+        "Hide opponent redacted card counts on mobile screens to save horizontal table space"
+      ]
+    },
     {
       "version": "v1.8.3",
       "date": "2026-07-16",
