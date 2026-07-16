@@ -53,3 +53,7 @@
 - [x] **Step 14: Visual Card Spacing Outside Center Boundaries**
   - [x] Adjust played card positioning offsets in `index.css` to `-45px` relative to the center circle container so that they float fully outside the dashed green felt circle in front of corresponding player avatar HUDs
   - [x] Verify deployments are complete and online
+- [x] **Step 15: Root-Level Dialog Elevations (Anti-Clipping)**
+  - [x] Elevate Hand Over (Round Verdict) and Match Over scoreboard popup overlays to the root layout level of `App.jsx` to avoid drawer wrapper clipping
+  - [x] Redesign "Last Trick Played" panel in `GameBoard.jsx` as a centered viewport modal dialog with scaled-up card elements
+  - [x] Verify deployments are complete and online

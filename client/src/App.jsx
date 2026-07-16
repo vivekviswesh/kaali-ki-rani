@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import confetti from 'canvas-confetti';
-import { Copy, Check, X, RotateCcw, Crown, Home } from 'lucide-react';
+import { Copy, Check, X, RotateCcw, Crown, Home, ChevronDown, ChevronUp } from 'lucide-react';
 
 import Lobby from './components/Lobby';
 import GameBoard from './components/GameBoard';
@@ -35,6 +35,7 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const [showLogsPopup, setShowLogsPopup] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
+  const [showVerdictHistory, setShowVerdictHistory] = useState(window.innerWidth >= 640);
   
   // HUD Feed Log
   const [actionLog, setActionLog] = useState([]);
@@ -91,6 +92,7 @@ export default function App() {
       if (biddingPoints >= bidVal) {
         triggerConfettiSuccess();
       }
+      setShowVerdictHistory(window.innerWidth >= 640);
     } else if (gameState.gameState === GAME_STATES.MATCH_OVER) {
       triggerConfettiMatchWin();
     }
@@ -821,71 +823,89 @@ export default function App() {
 
                 {/* Right Panel: Scrollable Play-by-Play Trick list */}
                 <div style={{ flex: 1.3, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <div style={{ fontWeight: 800, color: '#3b82f6', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.375rem', fontSize: '0.75rem' }}>
-                    📜 Play-by-Play Trick History
-                  </div>
                   <div 
-                    className="flex-col" 
+                    onClick={() => setShowVerdictHistory(!showVerdictHistory)}
                     style={{ 
-                      maxHeight: '260px',
-                      overflowY: 'auto',
-                      gap: '0.625rem',
-                      paddingRight: '0.25rem'
+                      fontWeight: 800, 
+                      color: '#3b82f6', 
+                      borderBottom: '1px solid rgba(255,255,255,0.08)', 
+                      paddingBottom: '0.375rem', 
+                      fontSize: '0.75rem',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                      userSelect: 'none'
                     }}
+                    className="history-toggle-header"
                   >
-                    {gameState.trickPlayState.history && gameState.trickPlayState.history.length > 0 ? (
-                      gameState.trickPlayState.history.map((trickItem, tIdx) => {
-                        const winnerName = players[trickItem.winnerSeat]?.name.split(' ')[0];
-                        return (
-                          <div 
-                            key={tIdx} 
-                            className="flex-col" 
-                            style={{ 
-                              background: 'rgba(2, 6, 23, 0.4)',
-                              border: '1px solid rgba(255,255,255,0.03)',
-                              borderRadius: '0.75rem',
-                              padding: '0.5rem 0.625rem',
-                              gap: '0.375rem'
-                            }}
-                          >
-                            <div className="justify-between" style={{ fontSize: '0.65rem', color: '#64748b' }}>
-                              <span style={{ fontWeight: 700, color: '#94a3b8' }}>Trick #{tIdx + 1}</span>
-                              <span style={{ color: '#fbbf24', fontWeight: 800 }}>🏆 Winner: {winnerName} (+{trickItem.points} pts)</span>
-                            </div>
-                            
-                            <div className="flex-row" style={{ gap: '0.375rem', overflowX: 'auto', padding: '0.125rem 0' }}>
-                              {trickItem.cardsPlayed.map(({ seat, card }, cIdx) => {
-                                const isWinner = seat === trickItem.winnerSeat;
-                                const cardStr = `${card.rank}${suitEmoji[card.suit]}`;
-                                return (
-                                  <span 
-                                    key={cIdx} 
-                                    style={{ 
-                                      background: isWinner ? 'rgba(251, 191, 36, 0.15)' : 'rgba(255,255,255,0.05)', 
-                                      border: `1px solid ${isWinner ? '#fbbf24' : 'rgba(255,255,255,0.08)'}`,
-                                      borderRadius: '4px',
-                                      padding: '2px 6px',
-                                      color: isWinner ? '#fbbf24' : '#cbd5e1',
-                                      fontSize: '0.65rem',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      gap: '2px',
-                                      whiteSpace: 'nowrap'
-                                    }}
-                                  >
-                                    <span style={{ fontWeight: 800 }}>{players[seat]?.name.split(' ')[0].substring(0, 4)}:</span>
-                                    <span style={{ color: suitColors[card.suit], fontWeight: 900 }}>{cardStr}</span>
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div style={{ color: '#475569', fontStyle: 'italic', fontSize: '0.75rem' }}>No tricks played in this hand.</div>
-                    )}
+                    <span>📜 Play-by-Play Trick History</span>
+                    {showVerdictHistory ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                   </div>
+                  {showVerdictHistory && (
+                    <div 
+                      className="flex-col animate-slide-up" 
+                      style={{ 
+                        maxHeight: '260px',
+                        overflowY: 'auto',
+                        gap: '0.625rem',
+                        paddingRight: '0.25rem'
+                      }}
+                    >
+                      {gameState.trickPlayState.history && gameState.trickPlayState.history.length > 0 ? (
+                        gameState.trickPlayState.history.map((trickItem, tIdx) => {
+                          const winnerName = players[trickItem.winnerSeat]?.name.split(' ')[0];
+                          return (
+                            <div 
+                              key={tIdx} 
+                              className="flex-col" 
+                              style={{ 
+                                background: 'rgba(2, 6, 23, 0.4)',
+                                border: '1px solid rgba(255,255,255,0.03)',
+                                borderRadius: '0.75rem',
+                                padding: '0.5rem 0.625rem',
+                                gap: '0.375rem'
+                              }}
+                            >
+                              <div className="justify-between" style={{ fontSize: '0.65rem', color: '#64748b' }}>
+                                <span style={{ fontWeight: 700, color: '#94a3b8' }}>Trick #{tIdx + 1}</span>
+                                <span style={{ color: '#fbbf24', fontWeight: 800 }}>🏆 Winner: {winnerName} (+{trickItem.points} pts)</span>
+                              </div>
+                              
+                              <div className="flex-row" style={{ gap: '0.375rem', overflowX: 'auto', padding: '0.125rem 0' }}>
+                                {trickItem.cardsPlayed.map(({ seat, card }, cIdx) => {
+                                  const isWinner = seat === trickItem.winnerSeat;
+                                  const cardStr = `${card.rank}${suitEmoji[card.suit]}`;
+                                  return (
+                                    <span 
+                                      key={cIdx} 
+                                      style={{ 
+                                        background: isWinner ? 'rgba(251, 191, 36, 0.15)' : 'rgba(255,255,255,0.05)', 
+                                        border: `1px solid ${isWinner ? '#fbbf24' : 'rgba(255,255,255,0.08)'}`,
+                                        borderRadius: '4px',
+                                        padding: '2px 6px',
+                                        color: isWinner ? '#fbbf24' : '#cbd5e1',
+                                        fontSize: '0.65rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '2px',
+                                        whiteSpace: 'nowrap'
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: 800 }}>{players[seat]?.name.split(' ')[0].substring(0, 4)}:</span>
+                                      <span style={{ color: suitColors[card.suit], fontWeight: 900 }}>{cardStr}</span>
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div style={{ color: '#475569', fontStyle: 'italic', fontSize: '0.75rem' }}>No tricks played in this hand.</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 

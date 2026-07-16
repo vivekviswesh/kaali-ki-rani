@@ -1,6 +1,15 @@
 {
-  "currentVersion": "v1.8.0",
+  "currentVersion": "v1.8.1",
   "history": [
+    {
+      "version": "v1.8.1",
+      "date": "2026-07-16",
+      "summary": "Collapsible Play-by-Play Trick History",
+      "changes": [
+        "Make the Play-by-Play Trick History section collapsible in the Round Verdict modal window to prevent screen overflow on mobile",
+        "Configure default state to collapse on mobile viewports (< 640px) and expand on desktop views, with manual toggle chevron control"
+      ]
+    },
     {
       "version": "v1.8.0",
       "date": "2026-07-12",
