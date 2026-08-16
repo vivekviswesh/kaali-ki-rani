@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { runTraining } from './train.js';
 
 // Bot Name Generator
 const PREFIXES = [
@@ -49,6 +50,18 @@ export function logTelemetry(gameId, eventType, payload) {
     };
     const logLine = JSON.stringify(record) + '\n';
     fs.appendFileSync(path.join(logDir, `${gameId}.json`), logLine);
+
+    // Auto-learn trigger: when the match finishes, train the model automatically in the background
+    if (eventType === 'match_over') {
+      console.log(`[ML Auto-Learn] Match ${gameId} finished. Triggering neural network auto-learning pass...`);
+      setTimeout(() => {
+        try {
+          runTraining();
+        } catch (trainErr) {
+          console.error('[ML Auto-Learn] Background auto-learn sequence error:', trainErr.message);
+        }
+      }, 1000); // 1s buffer for logs output flushes
+    }
   } catch (err) {
     console.error('Failed writing telemetry logs:', err.message);
   }

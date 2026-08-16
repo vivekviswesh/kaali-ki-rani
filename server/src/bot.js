@@ -6,21 +6,36 @@ import path from 'path';
 // Instantiate and load weights for the neural network
 const nnInstance = new NeuralNetwork();
 let weightsLoaded = false;
+let lastWeightsMtime = 0;
 
-try {
-  const primaryWeightsPath = path.resolve('logs/bot_weights.json');
-  const fallbackWeightsPath = path.resolve('src/engine/bot_weights.json');
-  
-  if (fs.existsSync(primaryWeightsPath)) {
-    const raw = JSON.parse(fs.readFileSync(primaryWeightsPath, 'utf8'));
-    weightsLoaded = nnInstance.loadWeights(raw);
-  } else if (fs.existsSync(fallbackWeightsPath)) {
-    const raw = JSON.parse(fs.readFileSync(fallbackWeightsPath, 'utf8'));
-    weightsLoaded = nnInstance.loadWeights(raw);
+function checkAndReloadWeights() {
+  try {
+    const primaryWeightsPath = path.resolve('logs/bot_weights.json');
+    const fallbackWeightsPath = path.resolve('src/engine/bot_weights.json');
+    let targetPath = null;
+    
+    if (fs.existsSync(primaryWeightsPath)) {
+      targetPath = primaryWeightsPath;
+    } else if (fs.existsSync(fallbackWeightsPath)) {
+      targetPath = fallbackWeightsPath;
+    }
+    
+    if (targetPath) {
+      const stats = fs.statSync(targetPath);
+      const mtime = stats.mtimeMs;
+      if (mtime !== lastWeightsMtime) {
+        const raw = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
+        weightsLoaded = nnInstance.loadWeights(raw);
+        lastWeightsMtime = mtime;
+      }
+    }
+  } catch (err) {
+    // Silence weight loading errors
   }
-} catch (err) {
-  // Silence weight loading errors
 }
+
+// Initial load
+checkAndReloadWeights();
 
 /**
  * Heuristically evaluates a hand's bidding strength.
@@ -148,6 +163,9 @@ export function makeBotDeclaration(hand) {
  * Selects a card to play.
  */
 export function makeBotPlay(hand, trickParam, trumpSuit, partnerCard, partnerSeat, bidWinnerSeat, botSeat) {
+  // Check if neural weights have been updated in background
+  checkAndReloadWeights();
+
   const currentTrick = trickParam.length === 4 ? [] : trickParam;
   const legalCards = getLegalCards(hand, currentTrick);
   if (legalCards.length === 0) return null;

@@ -1,6 +1,16 @@
 {
-  "currentVersion": "v1.9.8",
+  "currentVersion": "v2.0.0",
   "history": [
+    {
+      "version": "v2.0.0",
+      "date": "2026-08-16",
+      "summary": "Kaali Ki Rani 2.0 - Real-Time Autonomous Neural Learning System",
+      "changes": [
+        "Implement autonomous learning: automatically trigger background neural network training passes (runTraining) upon the completion of any match on the server (match_over telemetry trigger)",
+        "Optimize weight checks: add hot-reloading mechanism using lightweight file stats (mtimeMs) to dynamically sync trained weights without manual server restarts",
+        "Enable human strategy assimilation: train on multiplayer online gameplay telemetry to let the bots organically capture human maneuvers, bidding patterns, and point feeding"
+      ]
+    },
     {
       "version": "v1.9.8",
       "date": "2026-08-16",
