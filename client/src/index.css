@@ -445,30 +445,32 @@ body {
 
 @media (max-width: 639px) {
   .player-hand-dock {
+    display: flex;
     flex-wrap: wrap;
-    overflow-x: visible;
-    max-width: 100%;
+    width: 96vw;
+    max-width: 96vw;
     padding: 0.25rem;
     bottom: 0.25rem;
     justify-content: center;
+    overflow-x: visible;
   }
   .player-hand-dock .playing-card {
-    width: 16vw !important;
+    width: 14.5vw !important;
     height: auto !important;
     aspect-ratio: 2 / 3;
-    margin: 0.125rem -1.3vw;
+    margin: 0.125rem -1.1vw;
     border-radius: 0.35rem;
     padding: 0.15rem;
     flex-shrink: 0;
   }
   .player-hand-dock .playing-card .card-rank {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
   .player-hand-dock .playing-card .card-suit {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
   .player-hand-dock .playing-card .playing-card-center-icon {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
   .player-hand-dock .playing-card .point-badge {
     font-size: 0.5rem;
