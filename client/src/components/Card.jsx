@@ -14,7 +14,7 @@ const SUIT_COLOR_CLASSES = {
   C: 'color-emerald'
 };
 
-export default function Card({ card, isPlayable = true, isSelected = false, onClick, hidden = false }) {
+export default function Card({ card, isPlayable = true, isSelected = false, onClick, hidden = false, isTrump = false }) {
   // Inline styles for custom colors
   const suitColors = {
     S: '#818cf8', // indigo
@@ -56,6 +56,7 @@ export default function Card({ card, isPlayable = true, isSelected = false, onCl
   // Build card class list
   let cardClass = 'playing-card';
   if (isKaaliKiRani) cardClass += ' queen-of-spades';
+  if (isTrump) cardClass += ` trump-${suit}`;
   if (!isPlayable) cardClass += ' disabled';
   
   // Custom inline style for card lift if selected
@@ -83,16 +84,21 @@ export default function Card({ card, isPlayable = true, isSelected = false, onCl
           </span>
         </div>
         
-        {/* Crown/Points Badge */}
-        {isKaaliKiRani ? (
-          <span style={{ fontSize: '0.75rem' }} className="point-badge rani">👑 +30</span>
-        ) : points > 0 ? (
-          <span className="point-badge regular">+{points}</span>
-        ) : null}
+        {/* Badges / Indicators */}
+        <div className="flex-row items-center" style={{ gap: '0.125rem' }}>
+          {isTrump && (
+            <span style={{ fontSize: '0.7rem' }} title="Trump Card">🎺</span>
+          )}
+          {isKaaliKiRani ? (
+            <span style={{ fontSize: '0.75rem' }} className="point-badge rani">👑 +30</span>
+          ) : points > 0 ? (
+            <span className="point-badge regular">+{points}</span>
+          ) : null}
+        </div>
       </div>
 
       {/* Center Giant Suit Icon */}
-      <div className="playing-card-center-icon" style={{ color: suitColors[suit] }}>
+      <div className="playing-card-center-icon" style={{ color: suitColors[suit], opacity: isTrump ? 0.22 : 0.08 }}>
         {SUIT_SYMBOLS[suit]}
       </div>
 

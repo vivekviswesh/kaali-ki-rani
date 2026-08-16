@@ -1,6 +1,17 @@
 {
-  "currentVersion": "v1.8.5",
+  "currentVersion": "v1.8.6",
   "history": [
+    {
+      "version": "v1.8.6",
+      "date": "2026-08-16",
+      "summary": "Trump Suit Card Highlights",
+      "changes": [
+        "Add glows and gradients corresponding to each suit's color theme for cards matching the declared trump suit",
+        "Add a subtle trumpet icon next to the card's point value badge for all trump cards",
+        "Enhance visibility of the central suit symbol on cards when they belong to the trump suit",
+        "Create a composite gold and indigo dual-glow styling for the Queen of Spades (Kaali Ki Rani) when Spades is the trump suit"
+      ]
+    },
     {
       "version": "v1.8.5",
       "date": "2026-08-16",

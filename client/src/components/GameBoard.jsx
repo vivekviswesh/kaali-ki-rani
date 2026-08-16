@@ -308,7 +308,7 @@ export default function GameBoard({
                       </span>
                       {/* Bigger scale for the actual card layout */}
                       <div style={{ transform: 'scale(1.15)', margin: '0.5rem 0' }}>
-                        <Card card={card} isPlayable={false} />
+                        <Card card={card} isPlayable={false} isTrump={trumpSuit === card.suit} />
                       </div>
                     </div>
                   );
@@ -339,7 +339,7 @@ export default function GameBoard({
               key={seat} 
               className={`played-trick-card ${relPos}`}
             >
-              <Card card={card} isPlayable={false} />
+              <Card card={card} isPlayable={false} isTrump={trumpSuit === card.suit} />
               <div className="played-card-label">
                 {players[seat]?.name.split(' ')[0]}
               </div>
@@ -507,6 +507,7 @@ export default function GameBoard({
                 isPlayable={isPlayable}
                 isSelected={selectedCard === idx}
                 onClick={() => handleCardClick(card, idx)}
+                isTrump={trumpSuit === card.suit}
               />
             </div>
           );
