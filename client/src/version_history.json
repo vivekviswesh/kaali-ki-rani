@@ -1,6 +1,16 @@
 {
-  "currentVersion": "v1.8.7",
+  "currentVersion": "v1.8.8",
   "history": [
+    {
+      "version": "v1.8.8",
+      "date": "2026-08-16",
+      "summary": "Adaptive Percentage-Based Mobile Hand Layout",
+      "changes": [
+        "Change mobile hand card width to calc((100% - 24px) / 7) and use aspect-ratio: 2/3, ensuring cards adapt dynamically to any phone screen resolution",
+        "Guarantee a clean, non-scrollable layout of exactly two rows of cards (7 on row 1, 6 on row 2) regardless of screen width",
+        "Remove the redundant helper flex wrapper div around the Card component in GameBoard to prevent flexing/wrapping anomalies"
+      ]
+    },
     {
       "version": "v1.8.7",
       "date": "2026-08-16",

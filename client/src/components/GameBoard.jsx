@@ -501,15 +501,14 @@ export default function GameBoard({
         {hand.map((card, idx) => {
           const isPlayable = activeSeat === mySeat && legalIndices.includes(idx);
           return (
-            <div key={idx} style={{ flexShrink: 0 }}>
-              <Card
-                card={card}
-                isPlayable={isPlayable}
-                isSelected={selectedCard === idx}
-                onClick={() => handleCardClick(card, idx)}
-                isTrump={trumpSuit === card.suit}
-              />
-            </div>
+            <Card
+              key={idx}
+              card={card}
+              isPlayable={isPlayable}
+              isSelected={selectedCard === idx}
+              onClick={() => handleCardClick(card, idx)}
+              isTrump={trumpSuit === card.suit}
+            />
           );
         })}
       </div>
