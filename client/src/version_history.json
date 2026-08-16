@@ -1,6 +1,18 @@
 {
-  "currentVersion": "v1.9.5",
+  "currentVersion": "v1.9.6",
   "history": [
+    {
+      "version": "v1.9.6",
+      "date": "2026-08-16",
+      "summary": "Funny Kid-Friendly Room Codes & Clipboard Support",
+      "changes": [
+        "Generate G-rated, funny, child-friendly English words as multiplayer room codes in the backend (from a curated list of 104 words)",
+        "Fix client-side validation bug that blocked room code submission if the code length was not exactly 4 characters",
+        "Widen and adjust the Join Room code text input field with placeholder 'e.g. BANANA' and increase maxLength limit to 20",
+        "Implement Copy to Clipboard buttons with dynamic checkmark feedbacks next to room code labels in header, mobile menu, and lobby wait panel",
+        "Add a prominent red asterisk label indicating player name is required for creating/joining multiplayer rooms"
+      ]
+    },
     {
       "version": "v1.9.5",
       "date": "2026-08-16",

@@ -26,14 +26,33 @@ const io = new Server(server, {
 const rooms = new Map(); // roomCode -> Room instance
 const socketToRoom = new Map(); // socket.id -> { roomCode, seatIndex }
 
-// Helper: Generate unique 4-character room code
+const FUNNY_WORDS = [
+  'BANANA', 'POTATO', 'NOODLE', 'PICKLE', 'WAFFLE', 'BURRITO', 'GIGGLE', 'WIGGLE',
+  'DONUT', 'MUFFIN', 'COOKIE', 'PUMPKIN', 'CUPCAKE', 'POPCORN', 'PEANUT', 'COCONUT',
+  'CHIPMUNK', 'PENGUIN', 'SQUIRREL', 'MEERKAT', 'SLOTH', 'KOALA', 'BADGER', 'PANDA',
+  'DUCKY', 'FROGGY', 'TURTLE', 'OCTOPUS', 'JELLYFISH', 'STARFISH', 'LOBSTER', 'SHRIMP',
+  'LLAMA', 'ALPACA', 'DONKEY', 'GOATY', 'PIGLET', 'CHICKEN', 'ROOSTER', 'FLAMINGO',
+  'BUBBLES', 'GUMBALL', 'TORNADO', 'DRAGON', 'WIZARD', 'UNICORN', 'MONKEY', 'ROBOT',
+  'SPARKLES', 'FEATHER', 'BALLOON', 'KITTEN', 'PUPPY', 'BUNNY', 'HAMSTER', 'HEDGEHOG',
+  'PIZZA', 'TACO', 'CHEESE', 'BURGER', 'HONEY', 'CABBAGE', 'BROCCOLI',
+  'TOMATO', 'CHERRY', 'BERRY', 'MANGO', 'PEACH', 'MELON', 'APPLE', 'LEMON',
+  'SPOON', 'TOASTER', 'TEAPOT', 'SOCKS', 'SNEAKER', 'PAJAMAS', 'BLANKET', 'PILLOW',
+  'BUBBLE', 'PADDLE', 'PEBBLE', 'JUNGLE', 'FOREST', 'DESERT', 'OCEAN', 'RIVER',
+  'MOUNTAIN', 'VALLEY', 'CANYON', 'CAVERN', 'CASTLE', 'PALACE', 'COTTAGE', 'CABIN',
+  'SPIDER', 'BEETLE', 'CRICKET', 'FALCON', 'PARROT', 'SPARROW', 'CANARY', 'SEAGULL'
+];
+
+// Helper: Generate unique funny kid-friendly room code
 function generateRoomCode() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let code = '';
+  let attempts = 0;
   do {
-    code = '';
-    for (let i = 0; i < 4; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    const randomIndex = Math.floor(Math.random() * FUNNY_WORDS.length);
+    code = FUNNY_WORDS[randomIndex];
+    attempts++;
+    // If there is high collision (highly unlikely), append a random digit
+    if (attempts > 50) {
+      code += Math.floor(Math.random() * 10);
     }
   } while (rooms.has(code));
   return code;

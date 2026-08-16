@@ -34,7 +34,7 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
     const name = playerName.trim();
     const code = roomCode.trim().toUpperCase();
     if (!name) return alert('Please enter your name.');
-    if (!code || code.length !== 4) return alert('Please enter a valid 4-character room code.');
+    if (!code) return alert('Please enter a valid room code.');
     saveName(name);
     onJoinRoom(name, code);
   };
@@ -81,7 +81,7 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
 
         {/* Player Name Input */}
         <div className="form-group">
-          <label className="form-label">Your Name</label>
+          <label className="form-label">Your Name <span style={{ color: '#ef4444', marginLeft: '0.125rem' }}>*</span></label>
           <input
             type="text"
             value={playerName}
@@ -175,18 +175,18 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
                 type="text"
                 value={roomCode}
                 onChange={(e) => setRoomCode(e.target.value)}
-                placeholder="ABCD"
+                placeholder="e.g. BANANA"
                 className="form-input"
                 style={{
                   textAlign: 'center',
-                  fontSize: '1.5rem',
+                  fontSize: '1.25rem',
                   fontWeight: 900,
-                  letterSpacing: '0.2em',
+                  letterSpacing: '0.1em',
                   textTransform: 'uppercase',
                   color: '#818cf8',
                   padding: '0.5rem 1rem'
                 }}
-                maxLength={4}
+                maxLength={20}
               />
             </div>
             

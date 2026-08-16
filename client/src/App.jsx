@@ -36,6 +36,7 @@ export default function App() {
   
   // Clipboard feedback
   const [copied, setCopied] = useState(false);
+  const [copiedRoomCode, setCopiedRoomCode] = useState(false);
   const [showLogsPopup, setShowLogsPopup] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
   const [showVerdictHistory, setShowVerdictHistory] = useState(window.innerWidth >= 640);
@@ -389,6 +390,14 @@ export default function App() {
     });
   };
 
+  const handleCopyRoomCode = () => {
+    if (!roomCode) return;
+    navigator.clipboard.writeText(roomCode).then(() => {
+      setCopiedRoomCode(true);
+      setTimeout(() => setCopiedRoomCode(false), 2000);
+    });
+  };
+
   return (
     <div className="flex-col" style={{ minHeight: '100vh', justifyContent: 'space-between', background: '#020617' }}>
       
@@ -499,11 +508,32 @@ export default function App() {
               )}
 
               {roomCode ? (
-                <div className="flex-row items-center" style={{ gap: '0.375rem' }}>
+                <div className="flex-row items-center font-bold" style={{ gap: '0.375rem' }}>
                   <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase' }}>Room:</span>
                   <span style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '0.25rem 0.5rem', borderRadius: '0.5rem', fontSize: '0.75rem', fontWeight: 900, letterSpacing: '0.05em' }}>
                     {roomCode}
                   </span>
+                  <button
+                    onClick={handleCopyRoomCode}
+                    className="btn"
+                    style={{
+                      padding: '0.25rem 0.375rem',
+                      background: copiedRoomCode ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                      border: `1px solid ${copiedRoomCode ? '#10b981' : 'rgba(255, 255, 255, 0.08)'}`,
+                      borderRadius: '0.375rem',
+                      color: copiedRoomCode ? '#10b981' : '#94a3b8',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '24px',
+                      width: '24px',
+                      transition: 'all 0.2s'
+                    }}
+                    title="Copy Room Code"
+                  >
+                    {copiedRoomCode ? <Check size={10} /> : <Copy size={10} />}
+                  </button>
                 </div>
               ) : (
                 <span style={{ fontSize: '0.65rem', color: '#fbbf24', fontWeight: 800, textTransform: 'uppercase', background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.2)', padding: '0.25rem 0.5rem', borderRadius: '0.5rem' }}>
@@ -563,9 +593,31 @@ export default function App() {
                 <div className="flex-col" style={{ gap: '0.25rem' }}>
                   <span style={{ fontSize: '0.55rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase' }}>Connection</span>
                   {roomCode ? (
-                    <span style={{ color: '#818cf8', fontSize: '0.7rem', fontWeight: 700 }}>
-                      Room: {roomCode}
-                    </span>
+                    <div className="flex-row items-center justify-between" style={{ width: '100%' }}>
+                      <span style={{ color: '#818cf8', fontSize: '0.7rem', fontWeight: 700 }}>
+                        Room: {roomCode}
+                      </span>
+                      <button
+                        onClick={handleCopyRoomCode}
+                        className="btn"
+                        style={{
+                          padding: '0.2rem 0.4rem',
+                          background: copiedRoomCode ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                          border: `1px solid ${copiedRoomCode ? '#10b981' : 'rgba(255, 255, 255, 0.08)'}`,
+                          borderRadius: '0.25rem',
+                          color: copiedRoomCode ? '#10b981' : '#94a3b8',
+                          cursor: 'pointer',
+                          fontSize: '0.6rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '2px',
+                          transition: 'all 0.2s'
+                        }}
+                      >
+                        {copiedRoomCode ? <Check size={8} /> : <Copy size={8} />}
+                        <span>{copiedRoomCode ? 'Copied' : 'Copy'}</span>
+                      </button>
+                    </div>
                   ) : (
                     <span style={{ color: '#fbbf24', fontSize: '0.7rem', fontWeight: 700 }}>
                       Offline Play
@@ -646,6 +698,35 @@ export default function App() {
                 margin: '0 auto 1rem'
               }}>👥</div>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#f8fafc', marginBottom: '0.5rem' }}>Room Lobby</h2>
+              {roomCode && (
+                <div className="flex-row flex-center" style={{ gap: '0.5rem', marginBottom: '1.5rem' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Room Code:</span>
+                  <span style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '0.375rem 0.75rem', borderRadius: '0.5rem', fontSize: '1rem', fontWeight: 900, letterSpacing: '0.05em' }}>
+                    {roomCode}
+                  </span>
+                  <button
+                    onClick={handleCopyRoomCode}
+                    className="btn"
+                    style={{
+                      padding: '0.375rem 0.75rem',
+                      background: copiedRoomCode ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                      border: `1px solid ${copiedRoomCode ? '#10b981' : 'rgba(255, 255, 255, 0.08)'}`,
+                      borderRadius: '0.5rem',
+                      color: copiedRoomCode ? '#10b981' : '#94a3b8',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.375rem',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {copiedRoomCode ? <Check size={12} /> : <Copy size={12} />}
+                    <span>{copiedRoomCode ? 'Copied Room Code' : 'Copy Code'}</span>
+                  </button>
+                </div>
+              )}
               <p style={{ color: '#cbd5e1', fontSize: '0.8rem', lineHeight: 1.4, marginBottom: '1.5rem' }}>
                 Waiting for players to join. You can fill remaining empty slots with bots and start playing!
               </p>
