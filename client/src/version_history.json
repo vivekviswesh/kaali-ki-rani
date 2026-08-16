@@ -1,6 +1,17 @@
 {
-  "currentVersion": "v1.9.2",
+  "currentVersion": "v1.9.3",
   "history": [
+    {
+      "version": "v1.9.3",
+      "date": "2026-08-16",
+      "summary": "Click-Away Card Deselection & Wider Card Fanning",
+      "changes": [
+        "Implement global document event listener in GameBoard to automatically deselect and pop back down any selected card when clicking away",
+        "Widen card spacing dynamically by increasing the rotation angleSteps (ranging from 5.5 to 12.0 degrees depending on hand size)",
+        "Increase the fan's pivot radius (transformOrigin: 50% 160%) to flatten the fanning arc and increase physical separation between adjacent cards",
+        "Expand player-hand-dock container dimensions (580px wide on desktop, 320px wide on mobile) to support wider fanning without boundary clipping"
+      ]
+    },
     {
       "version": "v1.9.2",
       "date": "2026-08-16",

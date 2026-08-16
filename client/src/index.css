@@ -430,8 +430,8 @@ body {
   bottom: 0.5rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 480px;
-  height: 180px;
+  width: 580px;
+  height: 210px;
   z-index: 20;
   pointer-events: none;
 }
@@ -441,8 +441,8 @@ body {
 
 @media (max-width: 639px) {
   .player-hand-dock {
-    width: 280px;
-    height: 90px;
+    width: 320px;
+    height: 110px;
     bottom: 0.125rem;
   }
   .player-hand-dock .playing-card {
