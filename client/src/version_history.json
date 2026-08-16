@@ -1,6 +1,18 @@
 {
-  "currentVersion": "v1.9.0",
+  "currentVersion": "v1.9.1",
   "history": [
+    {
+      "version": "v1.9.1",
+      "date": "2026-08-16",
+      "summary": "Human Sorting & Double-Click Play Confirmation",
+      "changes": [
+        "Group cards by suit in client UI with alternating red/black colors (Spades, Hearts, Clubs, Diamonds) as humans prefer to hold them",
+        "Move declared trump suit cards to the front (left) of the hand to make them stand out",
+        "Implement double-click/tap play mechanism: the first click selects and pops up the card, the second click confirms and plays it",
+        "Reset card selection when the active turn changes to prevent stale UI states",
+        "Enhance popped-up selected card lift height (translateY(-16px)) and z-index (45) on mobile to render above adjacent cards"
+      ]
+    },
     {
       "version": "v1.9.0",
       "date": "2026-08-16",

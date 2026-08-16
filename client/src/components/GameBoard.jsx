@@ -83,12 +83,52 @@ export default function GameBoard({
 
   const legalIndices = getLegalCardIndices();
 
-  const handleCardClick = (card, index) => {
-    if (activeSeat !== mySeat) return;
-    if (!legalIndices.includes(index)) return;
-
-    onPlayCard(card);
+  // Reset selected card when active seat changes
+  useEffect(() => {
     setSelectedCard(null);
+  }, [activeSeat]);
+
+  const handleCardClick = (card, originalIdx) => {
+    if (activeSeat !== mySeat) return;
+    if (!legalIndices.includes(originalIdx)) return;
+
+    if (selectedCard === originalIdx) {
+      onPlayCard(card);
+      setSelectedCard(null);
+    } else {
+      setSelectedCard(originalIdx);
+    }
+  };
+
+  // Human sort helper: groups trumps at the front, alternates suit colors (black/red/black/red), and sorts descending within suits
+  const getSortedHand = () => {
+    const handWithIndices = hand.map((card, originalIdx) => ({ card, originalIdx }));
+    
+    // Alternating suit order with trump suit placed at the very front
+    let suitOrder;
+    if (trumpSuit === 'S') {
+      suitOrder = ['S', 'H', 'C', 'D'];
+    } else if (trumpSuit === 'H') {
+      suitOrder = ['H', 'S', 'D', 'C'];
+    } else if (trumpSuit === 'C') {
+      suitOrder = ['C', 'H', 'S', 'D'];
+    } else if (trumpSuit === 'D') {
+      suitOrder = ['D', 'S', 'H', 'C'];
+    } else {
+      // Default: Spades (Black), Hearts (Red), Clubs (Black), Diamonds (Red)
+      suitOrder = ['S', 'H', 'C', 'D'];
+    }
+
+    const rankValues = {
+      '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
+      'J': 11, 'Q': 12, 'K': 13, 'A': 14
+    };
+
+    return [...handWithIndices].sort((a, b) => {
+      const suitDiff = suitOrder.indexOf(a.card.suit) - suitOrder.indexOf(b.card.suit);
+      if (suitDiff !== 0) return suitDiff;
+      return rankValues[b.card.rank] - rankValues[a.card.rank];
+    });
   };
 
   const suitEmoji = { S: '♠', H: '♥', D: '♦', C: '♣' };
@@ -498,15 +538,16 @@ export default function GameBoard({
 
       {/* Play area HUD for South player hand */}
       <div className="player-hand-dock" style={{ bottom: '0.5rem' }}>
-        {hand.map((card, idx) => {
-          const isPlayable = activeSeat === mySeat && legalIndices.includes(idx);
+        {getSortedHand().map(({ card, originalIdx }) => {
+          const isPlayable = activeSeat === mySeat && legalIndices.includes(originalIdx);
+          const isSelected = selectedCard === originalIdx;
           return (
             <Card
-              key={idx}
+              key={originalIdx}
               card={card}
               isPlayable={isPlayable}
-              isSelected={selectedCard === idx}
-              onClick={() => handleCardClick(card, idx)}
+              isSelected={isSelected}
+              onClick={() => handleCardClick(card, originalIdx)}
               isTrump={trumpSuit === card.suit}
             />
           );

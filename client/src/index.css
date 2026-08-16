@@ -480,7 +480,8 @@ body {
     transform: translateY(-8px) scale(1.03);
   }
   .player-hand-dock .playing-card.selected {
-    transform: translateY(-10px) scale(1.04);
+    transform: translateY(-16px) scale(1.05);
+    z-index: 45 !important;
   }
 }
 
