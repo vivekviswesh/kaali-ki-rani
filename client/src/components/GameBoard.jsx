@@ -154,14 +154,14 @@ export default function GameBoard({
     const center = (totalCards - 1) / 2;
     const diff = idx - center;
     
-    // Dynamic angle step based on quantity of cards to keep the fan looking neat and spacious
+    // Dynamic angle step based on quantity of cards (fanned out 20% more for spacious readability)
     let angleStep;
     if (totalCards >= 10) {
-      angleStep = isMobile ? 5.5 : 7.5;
+      angleStep = isMobile ? 6.6 : 9.0;
     } else if (totalCards >= 6) {
-      angleStep = isMobile ? 7.5 : 9.5;
+      angleStep = isMobile ? 9.0 : 11.4;
     } else {
-      angleStep = isMobile ? 9.5 : 12.0;
+      angleStep = isMobile ? 11.4 : 14.4;
     }
     
     const rotation = diff * angleStep;
@@ -174,7 +174,7 @@ export default function GameBoard({
       position: 'absolute',
       left: '50%',
       bottom: isMobile ? '0.125rem' : '0.5rem',
-      transformOrigin: '50% 160%', // Larger pivot radius to stretch the fanned width and improve spacing
+      transformOrigin: '50% 180%', // Even larger pivot radius to flatten the curve and increase horizontal spacing
       transform: `translateX(-50%) rotate(${rotation}deg) translateY(${liftTranslateY}px)`,
       zIndex: isThisCardSelected ? 45 : 10 + idx,
       transition: 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s, z-index 0.2s',

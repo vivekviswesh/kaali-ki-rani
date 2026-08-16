@@ -1,6 +1,16 @@
 {
-  "currentVersion": "v1.9.3",
+  "currentVersion": "v1.9.4",
   "history": [
+    {
+      "version": "v1.9.4",
+      "date": "2026-08-16",
+      "summary": "Expanded Mobile Card Fan Spacing",
+      "changes": [
+        "Increase fanning rotation angle steps by another 20% (up to 14.4 degrees depending on hand size) to widen card separation",
+        "Extend the fan's pivot radius to transformOrigin: 50% 180% to flatten the fanned arc and align cards horizontally",
+        "Set mobile player-hand-dock width to 95vw with overflow visible to support wider layouts on mobile devices without clipping"
+      ]
+    },
     {
       "version": "v1.9.3",
       "date": "2026-08-16",
