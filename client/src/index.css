@@ -427,40 +427,31 @@ body {
 /* Cards Fan Deck South */
 .player-hand-dock {
   position: absolute;
-  bottom: 0.75rem;
+  bottom: 0.5rem;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  gap: 0.25rem;
-  justify-content: center;
-  max-width: 90%;
-  overflow-x: auto;
-  padding: 0.5rem;
+  width: 480px;
+  height: 180px;
   z-index: 20;
-  scrollbar-width: none;
+  pointer-events: none;
 }
-.player-hand-dock::-webkit-scrollbar {
-  display: none;
+.player-hand-dock .playing-card {
+  pointer-events: auto;
 }
 
 @media (max-width: 639px) {
   .player-hand-dock {
-    display: flex;
-    flex-wrap: wrap;
-    width: 96vw;
-    max-width: 96vw;
-    padding: 0.25rem;
-    bottom: 0.25rem;
-    justify-content: center;
-    overflow-x: visible;
+    width: 280px;
+    height: 90px;
+    bottom: 0.125rem;
   }
   .player-hand-dock .playing-card {
-    width: 14.5vw !important;
+    width: 14vw !important;
     height: auto !important;
     aspect-ratio: 2 / 3;
-    margin: 0.125rem -1.1vw;
+    margin: 0 !important;
     border-radius: 0.35rem;
-    padding: 0.15rem;
+    padding: 0.125rem;
     flex-shrink: 0;
   }
   .player-hand-dock .playing-card .card-rank {
@@ -477,10 +468,9 @@ body {
     padding: 0.05rem 0.1rem;
   }
   .player-hand-dock .playing-card:hover:not(.disabled) {
-    transform: translateY(-8px) scale(1.03);
+    /* Transforms are handled dynamically via inline styles in JS */
   }
   .player-hand-dock .playing-card.selected {
-    transform: translateY(-16px) scale(1.05);
     z-index: 45 !important;
   }
 }

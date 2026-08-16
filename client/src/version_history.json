@@ -1,6 +1,18 @@
 {
-  "currentVersion": "v1.9.1",
+  "currentVersion": "v1.9.2",
   "history": [
+    {
+      "version": "v1.9.2",
+      "date": "2026-08-16",
+      "summary": "Realistic Human Hand Card Fan Layout",
+      "changes": [
+        "Arrange cards in a beautiful, natural arc (fanned layout) fanning out around a bottom center pivot point (transformOrigin: 50% 140%)",
+        "Introduce dynamic angle-step calculations based on the number of cards in hand to compress or expand the fan neatly",
+        "Enable fanned cards to fit comfortably in a single row on both mobile and desktop screens by overlapping them progressively",
+        "Calculate selected card pop-up lift (translateY) dynamically along its respective rotation angle so it rises straight up",
+        "Add style prop support to Card component to allow merging custom inline fanning styles"
+      ]
+    },
     {
       "version": "v1.9.1",
       "date": "2026-08-16",

@@ -131,6 +131,38 @@ export default function GameBoard({
     });
   };
 
+  const getFanStyle = (idx, totalCards, sorted) => {
+    const isMobile = window.innerWidth < 640;
+    const center = (totalCards - 1) / 2;
+    const diff = idx - center;
+    
+    // Dynamic angle step based on quantity of cards to keep the fan looking neat
+    let angleStep;
+    if (totalCards >= 10) {
+      angleStep = isMobile ? 4.2 : 5.5;
+    } else if (totalCards >= 6) {
+      angleStep = isMobile ? 5.5 : 7.5;
+    } else {
+      angleStep = isMobile ? 7 : 9.5;
+    }
+    
+    const rotation = diff * angleStep;
+    
+    // Selected card lifts up along its rotation angle
+    const isThisCardSelected = sorted[idx] && selectedCard === sorted[idx].originalIdx;
+    const liftTranslateY = isThisCardSelected ? (isMobile ? -24 : -36) : 0;
+
+    return {
+      position: 'absolute',
+      left: '50%',
+      bottom: isMobile ? '0.125rem' : '0.5rem',
+      transformOrigin: '50% 140%',
+      transform: `translateX(-50%) rotate(${rotation}deg) translateY(${liftTranslateY}px)`,
+      zIndex: isThisCardSelected ? 45 : 10 + idx,
+      transition: 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s, z-index 0.2s',
+    };
+  };
+
   const suitEmoji = { S: '♠', H: '♥', D: '♦', C: '♣' };
   const suitColors = { S: '#818cf8', H: '#f43f5e', D: '#f59e0b', C: '#10b981' };
 
@@ -537,21 +569,26 @@ export default function GameBoard({
       )}
 
       {/* Play area HUD for South player hand */}
-      <div className="player-hand-dock" style={{ bottom: '0.5rem' }}>
-        {getSortedHand().map(({ card, originalIdx }) => {
-          const isPlayable = activeSeat === mySeat && legalIndices.includes(originalIdx);
-          const isSelected = selectedCard === originalIdx;
-          return (
-            <Card
-              key={originalIdx}
-              card={card}
-              isPlayable={isPlayable}
-              isSelected={isSelected}
-              onClick={() => handleCardClick(card, originalIdx)}
-              isTrump={trumpSuit === card.suit}
-            />
-          );
-        })}
+      <div className="player-hand-dock">
+        {(() => {
+          const sorted = getSortedHand();
+          return sorted.map(({ card, originalIdx }, idx) => {
+            const isPlayable = activeSeat === mySeat && legalIndices.includes(originalIdx);
+            const isSelected = selectedCard === originalIdx;
+            const style = getFanStyle(idx, sorted.length, sorted);
+            return (
+              <Card
+                key={originalIdx}
+                card={card}
+                isPlayable={isPlayable}
+                isSelected={isSelected}
+                onClick={() => handleCardClick(card, originalIdx)}
+                isTrump={trumpSuit === card.suit}
+                style={style}
+              />
+            );
+          });
+        })()}
       </div>
 
     </div>

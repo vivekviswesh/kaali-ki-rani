@@ -14,7 +14,7 @@ const SUIT_COLOR_CLASSES = {
   C: 'color-emerald'
 };
 
-export default function Card({ card, isPlayable = true, isSelected = false, onClick, hidden = false, isTrump = false }) {
+export default function Card({ card, isPlayable = true, isSelected = false, onClick, hidden = false, isTrump = false, style = {} }) {
   // Inline styles for custom colors
   const suitColors = {
     S: '#818cf8', // indigo
@@ -64,6 +64,7 @@ export default function Card({ card, isPlayable = true, isSelected = false, onCl
     <div
       onClick={isPlayable ? onClick : undefined}
       className={cardClass}
+      style={style}
     >
       {/* Top Value & Suit */}
       <div className="justify-between" style={{ width: '100%' }}>
