@@ -368,6 +368,7 @@ export default function App() {
     setTimerState(null);
     setActionLog([]);
     setGameId('');
+    setShowVersionHistory(false);
   };
 
   const handleAction = (type, data) => {
@@ -403,7 +404,20 @@ export default function App() {
           
           {/* Header Bar */}
           <header className="app-header-bar glass-panel" style={{ borderRadius: '1rem', position: 'relative' }}>
-            <div className="flex-row items-center" style={{ gap: '0.5rem' }}>
+            <div 
+              className="flex-row items-center" 
+              style={{ gap: '0.5rem', cursor: 'pointer', transition: 'transform 0.2s ease, opacity 0.2s ease' }}
+              onClick={leaveGame}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.02)';
+                e.currentTarget.style.opacity = '0.9';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.opacity = '1';
+              }}
+              title="Return to Home"
+            >
               <span style={{ fontSize: '1.25rem' }}>👑</span>
               <span style={{ 
                 fontWeight: 900, 

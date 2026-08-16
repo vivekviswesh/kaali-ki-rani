@@ -45,7 +45,23 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
         
         {/* Title Header */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div className="flex-row flex-center" style={{ gap: '0.5rem', marginBottom: '0.5rem' }}>
+          <div 
+            className="flex-row flex-center" 
+            style={{ gap: '0.5rem', marginBottom: '0.5rem', cursor: 'pointer', transition: 'transform 0.2s ease, opacity 0.2s ease' }}
+            onClick={() => {
+              setActiveTab('single');
+              setShowRules(false);
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.02)';
+              e.currentTarget.style.opacity = '0.9';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.opacity = '1';
+            }}
+            title="Go to Home"
+          >
             <span style={{ fontSize: '2rem' }}>👑</span>
             <h1 style={{ 
               fontSize: '2.25rem', 

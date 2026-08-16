@@ -1,6 +1,15 @@
 {
-  "currentVersion": "v1.8.4",
+  "currentVersion": "v1.8.5",
   "history": [
+    {
+      "version": "v1.8.5",
+      "date": "2026-08-16",
+      "summary": "Interactive Clickable Logo Navigation",
+      "changes": [
+        "Make top-bar Kaali Ki Rani header logo clickable to return to the Lobby / home page",
+        "Make Lobby logo clickable to reset the active tab to Single Player and close rules modal"
+      ]
+    },
     {
       "version": "v1.8.4",
       "date": "2026-07-16",
