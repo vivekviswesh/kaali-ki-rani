@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v1.9.4",
+  "currentVersion": "v1.9.5",
   "history": [
+    {
+      "version": "v1.9.5",
+      "date": "2026-08-16",
+      "summary": "Dynamic Partner Card Suit Color Styling",
+      "changes": [
+        "Update desktop and mobile partner card info tags to style the rank/suit text using the partner card's specific suit color (suitColors) rather than hardcoded yellow (#fbbf24) to eliminate user confusion"
+      ]
+    },
     {
       "version": "v1.9.4",
       "date": "2026-08-16",

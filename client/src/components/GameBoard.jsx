@@ -236,7 +236,7 @@ export default function GameBoard({
               </span>
             </div>
           )}
-          {partnerCard && (
+           {partnerCard && (
             <div className="hidden-mobile" style={{
               background: 'rgba(15, 23, 42, 0.9)',
               border: '1px solid rgba(255,255,255,0.08)',
@@ -244,14 +244,13 @@ export default function GameBoard({
               borderRadius: '0.75rem',
               fontSize: '0.75rem',
               fontWeight: 800,
-              color: '#fbbf24',
               display: 'flex',
               alignItems: 'center',
               gap: '0.25rem',
               boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
             }}>
               <span style={{ color: '#94a3b8', fontWeight: 500 }}>Partner:</span>
-              <span>
+              <span style={{ color: suitColors[partnerCard.suit] }}>
                 {partnerCard.rank}{suitEmoji[partnerCard.suit]}
               </span>
             </div>

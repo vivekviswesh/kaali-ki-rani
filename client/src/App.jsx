@@ -458,7 +458,7 @@ export default function App() {
                     padding: '0.25rem 0.5rem', 
                     fontSize: '0.65rem', 
                     fontWeight: 800,
-                    color: '#fbbf24',
+                    color: suitColors[gameState.declarationState.partnerCard.suit],
                     display: 'flex',
                     alignItems: 'center',
                     gap: '2px'
