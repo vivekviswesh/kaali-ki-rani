@@ -32,6 +32,7 @@ export default function App() {
   const [gameId, setGameId] = useState('');
   const [mySeat, setMySeat] = useState(0);
   const [gameState, setGameState] = useState(null);
+  const [roomSeats, setRoomSeats] = useState([null, null, null, null]);
   const [timerState, setTimerState] = useState(null);
   
   // Clipboard feedback
@@ -235,6 +236,7 @@ export default function App() {
     game.startMatch(localPlayers);
 
     setGameState(game.getStateForPlayer(0));
+    setRoomSeats(localPlayers.map(p => ({ name: p.name, isBot: p.isBot, isDisconnected: false })));
   };
 
   const handleLocalAction = (type, data) => {
@@ -325,6 +327,12 @@ export default function App() {
       setGameState(data.gameState);
       setRoomCode(data.roomCode);
       setGameId(data.gameId);
+      if (data.seats) {
+        setRoomSeats(data.seats);
+      }
+      if (data.mySeat !== undefined) {
+        setMySeat(data.mySeat);
+      }
     });
 
     socket.on('timer_update', (data) => {
@@ -733,15 +741,24 @@ export default function App() {
 
               <div className="flex-col" style={{ background: 'rgba(2, 6, 23, 0.6)', borderRadius: '1rem', padding: '1rem', border: '1px solid rgba(255,255,255,0.04)', marginBottom: '1.5rem', textAlign: 'left', fontSize: '0.75rem', gap: '0.5rem' }}>
                 <span style={{ color: '#64748b', fontStyle: 'normal', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.25rem', display: 'block' }}>Players Connected</span>
-                {gameState.players.map((p, idx) => (
-                  <div key={idx} className="justify-between" style={{ color: '#cbd5e1', fontWeight: 600 }}>
-                    <span>{p.name}</span>
-                    <span style={{ color: '#10b981' }}>Connected</span>
-                  </div>
-                ))}
-                {Array.from({ length: 4 - gameState.players.length }).map((_, i) => (
-                  <div key={i} style={{ color: '#475569', fontStyle: 'italic' }}>Empty Slot (will be filled with Bot)</div>
-                ))}
+                {roomSeats.map((seat, idx) => {
+                  if (seat) {
+                    return (
+                      <div key={idx} className="justify-between" style={{ color: '#cbd5e1', fontWeight: 600 }}>
+                        <span>
+                          {seat.name} {idx === 0 && <span style={{ color: '#fbbf24', fontSize: '0.65rem' }}>👑 Host</span>}
+                          {seat.isDisconnected && <span style={{ color: '#ef4444', fontSize: '0.65rem' }}> (Disconnected)</span>}
+                        </span>
+                        <span style={{ color: '#10b981' }}>Connected</span>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div key={idx} style={{ color: '#475569', fontStyle: 'italic' }}>
+                      Empty Slot (will be filled with Bot)
+                    </div>
+                  );
+                })}
               </div>
 
               {gameState.players[0]?.id === socketRef.current?.id || mySeat === 0 ? (

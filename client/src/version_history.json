@@ -1,6 +1,16 @@
 {
-  "currentVersion": "v1.9.6",
+  "currentVersion": "v1.9.7",
   "history": [
+    {
+      "version": "v1.9.7",
+      "date": "2026-08-16",
+      "summary": "Multiplayer Lobby Connected Player List Synchronization",
+      "changes": [
+        "Create roomSeats state on client side to keep track of players currently connected to the room",
+        "Update state_update socket listener to parse seats and mySeat updates from the backend Room broadcastState payload",
+        "Modify Room Lobby panel to render roomSeats instead of gameState.players, properly displaying the host (with a golden 👑 Host badge), active players, and empty bot slots before the match starts"
+      ]
+    },
     {
       "version": "v1.9.6",
       "date": "2026-08-16",
