@@ -1,4 +1,26 @@
 import { SUITS, RANKS, RANK_VALUES, getCardPoints } from './engine/constants.js';
+import { NeuralNetwork, encodeStateAction } from './engine/neural.js';
+import fs from 'fs';
+import path from 'path';
+
+// Instantiate and load weights for the neural network
+const nnInstance = new NeuralNetwork();
+let weightsLoaded = false;
+
+try {
+  const primaryWeightsPath = path.resolve('logs/bot_weights.json');
+  const fallbackWeightsPath = path.resolve('src/engine/bot_weights.json');
+  
+  if (fs.existsSync(primaryWeightsPath)) {
+    const raw = JSON.parse(fs.readFileSync(primaryWeightsPath, 'utf8'));
+    weightsLoaded = nnInstance.loadWeights(raw);
+  } else if (fs.existsSync(fallbackWeightsPath)) {
+    const raw = JSON.parse(fs.readFileSync(fallbackWeightsPath, 'utf8'));
+    weightsLoaded = nnInstance.loadWeights(raw);
+  }
+} catch (err) {
+  // Silence weight loading errors
+}
 
 /**
  * Heuristically evaluates a hand's bidding strength.
@@ -133,6 +155,39 @@ export function makeBotPlay(hand, trickParam, trumpSuit, partnerCard, partnerSea
   // 1. Single card remaining
   if (legalCards.length === 1) {
     return legalCards[0];
+  }
+
+  // 1.5. Try Neural Network scoring if weights are loaded
+  if (nnInstance && weightsLoaded) {
+    try {
+      let bestCard = null;
+      let highestUtility = -Infinity;
+      
+      for (const card of legalCards) {
+        const inputs = encodeStateAction(
+          botSeat,
+          currentTrick,
+          trumpSuit,
+          partnerCard,
+          partnerSeat,
+          bidWinnerSeat,
+          card
+        );
+        const forwardRes = nnInstance.forward(inputs);
+        const utility = forwardRes.outOutput[0]; // between -1 and 1
+        
+        if (utility > highestUtility) {
+          highestUtility = utility;
+          bestCard = card;
+        }
+      }
+      
+      if (bestCard) {
+        return bestCard;
+      }
+    } catch (nnErr) {
+      console.error('[Neural Engine] Play error, falling back to heuristics:', nnErr.message);
+    }
   }
 
   const partnerCardStr = partnerCard ? `${partnerCard.rank}-${partnerCard.suit}` : '';

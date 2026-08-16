@@ -1,6 +1,17 @@
 {
-  "currentVersion": "v1.9.7",
+  "currentVersion": "v1.9.8",
   "history": [
+    {
+      "version": "v1.9.8",
+      "date": "2026-08-16",
+      "summary": "Neural Engine & Telemetry Machine Learning for Smarter Bots",
+      "changes": [
+        "Create shared dependency-free NeuralNetwork class with Xavier initialization, Tanh/ReLU activations, and SGD backpropagation inside server/client neural.js",
+        "Implement state-action encoding helper translating trick states, played cards, trump suit, points, and player roles into a 29-dimensional feature vector",
+        "Integrate training utility script src/utils/train.js ('npm run train') that processes match JSON telemetry logs to train the policy network, minimizing mean squared error",
+        "Configure server/client bot engine play loaders to score legal cards using the trained neural network weights, falling back to heuristics when weights are empty"
+      ]
+    },
     {
       "version": "v1.9.7",
       "date": "2026-08-16",
