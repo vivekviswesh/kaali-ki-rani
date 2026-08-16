@@ -443,6 +443,42 @@ body {
   display: none;
 }
 
+@media (max-width: 639px) {
+  .player-hand-dock {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    max-width: 98%;
+    gap: 0.25rem 0.25rem;
+    padding: 0.25rem;
+    bottom: 0.25rem;
+  }
+  .player-hand-dock .playing-card {
+    width: 44px;
+    height: 66px;
+    border-radius: 0.35rem;
+    padding: 0.15rem;
+  }
+  .player-hand-dock .playing-card .card-rank {
+    font-size: 0.85rem;
+  }
+  .player-hand-dock .playing-card .card-suit {
+    font-size: 0.65rem;
+  }
+  .player-hand-dock .playing-card .playing-card-center-icon {
+    font-size: 1.1rem;
+  }
+  .player-hand-dock .playing-card .point-badge {
+    font-size: 0.45rem;
+    padding: 0.05rem 0.1rem;
+  }
+  .player-hand-dock .playing-card:hover:not(.disabled) {
+    transform: translateY(-8px) scale(1.03);
+  }
+  .player-hand-dock .playing-card.selected {
+    transform: translateY(-10px) scale(1.04);
+  }
+}
+
 /* Placed Trick Cards */
 .played-trick-card {
   position: absolute;
@@ -560,6 +596,19 @@ body {
 .playing-card.disabled {
   opacity: 0.35;
   cursor: not-allowed;
+}
+.playing-card.selected {
+  transform: translateY(-24px) scale(1.05);
+  border-color: #10b981;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+  z-index: 30;
+}
+.card-rank {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.card-suit {
+  font-size: 0.8rem;
 }
 
 .playing-card-suit-symbol {

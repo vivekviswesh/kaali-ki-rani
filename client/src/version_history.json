@@ -1,6 +1,16 @@
 {
-  "currentVersion": "v1.8.6",
+  "currentVersion": "v1.8.7",
   "history": [
+    {
+      "version": "v1.8.7",
+      "date": "2026-08-16",
+      "summary": "Non-Scrollable Two-Row Mobile Hand Layout",
+      "changes": [
+        "Rearrange the player's hand on mobile screens to wrap into two rows, eliminating horizontal scrolling",
+        "Scale down hand card sizes to 44px x 66px on mobile screens to fit hands perfectly inside the view width",
+        "Refactor Card rendering to use responsive CSS classes for font styling and selection lift heights instead of inline styles"
+      ]
+    },
     {
       "version": "v1.8.6",
       "date": "2026-08-16",

@@ -57,29 +57,21 @@ export default function Card({ card, isPlayable = true, isSelected = false, onCl
   let cardClass = 'playing-card';
   if (isKaaliKiRani) cardClass += ' queen-of-spades';
   if (isTrump) cardClass += ` trump-${suit}`;
+  if (isSelected) cardClass += ' selected';
   if (!isPlayable) cardClass += ' disabled';
-  
-  // Custom inline style for card lift if selected
-  const selectedCardStyle = isSelected ? {
-    transform: 'translateY(-24px) scale(1.05)',
-    borderColor: '#10b981',
-    boxShadow: '0 0 12px rgba(16, 185, 129, 0.4)',
-    zIndex: 30
-  } : {};
 
   return (
     <div
       onClick={isPlayable ? onClick : undefined}
       className={cardClass}
-      style={selectedCardStyle}
     >
       {/* Top Value & Suit */}
       <div className="justify-between" style={{ width: '100%' }}>
         <div className="flex-col" style={{ alignItems: 'flex-start' }}>
-          <span style={{ fontSize: '1.1rem', fontWeight: 800, color: isKaaliKiRani ? '#fbbf24' : '#f8fafc', lineHeight: 1 }}>
+          <span className="card-rank" style={{ color: isKaaliKiRani ? '#fbbf24' : '#f8fafc', lineHeight: 1 }}>
             {rank}
           </span>
-          <span style={{ fontSize: '0.8rem', color: suitColors[suit], lineHeight: 1 }}>
+          <span className="card-suit" style={{ color: suitColors[suit], lineHeight: 1 }}>
             {SUIT_SYMBOLS[suit]}
           </span>
         </div>
@@ -105,10 +97,10 @@ export default function Card({ card, isPlayable = true, isSelected = false, onCl
       {/* Bottom Value & Suit (Inverted) */}
       <div className="justify-between" style={{ width: '100%', transform: 'rotate(180deg)' }}>
         <div className="flex-col" style={{ alignItems: 'flex-start' }}>
-          <span style={{ fontSize: '1.1rem', fontWeight: 800, color: isKaaliKiRani ? '#fbbf24' : '#f8fafc', lineHeight: 1 }}>
+          <span className="card-rank" style={{ color: isKaaliKiRani ? '#fbbf24' : '#f8fafc', lineHeight: 1 }}>
             {rank}
           </span>
-          <span style={{ fontSize: '0.8rem', color: suitColors[suit], lineHeight: 1 }}>
+          <span className="card-suit" style={{ color: suitColors[suit], lineHeight: 1 }}>
             {SUIT_SYMBOLS[suit]}
           </span>
         </div>
