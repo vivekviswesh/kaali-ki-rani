@@ -1023,6 +1023,9 @@ export default function App() {
         const defendingPoints = 150 - biddingPoints;
         const isBiddingSuccess = biddingPoints >= currentHighestBid;
 
+        const isPlayerBiddingSide = mySeat === bidWinnerSeat || (!isSolo && mySeat === partnerSeat);
+        const playerWon = isPlayerBiddingSide ? isBiddingSuccess : !isBiddingSuccess;
+
         const suitEmoji = { S: '♠', H: '♥', D: '♦', C: '♣' };
         const suitColors = { S: '#818cf8', H: '#f43f5e', D: '#f59e0b', C: '#10b981' };
 
@@ -1055,8 +1058,8 @@ export default function App() {
                 {/* Left Panel: Verdict & Roles */}
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <div style={{
-                    background: isBiddingSuccess ? 'rgba(16, 185, 129, 0.08)' : 'rgba(244, 63, 94, 0.08)',
-                    border: `1px solid ${isBiddingSuccess ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)'}`,
+                    background: playerWon ? 'rgba(16, 185, 129, 0.08)' : 'rgba(244, 63, 94, 0.08)',
+                    border: `1px solid ${playerWon ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)'}`,
                     borderRadius: '1rem',
                     padding: '1.25rem',
                     display: 'flex',
@@ -1065,9 +1068,9 @@ export default function App() {
                     gap: '0.5rem',
                     textAlign: 'center'
                   }}>
-                    <div style={{ fontSize: '2.5rem' }}>{isBiddingSuccess ? '🎉' : '❌'}</div>
-                    <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: isBiddingSuccess ? '#34d399' : '#f43f5e', margin: 0 }}>
-                      {isBiddingSuccess ? 'Bid Secured!' : 'Bid Failed!'}
+                    <div style={{ fontSize: '2.5rem' }}>{playerWon ? '🎉' : '❌'}</div>
+                    <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: playerWon ? '#34d399' : '#f43f5e', margin: 0 }}>
+                      {playerWon ? 'You Won!' : 'You Lost!'}
                     </h2>
                     <p style={{ color: '#94a3b8', fontSize: '0.75rem', margin: 0 }}>
                       Bidders captured <b>{biddingPoints}</b> / <b>{currentHighestBid}</b> points.

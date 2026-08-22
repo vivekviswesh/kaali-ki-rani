@@ -243,6 +243,8 @@ export class Room {
         // Log telemetry BEFORE state changes
         logTelemetry(this.gameId, 'play_card', {
           seat,
+          isBot,
+          isAutoPlay: !isBot,
           cardPlayed: cardToPlay,
           handBefore: [...hand],
           currentTrick: [...currentTrick],
@@ -347,6 +349,8 @@ export class Room {
 
       logTelemetry(this.gameId, 'play_card', {
         seat,
+        isBot: this.seats[seat].isBot,
+        isAutoPlay: false,
         cardPlayed: card,
         handBefore: [...this.game.hands[seat]],
         currentTrick: [...this.game.trickPlayState.currentTrick],

@@ -1,6 +1,15 @@
 {
-  "currentVersion": "v2.0.0",
+  "currentVersion": "v2.0.1",
   "history": [
+    {
+      "version": "v2.0.1",
+      "date": "2026-08-22",
+      "summary": "Round Verdict & Human-Only Neural Learning",
+      "changes": [
+        "Customize round verdict layout to display 'You Won!' / 'You Lost!' and corresponding background highlights based on the player's seat and partnership status",
+        "Restrict neural network machine learning backpropagation to only learn from real human-initiated card plays, filtering out bot plays and auto-play fallbacks"
+      ]
+    },
     {
       "version": "v2.0.0",
       "date": "2026-08-16",

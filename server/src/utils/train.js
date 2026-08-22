@@ -69,12 +69,17 @@ export function runTraining() {
     try {
       const fileContent = fs.readFileSync(filePath, 'utf8');
       const lines = fileContent.trim().split('\n');
-      
+      let seatsIsBot = [false, false, false, false]; // Default to humans if no match_start event is found
       const playEvents = [];
       lines.forEach(line => {
         if (!line) return;
         const record = JSON.parse(line);
-        if (record.event === 'play_card') {
+        if (record.event === 'match_start') {
+          const players = record.payload.players;
+          if (players && Array.isArray(players)) {
+            seatsIsBot = players.map(p => !!p.isBot);
+          }
+        } else if (record.event === 'play_card') {
           playEvents.push(record.payload);
         }
       });
@@ -106,6 +111,14 @@ export function runTraining() {
         // For each of the 4 plays, construct the state-action pair inputs and reward targets
         trickPlays.forEach((play, playIdx) => {
           const seat = play.seat;
+          
+          // Only learn if the seat is a human player and the play was human-initiated (not auto-played)
+          const isBot = play.isBot !== undefined ? play.isBot : seatsIsBot[seat];
+          const isAutoPlay = play.isAutoPlay || false;
+          if (isBot || isAutoPlay) {
+            return;
+          }
+
           const currentTrickBeforePlay = trickPlays.slice(0, playIdx).map(p => ({ seat: p.seat, card: p.cardPlayed }));
           
           // Encode state action
