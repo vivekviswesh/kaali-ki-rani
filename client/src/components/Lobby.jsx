@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Play, Users, UserPlus, Info, BookOpen } from 'lucide-react';
 import versionHistory from '../version_history.json';
+import RulesPresentation from './RulesPresentation.jsx';
 
 export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory }) {
   const [playerName, setPlayerName] = useState(localStorage.getItem('kkr_player_name') || '');
@@ -227,55 +228,7 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
 
         {/* Rules Modal Overlay */}
         {showRules && (
-          <div className="modal-overlay-blur">
-            <div className="modal-window-card" style={{ maxWidth: '440px', textAlign: 'left' }}>
-              <h2 className="flex-row items-center" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fbbf24', gap: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-                <Info size={16} />
-                Game Rules Summary
-              </h2>
-              
-              <div className="flex-col" style={{ gap: '1rem', color: '#cbd5e1', fontSize: '0.8rem', lineHeight: 1.4, maxHeight: '60vh', overflowY: 'auto', paddingRight: '0.25rem' }}>
-                <div>
-                  <h3 style={{ fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>Point Card Values</h3>
-                  <div className="grid-2" style={{ background: 'rgba(2, 6, 23, 0.4)', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div>♠Q (Kaali Ki Rani): <b style={{ color: '#fbbf24' }}>30 pts</b></div>
-                    <div>Aces (Any Suit): <b>15 pts</b></div>
-                    <div>10s (Any Suit): <b>10 pts</b></div>
-                    <div>5s (Any Suit): <b>5 pts</b></div>
-                  </div>
-                  <p style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '0.25rem' }}>Total points in deck = 150 points.</p>
-                </div>
-
-                <div>
-                  <h3 style={{ fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>Bidding Phase</h3>
-                  <p>Players bid from 75 to 150. The bid starter must open bidding at 75+. Passed players are locked out. Bidding ends when all other players pass. The bid winner chooses a partner card and the trump suit.</p>
-                </div>
-
-                <div>
-                  <h3 style={{ fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>Partnership & Trump</h3>
-                  <p>The partner holding the named card plays secretly. No one knows who the partner is until that card is played! If the bid winner names a card they hold themselves, they play solo (1 vs 3).</p>
-                </div>
-
-                <div>
-                  <h3 style={{ fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>Gameplay</h3>
-                  <p>Follow suit is mandatory. If you have no cards of the led suit, you can play trump or discard. High card of led suit wins unless trumped. Winner of trick leads next.</p>
-                </div>
-
-                <div>
-                  <h3 style={{ fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>Scoring</h3>
-                  <p>Partnership wins: Bid Winner gets 2× bid, Partner gets 1× bid. If they fail: Opponents get full bid value each. Match ends when a player reaches 1000 points.</p>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setShowRules(false)}
-                className="btn btn-secondary"
-                style={{ width: '100%', marginTop: '1.25rem', padding: '0.625rem' }}
-              >
-                Close
-              </button>
-            </div>
-          </div>
+          <RulesPresentation onClose={() => setShowRules(false)} />
         )}
 
       </div>

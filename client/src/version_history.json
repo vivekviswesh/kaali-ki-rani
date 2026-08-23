@@ -1,6 +1,16 @@
 {
-  "currentVersion": "v2.0.3",
+  "currentVersion": "v2.0.4",
   "history": [
+    {
+      "version": "v2.0.4",
+      "date": "2026-08-23",
+      "summary": "Interactive Game Guide (Rules Slide Deck Integration)",
+      "changes": [
+        "Port the interactive rules slideshow presentation into the main game website under the 'How to Play' lobby action",
+        "Implement a fully responsive 8-slide React carousel themed precisely with the game's dark teal/slate board layout",
+        "Enable interactive scenario buttons for trick-taking phase and keyboard arrow navigation key listeners"
+      ]
+    },
     {
       "version": "v2.0.3",
       "date": "2026-08-23",
