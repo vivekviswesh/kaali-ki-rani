@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.0.7",
+  "currentVersion": "v2.0.8",
   "history": [
+    {
+      "version": "v2.0.8",
+      "date": "2026-08-23",
+      "summary": "Use Suit Symbols in Rules Wording",
+      "changes": [
+        "Replace written suit names (Spades, Diamonds) in example descriptions with their corresponding symbolic shapes (♠, ♦) for visual clarity"
+      ]
+    },
     {
       "version": "v2.0.7",
       "date": "2026-08-23",
