@@ -1,12 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play, Users, UserPlus, Info, BookOpen } from 'lucide-react';
 import versionHistory from '../version_history.json';
+import { supabase } from '../supabaseClient';
 
-export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory, onShowRules }) {
+export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory, onShowRules, user, onSignOut }) {
   const [playerName, setPlayerName] = useState(localStorage.getItem('kkr_player_name') || '');
   const [roomCode, setRoomCode] = useState('');
   const [timeoutSec, setTimeoutSec] = useState('20');
   const [activeTab, setActiveTab] = useState('single'); // 'single', 'create', 'join'
+
+  useEffect(() => {
+    if (user) {
+      const authName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Player';
+      setPlayerName(authName);
+      localStorage.setItem('kkr_player_name', authName);
+    }
+  }, [user]);
+
+  const handleGoogleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    });
+    if (error) alert('Google Sign In failed: ' + error.message);
+  };
+
+  const handlePasskeySignIn = async () => {
+    const email = prompt("Enter email associated with your passkey account:");
+    if (!email) return;
+    const { error } = await supabase.auth.passkey.signInWithPasskey({
+      email: email
+    });
+    if (error) alert('Passkey authentication failed: ' + error.message);
+  };
+
+  const handleRegisterPasskey = async () => {
+    const { data, error } = await supabase.auth.passkey.register();
+    if (error) {
+      alert('Error registering passkey: ' + error.message);
+    } else {
+      alert('Passkey successfully registered on this device!');
+    }
+  };
 
   const saveName = (name) => {
     setPlayerName(name);
@@ -78,6 +115,51 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
           </p>
         </div>
 
+        {/* Supabase Authentication Section */}
+        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '0.75rem', padding: '1rem', marginBottom: '1.5rem' }}>
+          {user ? (
+            <div className="flex-col" style={{ gap: '0.5rem' }}>
+              <div className="flex-row justify-between items-center" style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>
+                <span>Logged in as: <strong style={{ color: '#34d399' }}>{user.email}</strong></span>
+                <button 
+                  onClick={onSignOut} 
+                  className="btn" 
+                  style={{ padding: '0.25rem 0.5rem', fontSize: '0.7rem', background: 'rgba(239, 68, 68, 0.2)', border: '1px solid #ef4444', color: '#fca5a5' }}
+                >
+                  Logout
+                </button>
+              </div>
+              <button
+                onClick={handleRegisterPasskey}
+                className="btn"
+                style={{ padding: '0.4rem', fontSize: '0.75rem', background: 'rgba(129, 140, 248, 0.2)', border: '1px solid #818cf8', color: '#cbd5e1', width: '100%', marginTop: '0.25rem' }}
+              >
+                🔑 Add/Register Device Passkey
+              </button>
+            </div>
+          ) : (
+            <div className="flex-col" style={{ gap: '0.75rem' }}>
+              <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>Optional: Log in to enable biometric passkeys & save account</span>
+              <div className="grid-2" style={{ gap: '0.5rem' }}>
+                <button
+                  onClick={handleGoogleSignIn}
+                  className="btn btn-secondary flex-row flex-center"
+                  style={{ padding: '0.5rem', fontSize: '0.75rem', gap: '0.25rem' }}
+                >
+                  <span>🌐</span> Google Login
+                </button>
+                <button
+                  onClick={handlePasskeySignIn}
+                  className="btn btn-secondary flex-row flex-center"
+                  style={{ padding: '0.5rem', fontSize: '0.75rem', gap: '0.25rem' }}
+                >
+                  <span>🔑</span> Passkey Login
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Player Name Input */}
         <div className="form-group">
           <label className="form-label">Your Name <span style={{ color: '#ef4444', marginLeft: '0.125rem' }}>*</span></label>
@@ -88,6 +170,8 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
             placeholder="Enter player name..."
             className="form-input"
             maxLength={12}
+            readOnly={!!user}
+            style={user ? { background: 'rgba(255,255,255,0.02)', color: '#94a3b8', cursor: 'not-allowed' } : {}}
           />
         </div>
 

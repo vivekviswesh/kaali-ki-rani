@@ -1,6 +1,16 @@
 {
-  "currentVersion": "v2.0.10",
+  "currentVersion": "v2.1.0",
   "history": [
+    {
+      "version": "v2.1.0",
+      "date": "2026-08-23",
+      "summary": "Google SSO & Passkeys Authentication",
+      "changes": [
+        "Integrate Supabase Auth configuration on the client supporting Google Sign In and biometrics-based WebAuthn Passkeys",
+        "Add Sign In dashboard panel inside the Lobby page with optional guest-play support",
+        "Secure Node.js Socket.io connections by intercepting handshakes and verifying Supabase JWT tokens via jsonwebtoken"
+      ]
+    },
     {
       "version": "v2.0.10",
       "date": "2026-08-23",

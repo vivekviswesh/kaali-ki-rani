@@ -9,6 +9,7 @@ import BiddingPanel from './components/BiddingPanel';
 import DeclarationOverlay from './components/DeclarationOverlay';
 import Scoreboard from './components/Scoreboard';
 import RulesPresentation from './components/RulesPresentation';
+import { supabase } from './supabaseClient';
 
 import { Game } from './engine/game.js';
 import { GAME_STATES } from './engine/constants.js';
@@ -45,6 +46,32 @@ export default function App() {
   const [showScoreboard, setShowScoreboard] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showRules, setShowRules] = useState(false);
+  
+  // Authentication States
+  const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    // Check active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+    });
+
+    // Listen to changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+    setUser(null);
+  };
   
   // HUD Feed Log
   const [actionLog, setActionLog] = useState([]);
@@ -284,7 +311,10 @@ export default function App() {
     setPlayerName(name);
     setIsSinglePlayer(false);
     
-    const socket = io(SERVER_URL, { transports: ['websocket'] });
+    const socket = io(SERVER_URL, {
+      transports: ['websocket'],
+      auth: session ? { token: session.access_token } : {}
+    });
     socketRef.current = socket;
 
     socket.emit('create_room', { playerName: name, settings }, (res) => {
@@ -306,7 +336,10 @@ export default function App() {
     setPlayerName(name);
     setIsSinglePlayer(false);
 
-    const socket = io(SERVER_URL, { transports: ['websocket'] });
+    const socket = io(SERVER_URL, {
+      transports: ['websocket'],
+      auth: session ? { token: session.access_token } : {}
+    });
     socketRef.current = socket;
 
     socket.emit('join_room', { roomCode: code, playerName: name }, (res) => {
@@ -420,6 +453,8 @@ export default function App() {
           onStartSinglePlayer={startSinglePlayer}
           onShowVersionHistory={() => setShowVersionHistory(true)}
           onShowRules={() => setShowRules(true)}
+          user={user}
+          onSignOut={handleSignOut}
         />
       ) : (
         <div className="flex-col animate-pop-in" style={{ width: '100%', maxWidth: '100%', padding: '0.75rem', gap: '0.75rem' }}>

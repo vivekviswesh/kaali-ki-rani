@@ -2,6 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
 import { Room } from './room.js';
 
 const app = express();
@@ -58,6 +59,34 @@ function generateRoomCode() {
   return code;
 }
 
+const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET || '';
+
+io.use((socket, next) => {
+  const token = socket.handshake.auth?.token;
+  if (!token) {
+    socket.user = null; // Guest user
+    return next();
+  }
+
+  try {
+    if (!SUPABASE_JWT_SECRET) {
+      console.warn("WARNING: SUPABASE_JWT_SECRET environment variable is not defined. Skipping token verification.");
+      socket.user = { id: 'dev-guest', email: 'dev@example.com', name: 'Dev Guest' };
+      return next();
+    }
+    const decoded = jwt.verify(token, SUPABASE_JWT_SECRET);
+    socket.user = {
+      id: decoded.sub,
+      email: decoded.email,
+      name: decoded.user_metadata?.full_name || decoded.email?.split('@')[0] || 'Player'
+    };
+    next();
+  } catch (err) {
+    console.error("JWT verification failed:", err.message);
+    next(new Error("Authentication failed: Invalid session"));
+  }
+});
+
 io.on('connection', (socket) => {
   console.log(`Socket connected: ${socket.id}`);
 
@@ -68,9 +97,10 @@ io.on('connection', (socket) => {
       const room = new Room(roomCode, io, settings || {});
       rooms.set(roomCode, room);
 
-      // Create a unique user ID or use socket ID
-      const userId = `user-${Math.random().toString(36).substr(2, 6)}`;
-      const seat = room.addPlayer(userId, playerName, socket.id);
+      // Create a unique user ID or use authenticated user ID
+      const userId = socket.user ? socket.user.id : `user-${Math.random().toString(36).substr(2, 6)}`;
+      const activeName = socket.user ? socket.user.name : playerName;
+      const seat = room.addPlayer(userId, activeName, socket.id);
       
       socket.join(roomCode);
       socketToRoom.set(socket.id, { roomCode, seatIndex: seat, userId });
@@ -78,7 +108,7 @@ io.on('connection', (socket) => {
       callback({ status: 'success', roomCode, seat, userId });
       room.broadcastState();
       
-      console.log(`Room created: ${roomCode} by ${playerName}`);
+      console.log(`Room created: ${roomCode} by ${activeName}`);
     } catch (err) {
       console.error(err);
       callback({ status: 'error', message: err.message });
@@ -95,8 +125,9 @@ io.on('connection', (socket) => {
         return callback({ status: 'error', message: 'Room not found.' });
       }
 
-      const activeUserId = userId || `user-${Math.random().toString(36).substr(2, 6)}`;
-      const seat = room.addPlayer(activeUserId, playerName, socket.id);
+      const activeUserId = socket.user ? socket.user.id : (userId || `user-${Math.random().toString(36).substr(2, 6)}`);
+      const activeName = socket.user ? socket.user.name : playerName;
+      const seat = room.addPlayer(activeUserId, activeName, socket.id);
 
       socket.join(code);
       socketToRoom.set(socket.id, { roomCode: code, seatIndex: seat, userId: activeUserId });
@@ -104,7 +135,7 @@ io.on('connection', (socket) => {
       callback({ status: 'success', roomCode: code, seat, userId: activeUserId });
       room.broadcastState();
 
-      console.log(`Player ${playerName} joined Room ${code} in seat ${seat}`);
+      console.log(`Player ${activeName} joined Room ${code} in seat ${seat}`);
     } catch (err) {
       console.error(err);
       callback({ status: 'error', message: err.message });
