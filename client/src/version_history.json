@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.0.9",
+  "currentVersion": "v2.0.10",
   "history": [
+    {
+      "version": "v2.0.10",
+      "date": "2026-08-23",
+      "summary": "Refine Bidding Increment Rules Wording",
+      "changes": [
+        "Update Slide 4 bidding logic text to clarify that bids must be multiples of 5 and can open directly at higher levels like 80 as an example"
+      ]
+    },
     {
       "version": "v2.0.9",
       "date": "2026-08-23",

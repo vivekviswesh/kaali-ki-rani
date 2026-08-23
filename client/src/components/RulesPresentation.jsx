@@ -117,7 +117,7 @@ export default function RulesPresentation({ onClose }) {
               </div>
               <div className="rules-slide-body">
                 <ul>
-                  <li><strong>Opening</strong>: The first bidder must bid at least <strong>75 points</strong> (max 150, in steps of 5).</li>
+                  <li><strong>Opening</strong>: The first bidder must bid at least <strong>75 points</strong> (max 150, in multiples of 5; e.g., you can open directly with 80).</li>
                   <li><strong>Bidding Loop</strong>: Each player clockwise must bid higher than the previous bid or <strong>Pass</strong>.</li>
                   <li><strong>Lockout</strong>: Once you Pass, you are locked out of bidding for that round.</li>
                   <li><strong>Goal</strong>: Bidding ends when only 1 bidder remains—they are the <strong>Bid Winner</strong>.</li>
