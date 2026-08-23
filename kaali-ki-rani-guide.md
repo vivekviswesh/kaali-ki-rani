@@ -1,4 +1,4 @@
-# Kali Ki Rani (Queen of Spades) — Development & Deployment Guide
+# Kaali Ki Rani (Queen of Spades) — Development & Deployment Guide
 
 A 4-player partnership trick-taking bidding game, built as a real-time PWA.
 

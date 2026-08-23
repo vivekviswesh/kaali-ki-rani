@@ -56,7 +56,7 @@ export default function RulesPresentation({ onClose }) {
                   <span>Q</span>
                 </div>
               </div>
-              <h1 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fbbf24', textShadow: '0 0 15px rgba(251,191,36,0.3)', margin: '0.5rem 0 0.25rem 0' }}>KALI KI RANI</h1>
+              <h1 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fbbf24', textShadow: '0 0 15px rgba(251,191,36,0.3)', margin: '0.5rem 0 0.25rem 0' }}>KAALI KI RANI</h1>
               <h3 style={{ fontSize: '1.25rem', color: '#818cf8', fontWeight: 700, marginBottom: '1.5rem' }}>Queen of Spades</h3>
               <p style={{ color: '#cbd5e1', fontSize: '0.95rem' }}>An Interactive Guide to the Bidding &amp; Trick-Taking Classic</p>
               <div style={{ marginTop: '2rem', fontSize: '0.8rem', color: '#64748b' }}>

@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.1.0",
+  "currentVersion": "v2.1.1",
   "history": [
+    {
+      "version": "v2.1.1",
+      "date": "2026-08-23",
+      "summary": "Standardize Game Name Spelling to Kaali",
+      "changes": [
+        "Correct all remaining occurrences of 'Kali' spelling to 'Kaali' in the frontend assets, favicon metadata, and game guide documentation"
+      ]
+    },
     {
       "version": "v2.1.0",
       "date": "2026-08-23",
