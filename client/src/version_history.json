@@ -1,6 +1,15 @@
 {
-  "currentVersion": "v2.0.5",
+  "currentVersion": "v2.0.6",
   "history": [
+    {
+      "version": "v2.0.6",
+      "date": "2026-08-23",
+      "summary": "Emerald Green Thematic Rules Screen Layout",
+      "changes": [
+        "Update the standalone rules page background to use a rich emerald green radial gradient matching the game felt table style",
+        "Style the main guide carousel wrapper as an elegant semi-transparent glass panel with a vibrant emerald green border outline"
+      ]
+    },
     {
       "version": "v2.0.5",
       "date": "2026-08-23",
