@@ -10,7 +10,20 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+        globPatterns: [],
+        runtimeCaching: [
+          {
+            urlPattern: /^https?.*/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'network-first-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 86400 // 1 day
+              }
+            }
+          }
+        ]
       },
       manifest: {
         name: 'Kaali Ki Rani Card Game',

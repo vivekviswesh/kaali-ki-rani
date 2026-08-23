@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.0.2",
+  "currentVersion": "v2.0.3",
   "history": [
+    {
+      "version": "v2.0.3",
+      "date": "2026-08-23",
+      "summary": "Implement Network First PWA Caching Policy",
+      "changes": [
+        "Change PWA service worker caching configuration in vite.config.js to disable precaching and use a Network First (NetworkFirst) runtime caching strategy, forcing the client to load the latest deployment from the network on launch when online"
+      ]
+    },
     {
       "version": "v2.0.2",
       "date": "2026-08-23",
