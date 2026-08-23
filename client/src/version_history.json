@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.0.6",
+  "currentVersion": "v2.0.7",
   "history": [
+    {
+      "version": "v2.0.7",
+      "date": "2026-08-23",
+      "summary": "Fix Markdown Syntax Render in Game Guide",
+      "changes": [
+        "Replace raw double asterisks with proper strong HTML tags in the RulesPresentation landing slide to resolve text rendering bugs"
+      ]
+    },
     {
       "version": "v2.0.6",
       "date": "2026-08-23",

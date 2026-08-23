@@ -60,7 +60,7 @@ export default function RulesPresentation({ onClose }) {
               <h3 style={{ fontSize: '1.25rem', color: '#818cf8', fontWeight: 700, marginBottom: '1.5rem' }}>Queen of Spades</h3>
               <p style={{ color: '#cbd5e1', fontSize: '0.95rem' }}>An Interactive Guide to the Bidding &amp; Trick-Taking Classic</p>
               <div style={{ marginTop: '2rem', fontSize: '0.8rem', color: '#64748b' }}>
-                Press <span style={{ background: '#1e293b', border: '1px solid #475569', padding: '2px 6px', borderRadius: '4px', margin: '0 4px', color: '#cbd5e1' }}>→</span> or click **Next** below to start
+                Press <span style={{ background: '#1e293b', border: '1px solid #475569', padding: '2px 6px', borderRadius: '4px', margin: '0 4px', color: '#cbd5e1' }}>→</span> or click <strong>Next</strong> below to start
               </div>
             </div>
             <span className="rules-slide-number">Slide 1 / 8</span>
