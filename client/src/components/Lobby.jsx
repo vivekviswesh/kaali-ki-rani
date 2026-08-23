@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Play, Users, UserPlus, Info, BookOpen } from 'lucide-react';
 import versionHistory from '../version_history.json';
-import RulesPresentation from './RulesPresentation.jsx';
 
-export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory }) {
+export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory, onShowRules }) {
   const [playerName, setPlayerName] = useState(localStorage.getItem('kkr_player_name') || '');
   const [roomCode, setRoomCode] = useState('');
   const [timeoutSec, setTimeoutSec] = useState('20');
-  const [showRules, setShowRules] = useState(false);
   const [activeTab, setActiveTab] = useState('single'); // 'single', 'create', 'join'
 
   const saveName = (name) => {
@@ -201,7 +199,7 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
         {/* Footer info */}
         <div className="flex-row justify-between items-center" style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1rem', fontSize: '0.75rem', color: '#64748b' }}>
           <button 
-            onClick={() => setShowRules(true)}
+            onClick={onShowRules}
             className="flex-row items-center"
             style={{ background: 'none', border: 'none', color: '#fbbf24', cursor: 'pointer', fontWeight: 600, gap: '0.25rem' }}
           >
@@ -225,11 +223,6 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
             {versionHistory.currentVersion}
           </span>
         </div>
-
-        {/* Rules Modal Overlay */}
-        {showRules && (
-          <RulesPresentation onClose={() => setShowRules(false)} />
-        )}
 
       </div>
     </div>

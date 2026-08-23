@@ -1,6 +1,15 @@
 {
-  "currentVersion": "v2.0.4",
+  "currentVersion": "v2.0.5",
   "history": [
+    {
+      "version": "v2.0.5",
+      "date": "2026-08-23",
+      "summary": "Standalone Full-Screen Rules Page Layout",
+      "changes": [
+        "Re-architect the rules presentation from a popup modal into a spacious, standalone full-screen page view state inside App.jsx",
+        "Add a dedicated Header bar with a 'Return to Lobby' action button and optimize card grid dimensions for desktop screens"
+      ]
+    },
     {
       "version": "v2.0.4",
       "date": "2026-08-23",

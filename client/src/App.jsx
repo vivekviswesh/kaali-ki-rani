@@ -8,6 +8,7 @@ import GameBoard from './components/GameBoard';
 import BiddingPanel from './components/BiddingPanel';
 import DeclarationOverlay from './components/DeclarationOverlay';
 import Scoreboard from './components/Scoreboard';
+import RulesPresentation from './components/RulesPresentation';
 
 import { Game } from './engine/game.js';
 import { GAME_STATES } from './engine/constants.js';
@@ -43,6 +44,7 @@ export default function App() {
   const [showVerdictHistory, setShowVerdictHistory] = useState(window.innerWidth >= 640);
   const [showScoreboard, setShowScoreboard] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showRules, setShowRules] = useState(false);
   
   // HUD Feed Log
   const [actionLog, setActionLog] = useState([]);
@@ -409,12 +411,15 @@ export default function App() {
   return (
     <div className="flex-col" style={{ minHeight: '100vh', justifyContent: 'space-between', background: '#020617' }}>
       
-      {!inGame ? (
+      {showRules ? (
+        <RulesPresentation onClose={() => setShowRules(false)} />
+      ) : !inGame ? (
         <Lobby
           onCreateRoom={createOnlineRoom}
           onJoinRoom={joinOnlineRoom}
           onStartSinglePlayer={startSinglePlayer}
           onShowVersionHistory={() => setShowVersionHistory(true)}
+          onShowRules={() => setShowRules(true)}
         />
       ) : (
         <div className="flex-col animate-pop-in" style={{ width: '100%', maxWidth: '100%', padding: '0.75rem', gap: '0.75rem' }}>

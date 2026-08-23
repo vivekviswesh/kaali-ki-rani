@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Info, X, ArrowLeft, ArrowRight } from 'lucide-react';
+import { BookOpen, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function RulesPresentation({ onClose }) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -215,11 +215,11 @@ export default function RulesPresentation({ onClose }) {
   };
 
   const renderSlideVisuals = () => {
-    const isActive = true; // Visuals are active because slide class matches index
+    const isActive = true;
     
     switch (currentSlide) {
       case 0:
-        return null; // Slide 1 has visual integrated in text panel for landing aesthetic
+        return null;
       case 1:
         return (
           <div className={`rules-slide-visuals ${isActive ? 'active' : ''}`}>
@@ -355,14 +355,12 @@ export default function RulesPresentation({ onClose }) {
       case 5:
         return (
           <div className={`rules-slide-visuals ${isActive ? 'active' : ''}`} style={{ flexDirection: 'column', gap: '0.75rem' }}>
-            {/* Interactive Scenario Buttons */}
             <div style={{ display: 'flex', gap: '0.4rem', zIndex: 10 }}>
               <button className={`scen-btn ${activeScenario === 1 ? 'active' : ''}`} onClick={() => setActiveScenario(1)}>Scenario 1</button>
               <button className={`scen-btn ${activeScenario === 2 ? 'active' : ''}`} onClick={() => setActiveScenario(2)}>Scenario 2</button>
               <button className={`scen-btn ${activeScenario === 3 ? 'active' : ''}`} onClick={() => setActiveScenario(3)}>Scenario 3</button>
             </div>
 
-            {/* Banner Text matches selected scenario */}
             <div id="trick-scenario-banner" style={{
               padding: '0.4rem 0.8rem',
               borderRadius: '8px',
@@ -380,49 +378,42 @@ export default function RulesPresentation({ onClose }) {
               {activeScenario === 3 && "Scenario 3: Discard Played (Winner: A♣)"}
             </div>
 
-            {/* Felt Table with Active Scenario class */}
             <div className={`rules-visuals-table active-scen-${activeScenario}`} style={{ transform: 'scale(0.85)', transformOrigin: 'center' }}>
               <div className="seat north">N</div>
               <div className="seat east">E</div>
               <div className="seat south">S</div>
               <div className="seat west">W</div>
 
-              {/* North card (always K ♣) */}
               <div className="trick-card club" id="trick-c1" style={{ top: '15px', left: 'calc(50% - 25px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '4px', color: '#0f172a', position: 'absolute' }}>
                 <span style={{ alignSelf: 'flex-start', fontSize: '0.65rem', lineHeight: 1 }}>K</span>
                 <div style={{ fontSize: '1.4rem', textAlign: 'center', lineHeight: 1, alignSelf: 'center' }}>♣</div>
                 <span style={{ alignSelf: 'flex-end', fontSize: '0.65rem', lineHeight: 1, transform: 'rotate(180deg)' }}>K</span>
               </div>
               
-              {/* East card (always 10 ♣) */}
               <div className="trick-card club" id="trick-c2" style={{ right: '15px', top: 'calc(50% - 37px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '4px', color: '#0f172a', position: 'absolute' }}>
                 <span style={{ alignSelf: 'flex-start', fontSize: '0.65rem', lineHeight: 1 }}>10</span>
                 <div style={{ fontSize: '1.4rem', textAlign: 'center', lineHeight: 1, alignSelf: 'center' }}>♣</div>
                 <span style={{ alignSelf: 'flex-end', fontSize: '0.65rem', lineHeight: 1, transform: 'rotate(180deg)' }}>10</span>
               </div>
               
-              {/* West card (always A ♣) */}
               <div className="trick-card club" id="trick-c4" style={{ left: '15px', top: 'calc(50% - 37px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '4px', color: '#0f172a', position: 'absolute' }}>
                 <span style={{ alignSelf: 'flex-start', fontSize: '0.65rem', lineHeight: 1 }}>A</span>
                 <div style={{ fontSize: '1.4rem', textAlign: 'center', lineHeight: 1, alignSelf: 'center' }}>♣</div>
                 <span style={{ alignSelf: 'flex-end', fontSize: '0.65rem', lineHeight: 1, transform: 'rotate(180deg)' }}>A</span>
               </div>
 
-              {/* South S1: Q ♣ */}
               <div className="trick-card club south-card-s1" style={{ bottom: '15px', left: 'calc(50% - 25px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '4px', color: '#0f172a', position: 'absolute' }}>
                 <span style={{ alignSelf: 'flex-start', fontSize: '0.65rem', lineHeight: 1 }}>Q</span>
                 <div style={{ fontSize: '1.4rem', textAlign: 'center', lineHeight: 1, alignSelf: 'center' }}>♣</div>
                 <span style={{ alignSelf: 'flex-end', fontSize: '0.65rem', lineHeight: 1, transform: 'rotate(180deg)' }}>Q</span>
               </div>
 
-              {/* South S2: 5 ♦ */}
               <div className="trick-card diamond south-card-s2" style={{ bottom: '15px', left: 'calc(50% - 25px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '4px', color: '#f43f5e', position: 'absolute' }}>
                 <span style={{ alignSelf: 'flex-start', fontSize: '0.65rem', lineHeight: 1 }}>5</span>
                 <div style={{ fontSize: '1.4rem', textAlign: 'center', lineHeight: 1, alignSelf: 'center' }}>♦</div>
                 <span style={{ alignSelf: 'flex-end', fontSize: '0.65rem', lineHeight: 1, transform: 'rotate(180deg)' }}>5</span>
               </div>
 
-              {/* South S3: 7 ♥ */}
               <div className="trick-card heart south-card-s3" style={{ bottom: '15px', left: 'calc(50% - 25px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '4px', color: '#f43f5e', position: 'absolute' }}>
                 <span style={{ alignSelf: 'flex-start', fontSize: '0.65rem', lineHeight: 1 }}>7</span>
                 <div style={{ fontSize: '1.4rem', textAlign: 'center', lineHeight: 1, alignSelf: 'center' }}>♥</div>
@@ -475,7 +466,6 @@ export default function RulesPresentation({ onClose }) {
           <div className={`rules-slide-visuals ${isActive ? 'active' : ''}`}>
             {/* Fireworks show */}
             <div className="rules-fw-show">
-              {/* Launcher 1 */}
               <div className="rules-fw fw-1" style={{ top: '25%', left: '25%' }}>
                 <div className="particle" style={{ '--tx': '0px', '--ty': '-60px', background: '#fbbf24', boxShadow: '0 0 8px #fbbf24' }}></div>
                 <div className="particle" style={{ '--tx': '42px', '--ty': '-42px', background: '#f43f5e', boxShadow: '0 0 8px #f43f5e' }}></div>
@@ -487,7 +477,6 @@ export default function RulesPresentation({ onClose }) {
                 <div className="particle" style={{ '--tx': '-42px', '--ty': '-42px', background: '#818cf8', boxShadow: '0 0 8px #818cf8' }}></div>
               </div>
               
-              {/* Launcher 2 */}
               <div className="rules-fw fw-2" style={{ top: '20%', left: '75%' }}>
                 <div className="particle" style={{ '--tx': '0px', '--ty': '-60px', background: '#a78bfa', boxShadow: '0 0 8px #a78bfa' }}></div>
                 <div className="particle" style={{ '--tx': '42px', '--ty': '-42px', background: '#60a5fa', boxShadow: '0 0 8px #60a5fa' }}></div>
@@ -499,7 +488,6 @@ export default function RulesPresentation({ onClose }) {
                 <div className="particle" style={{ '--tx': '-42px', '--ty': '-42px', background: '#fbbf24', boxShadow: '0 0 8px #fbbf24' }}></div>
               </div>
 
-              {/* Launcher 3 */}
               <div className="rules-fw fw-3" style={{ top: '65%', left: '20%' }}>
                 <div className="particle" style={{ '--tx': '0px', '--ty': '-50px', background: '#f43f5e', boxShadow: '0 0 8px #f43f5e' }}></div>
                 <div className="particle" style={{ '--tx': '35px', '--ty': '-35px', background: '#818cf8', boxShadow: '0 0 8px #818cf8' }}></div>
@@ -511,7 +499,6 @@ export default function RulesPresentation({ onClose }) {
                 <div className="particle" style={{ '--tx': '-35px', '--ty': '-35px', background: '#34d399', boxShadow: '0 0 8px #34d399' }}></div>
               </div>
 
-              {/* Launcher 4 */}
               <div className="rules-fw fw-4" style={{ top: '60%', left: '80%' }}>
                 <div className="particle" style={{ '--tx': '0px', '--ty': '-50px', background: '#34d399', boxShadow: '0 0 8px #34d399' }}></div>
                 <div className="particle" style={{ '--tx': '35px', '--ty': '-35px', background: '#fbbf24', boxShadow: '0 0 8px #fbbf24' }}></div>
@@ -534,58 +521,60 @@ export default function RulesPresentation({ onClose }) {
   const progressPercent = (currentSlide / (totalSlides - 1)) * 100;
 
   return (
-    <div className="modal-overlay-blur" style={{ zIndex: 100 }}>
-      <div className="rules-modal-card">
-        {/* Header */}
-        <div className="rules-modal-header">
-          <h2>
-            <BookOpen size={18} style={{ color: '#fbbf24' }} />
-            How to Play - Game Guide
-          </h2>
-          <button onClick={onClose} className="rules-close-btn" title="Close Guide">
-            <X size={18} />
-          </button>
-        </div>
+    <div className="rules-page-container">
+      {/* Header */}
+      <div className="rules-modal-header">
+        <h2>
+          <BookOpen size={18} style={{ color: '#fbbf24' }} />
+          How to Play - Game Guide
+        </h2>
+        <button onClick={onClose} className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
+          Return to Lobby
+        </button>
+      </div>
 
-        {/* Slide Body */}
-        <div className="rules-modal-body">
-          {renderSlideContent()}
-          {renderSlideVisuals()}
-        </div>
-
-        {/* Navigation Footer */}
-        <div className="rules-modal-footer">
-          <button 
-            onClick={handlePrev} 
-            className="btn btn-secondary" 
-            disabled={currentSlide === 0}
-            style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-          >
-            <ArrowLeft size={16} />
-            Previous
-          </button>
-
-          {/* Progress Indicator */}
-          <div style={{ flex: 1, height: '4px', background: 'rgba(255, 255, 255, 0.06)', margin: '0 1.5rem', borderRadius: '2px', position: 'relative', overflow: 'hidden' }}>
-            <div style={{
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              height: '100%',
-              background: 'linear-gradient(90deg, #818cf8, #fbbf24)',
-              width: `${progressPercent}%`,
-              transition: 'width 0.3s ease'
-            }} />
+      {/* Main Card Wrapper */}
+      <div className="rules-page-body">
+        <div className="rules-page-card">
+          <div className="rules-modal-body">
+            {renderSlideContent()}
+            {renderSlideVisuals()}
           </div>
 
-          <button 
-            onClick={handleNext} 
-            className="btn btn-indigo"
-            style={{ padding: '0.5rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-          >
-            {currentSlide === totalSlides - 1 ? 'Start Over' : 'Next'}
-            <ArrowRight size={16} />
-          </button>
+          {/* Navigation Footer */}
+          <div className="rules-modal-footer">
+            <button 
+              onClick={handlePrev} 
+              className="btn btn-secondary" 
+              disabled={currentSlide === 0}
+              style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+            >
+              <ArrowLeft size={16} />
+              Previous
+            </button>
+
+            {/* Progress Indicator */}
+            <div style={{ flex: 1, height: '4px', background: 'rgba(255, 255, 255, 0.06)', margin: '0 1.5rem', borderRadius: '2px', position: 'relative', overflow: 'hidden' }}>
+              <div style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                height: '100%',
+                background: 'linear-gradient(90deg, #818cf8, #fbbf24)',
+                width: `${progressPercent}%`,
+                transition: 'width 0.3s ease'
+              }} />
+            </div>
+
+            <button 
+              onClick={handleNext} 
+              className="btn btn-indigo"
+              style={{ padding: '0.5rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+            >
+              {currentSlide === totalSlides - 1 ? 'Start Over' : 'Next'}
+              <ArrowRight size={16} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
