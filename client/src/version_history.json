@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.0.8",
+  "currentVersion": "v2.0.9",
   "history": [
+    {
+      "version": "v2.0.9",
+      "date": "2026-08-23",
+      "summary": "Revert Queen of Spades Text Wording",
+      "changes": [
+        "Revert Queen of Spades / Spade Queen descriptions from symbolic forms back to their literal wordings, keeping diamonds as ♦ symbol"
+      ]
+    },
     {
       "version": "v2.0.8",
       "date": "2026-08-23",

@@ -57,7 +57,7 @@ export default function RulesPresentation({ onClose }) {
                 </div>
               </div>
               <h1 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fbbf24', textShadow: '0 0 15px rgba(251,191,36,0.3)', margin: '0.5rem 0 0.25rem 0' }}>KALI KI RANI</h1>
-              <h3 style={{ fontSize: '1.25rem', color: '#818cf8', fontWeight: 700, marginBottom: '1.5rem' }}>Queen of ♠</h3>
+              <h3 style={{ fontSize: '1.25rem', color: '#818cf8', fontWeight: 700, marginBottom: '1.5rem' }}>Queen of Spades</h3>
               <p style={{ color: '#cbd5e1', fontSize: '0.95rem' }}>An Interactive Guide to the Bidding &amp; Trick-Taking Classic</p>
               <div style={{ marginTop: '2rem', fontSize: '0.8rem', color: '#64748b' }}>
                 Press <span style={{ background: '#1e293b', border: '1px solid #475569', padding: '2px 6px', borderRadius: '4px', margin: '0 4px', color: '#cbd5e1' }}>→</span> or click <strong>Next</strong> below to start
@@ -96,7 +96,7 @@ export default function RulesPresentation({ onClose }) {
               <div className="rules-slide-body">
                 <p>Only certain cards carry points. The deck contains exactly <strong>150 points total</strong>:</p>
                 <ul>
-                  <li><strong>Queen of ♠ (Kaali)</strong>: <span className="rules-badge rules-badge-danger">30 points</span></li>
+                  <li><strong>Queen of Spades (Kaali)</strong>: <span className="rules-badge rules-badge-danger">30 points</span></li>
                   <li><strong>Aces</strong>: <span className="rules-badge rules-badge-primary">15 points each</span></li>
                   <li><strong>10s</strong>: <span className="rules-badge rules-badge-accent">10 points each</span></li>
                   <li><strong>5s</strong>: <span className="rules-badge rules-badge-success">5 points each</span></li>
@@ -240,7 +240,7 @@ export default function RulesPresentation({ onClose }) {
           <div className={`rules-slide-visuals rules-point-card-row ${isActive ? 'active' : ''}`} style={{ flexDirection: 'column', justifyContent: 'center', gap: '0.4rem', padding: '0.5rem 0.75rem', alignItems: 'stretch' }}>
             {/* Row 1: Queen of Spades (30 pts) */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'space-between', background: 'rgba(255,255,255,0.02)', padding: '0.25rem 0.6rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#f43f5e', textShadow: '0 0 5px rgba(244,63,94,0.2)' }}>Queen of ♠ (30 pts):</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#f43f5e', textShadow: '0 0 5px rgba(244,63,94,0.2)' }}>Spade Queen (30 pts):</span>
               <div style={{ display: 'flex', gap: '0.3rem' }}>
                 <div className="rules-card-element spade queen-spades small-card" style={{ width: '40px', height: '60px', padding: '3px', fontSize: '0.65rem', boxShadow: '0 0 8px rgba(251, 191, 36, 0.4)', position: 'relative' }}>
                   <span>Q</span>
