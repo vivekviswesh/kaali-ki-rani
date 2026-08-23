@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.0.1",
+  "currentVersion": "v2.0.2",
   "history": [
+    {
+      "version": "v2.0.2",
+      "date": "2026-08-23",
+      "summary": "Proactive PWA Auto-Reload on Service Worker Update",
+      "changes": [
+        "Add navigator.serviceWorker controllerchange event listener in main.jsx to force automatic browser reloads once updates are ready, ensuring users always see the latest version instantly"
+      ]
+    },
     {
       "version": "v2.0.1",
       "date": "2026-08-22",
