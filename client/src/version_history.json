@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.1.5",
+  "currentVersion": "v2.1.6",
   "history": [
+    {
+      "version": "v2.1.6",
+      "date": "2026-08-24",
+      "summary": "Implement URL Hash Auto-Cleanup",
+      "changes": [
+        "Wipe out Supabase token parameters and hash fragments (#) from the browser address bar immediately upon successful login"
+      ]
+    },
     {
       "version": "v2.1.5",
       "date": "2026-08-24",
