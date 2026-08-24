@@ -15,6 +15,8 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
   const [newGamerName, setNewGamerName] = useState('');
   const [nameError, setNameError] = useState('');
   const [isSavingName, setIsSavingName] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [isSendingMagicLink, setIsSendingMagicLink] = useState(false);
 
   useEffect(() => {
     if (!supabase) return;
@@ -65,13 +67,45 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
     if (error) alert('Google Sign In failed: ' + error.message);
   };
 
-  const handlePasskeySignIn = async () => {
-    const email = prompt("Enter email associated with your passkey account:");
-    if (!email) return;
+  const handleMagicLinkSignIn = async (e) => {
+    if (e) e.preventDefault();
+    const cleanEmail = loginEmail.trim();
+    if (!cleanEmail) {
+      alert('Please enter your email.');
+      return;
+    }
+
+    setIsSendingMagicLink(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: cleanEmail,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
+      if (error) throw error;
+      alert('Magic login link sent! Please check your email inbox.');
+    } catch (err) {
+      alert('Error sending magic link: ' + err.message);
+    } finally {
+      setIsSendingMagicLink(false);
+    }
+  };
+
+  const handlePasskeySignIn = async (e) => {
+    if (e) e.preventDefault();
+    const cleanEmail = loginEmail.trim();
+    if (!cleanEmail) {
+      alert('Please enter your email to log in with a Passkey.');
+      return;
+    }
+
     const { error } = await supabase.auth.passkey.signInWithPasskey({
-      email: email
+      email: cleanEmail
     });
-    if (error) alert('Passkey authentication failed: ' + error.message);
+    if (error) {
+      alert('Passkey authentication failed. Make sure you have already registered your passkey on this device for this account:\n' + error.message);
+    }
   };
 
   const handleRegisterPasskey = async () => {
@@ -236,7 +270,7 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
   if (supabase && !user) {
     return (
       <div className="felt-table flex-center" style={{ minHeight: '100vh', padding: '1rem' }}>
-        <div className="glass-panel animate-pop-in flex-col items-center" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem 2rem', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '1.5rem', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', gap: '1.5rem' }}>
+        <div className="glass-panel animate-pop-in flex-col items-center" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem 2rem', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '1.5rem', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', gap: '1.25rem' }}>
           
           {/* Title Header */}
           <div style={{ textAlign: 'center' }}>
@@ -257,25 +291,61 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
             </p>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex-col" style={{ width: '100%', gap: '0.75rem' }}>
-            <button
-              onClick={handleGoogleSignIn}
-              className="btn btn-secondary flex-row flex-center"
-              style={{ width: '100%', padding: '0.875rem', fontSize: '0.9rem', fontWeight: 700, borderRadius: '0.75rem', background: '#0f172a', border: '1px solid rgba(255,255,255,0.08)', color: '#ffffff', cursor: 'pointer' }}
-            >
-              <GoogleLogo />
-              Sign In with Google
-            </button>
-            <button
-              onClick={handlePasskeySignIn}
-              className="btn btn-secondary flex-row flex-center"
-              style={{ width: '100%', padding: '0.875rem', fontSize: '0.9rem', fontWeight: 700, borderRadius: '0.75rem', background: '#0f172a', border: '1px solid rgba(255,255,255,0.08)', color: '#ffffff', cursor: 'pointer' }}
-            >
-              <Key size={18} style={{ marginRight: '0.5rem', color: '#fbbf24' }} fill="currentColor" />
-              Sign In with Passkey
-            </button>
+          {/* Email Registration/Login Section */}
+          <form onSubmit={handleMagicLinkSignIn} className="flex-col" style={{ width: '100%', gap: '0.75rem' }}>
+            <div className="form-group" style={{ marginBottom: '0.15rem' }}>
+              <label className="form-label" style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Email Address</label>
+              <input
+                type="email"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                placeholder="Enter your email..."
+                className="form-input"
+                required
+              />
+            </div>
+            <div className="grid-2" style={{ gap: '0.5rem' }}>
+              <button
+                type="submit"
+                className="btn btn-primary flex-row flex-center"
+                style={{ padding: '0.75rem 0.5rem', fontSize: '0.8rem', fontWeight: 700, cursor: isSendingMagicLink ? 'not-allowed' : 'pointer' }}
+                disabled={isSendingMagicLink}
+              >
+                {isSendingMagicLink ? 'Sending...' : '✉️ Magic Link'}
+              </button>
+              <button
+                type="button"
+                onClick={handlePasskeySignIn}
+                className="btn btn-secondary flex-row flex-center"
+                style={{ padding: '0.75rem 0.5rem', fontSize: '0.8rem', fontWeight: 700, background: '#0f172a', border: '1px solid rgba(255,255,255,0.08)', color: '#ffffff', cursor: 'pointer' }}
+              >
+                <Key size={14} style={{ marginRight: '0.25rem', color: '#fbbf24' }} fill="currentColor" />
+                Passkey Sign In
+              </button>
+            </div>
+          </form>
+
+          {/* Explanatory Notice */}
+          <p style={{ color: '#94a3b8', fontSize: '0.7rem', fontStyle: 'italic', textAlign: 'center', lineHeight: '1.4', background: 'rgba(255,255,255,0.02)', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.04)', margin: 0 }}>
+            ⚠️ <strong>Notice:</strong> To use Passkey Sign In, you must first register your email via Google or Magic Link, then create a passkey in your profile settings.
+          </p>
+
+          {/* Divider */}
+          <div className="flex-row items-center justify-center" style={{ width: '100%', gap: '0.5rem', color: '#475569', fontSize: '0.75rem', fontWeight: 600 }}>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }}></div>
+            <span>OR</span>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }}></div>
           </div>
+
+          {/* Google SSO Button */}
+          <button
+            onClick={handleGoogleSignIn}
+            className="btn btn-secondary flex-row flex-center"
+            style={{ width: '100%', padding: '0.875rem', fontSize: '0.9rem', fontWeight: 700, borderRadius: '0.75rem', background: '#0f172a', border: '1px solid rgba(255,255,255,0.08)', color: '#ffffff', cursor: 'pointer' }}
+          >
+            <GoogleLogo />
+            Sign In with Google
+          </button>
 
           {/* Footer Info */}
           <div className="flex-row justify-between items-center" style={{ width: '100%', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.25rem', fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem' }}>

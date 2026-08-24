@@ -1,6 +1,16 @@
 {
-  "currentVersion": "v2.1.4",
+  "currentVersion": "v2.1.5",
   "history": [
+    {
+      "version": "v2.1.5",
+      "date": "2026-08-24",
+      "summary": "Email Magic Links & Updated Passkey Login Flows",
+      "changes": [
+        "Integrate passwordless email Magic Link registration/sign-in flows via Supabase Auth client",
+        "Redesign locked login card to present an email input field linked to Magic Link delivery and biometric Passkeys",
+        "Add a prominent instructional notice guiding players on how to register biometric passkeys on their device profiles"
+      ]
+    },
     {
       "version": "v2.1.4",
       "date": "2026-08-24",
