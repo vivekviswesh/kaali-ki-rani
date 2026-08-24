@@ -1,6 +1,16 @@
 {
-  "currentVersion": "v2.1.2",
+  "currentVersion": "v2.1.3",
   "history": [
+    {
+      "version": "v2.1.3",
+      "date": "2026-08-24",
+      "summary": "Enforce Mandatory Authentication",
+      "changes": [
+        "Change authentication flow from optional to mandatory when Supabase keys are configured in the environment",
+        "Redesign sign-in interface as a locked full-screen welcome gate and integrate official Google vector logo SVG and Lucide key icons",
+        "Enforce strict token signature verification inside backend Socket.io connection middleware"
+      ]
+    },
     {
       "version": "v2.1.2",
       "date": "2026-08-24",

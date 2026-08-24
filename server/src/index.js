@@ -64,8 +64,12 @@ const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET || '';
 io.use((socket, next) => {
   const token = socket.handshake.auth?.token;
   if (!token) {
-    socket.user = null; // Guest user
-    return next();
+    if (!SUPABASE_JWT_SECRET) {
+      console.warn("WARNING: SUPABASE_JWT_SECRET environment variable is not defined. Defaulting to local dev-guest.");
+      socket.user = { id: 'dev-guest', email: 'dev@example.com', name: 'Dev Guest' };
+      return next();
+    }
+    return next(new Error("Authentication failed: Login is mandatory to play"));
   }
 
   try {
