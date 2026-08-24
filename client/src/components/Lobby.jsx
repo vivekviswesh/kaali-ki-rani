@@ -49,6 +49,11 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
         }
       } catch (err) {
         console.error('Error fetching profile:', err.message);
+        if (err.message?.includes('relation "public.profiles" does not exist')) {
+          alert('Database Setup Required:\nPlease run the SQL script in your Supabase SQL Editor to create the "profiles" table (see walkthrough.md).');
+        } else {
+          alert('Error loading profile: ' + err.message);
+        }
       } finally {
         setIsLoadingProfile(false);
       }
