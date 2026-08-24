@@ -116,49 +116,51 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
         </div>
 
         {/* Supabase Authentication Section */}
-        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '0.75rem', padding: '1rem', marginBottom: '1.5rem' }}>
-          {user ? (
-            <div className="flex-col" style={{ gap: '0.5rem' }}>
-              <div className="flex-row justify-between items-center" style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>
-                <span>Logged in as: <strong style={{ color: '#34d399' }}>{user.email}</strong></span>
-                <button 
-                  onClick={onSignOut} 
-                  className="btn" 
-                  style={{ padding: '0.25rem 0.5rem', fontSize: '0.7rem', background: 'rgba(239, 68, 68, 0.2)', border: '1px solid #ef4444', color: '#fca5a5' }}
+        {supabase && (
+          <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '0.75rem', padding: '1rem', marginBottom: '1.5rem' }}>
+            {user ? (
+              <div className="flex-col" style={{ gap: '0.5rem' }}>
+                <div className="flex-row justify-between items-center" style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>
+                  <span>Logged in as: <strong style={{ color: '#34d399' }}>{user.email}</strong></span>
+                  <button 
+                    onClick={onSignOut} 
+                    className="btn" 
+                    style={{ padding: '0.25rem 0.5rem', fontSize: '0.7rem', background: 'rgba(239, 68, 68, 0.2)', border: '1px solid #ef4444', color: '#fca5a5' }}
+                  >
+                    Logout
+                  </button>
+                </div>
+                <button
+                  onClick={handleRegisterPasskey}
+                  className="btn"
+                  style={{ padding: '0.4rem', fontSize: '0.75rem', background: 'rgba(129, 140, 248, 0.2)', border: '1px solid #818cf8', color: '#cbd5e1', width: '100%', marginTop: '0.25rem' }}
                 >
-                  Logout
+                  🔑 Add/Register Device Passkey
                 </button>
               </div>
-              <button
-                onClick={handleRegisterPasskey}
-                className="btn"
-                style={{ padding: '0.4rem', fontSize: '0.75rem', background: 'rgba(129, 140, 248, 0.2)', border: '1px solid #818cf8', color: '#cbd5e1', width: '100%', marginTop: '0.25rem' }}
-              >
-                🔑 Add/Register Device Passkey
-              </button>
-            </div>
-          ) : (
-            <div className="flex-col" style={{ gap: '0.75rem' }}>
-              <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>Optional: Log in to enable biometric passkeys & save account</span>
-              <div className="grid-2" style={{ gap: '0.5rem' }}>
-                <button
-                  onClick={handleGoogleSignIn}
-                  className="btn btn-secondary flex-row flex-center"
-                  style={{ padding: '0.5rem', fontSize: '0.75rem', gap: '0.25rem' }}
-                >
-                  <span>🌐</span> Google Login
-                </button>
-                <button
-                  onClick={handlePasskeySignIn}
-                  className="btn btn-secondary flex-row flex-center"
-                  style={{ padding: '0.5rem', fontSize: '0.75rem', gap: '0.25rem' }}
-                >
-                  <span>🔑</span> Passkey Login
-                </button>
+            ) : (
+              <div className="flex-col" style={{ gap: '0.75rem' }}>
+                <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>Optional: Log in to enable biometric passkeys & save account</span>
+                <div className="grid-2" style={{ gap: '0.5rem' }}>
+                  <button
+                    onClick={handleGoogleSignIn}
+                    className="btn btn-secondary flex-row flex-center"
+                    style={{ padding: '0.5rem', fontSize: '0.75rem', gap: '0.25rem' }}
+                  >
+                    <span>🌐</span> Google Login
+                  </button>
+                  <button
+                    onClick={handlePasskeySignIn}
+                    className="btn btn-secondary flex-row flex-center"
+                    style={{ padding: '0.5rem', fontSize: '0.75rem', gap: '0.25rem' }}
+                  >
+                    <span>🔑</span> Passkey Login
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
         {/* Player Name Input */}
         <div className="form-group">

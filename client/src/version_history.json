@@ -1,6 +1,15 @@
 {
-  "currentVersion": "v2.1.1",
+  "currentVersion": "v2.1.2",
   "history": [
+    {
+      "version": "v2.1.2",
+      "date": "2026-08-24",
+      "summary": "Implement Defensive Auth Fallbacks",
+      "changes": [
+        "Prevent application from throwing errors or showing a blank screen if Supabase URL or Anon Key environment variables are missing",
+        "Enable the application to automatically skip auth and run in standard guest mode when keys are not configured"
+      ]
+    },
     {
       "version": "v2.1.1",
       "date": "2026-08-23",

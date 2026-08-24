@@ -52,6 +52,8 @@ export default function App() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
+    if (!supabase) return;
+
     // Check active session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -68,6 +70,7 @@ export default function App() {
   }, []);
 
   const handleSignOut = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     setSession(null);
     setUser(null);
