@@ -316,7 +316,7 @@ export default function App() {
     
     const socket = io(SERVER_URL, {
       transports: ['websocket'],
-      auth: session ? { token: session.access_token } : {}
+      auth: session ? { token: session.access_token, name: name } : {}
     });
     socketRef.current = socket;
 
@@ -341,7 +341,7 @@ export default function App() {
 
     const socket = io(SERVER_URL, {
       transports: ['websocket'],
-      auth: session ? { token: session.access_token } : {}
+      auth: session ? { token: session.access_token, name: name } : {}
     });
     socketRef.current = socket;
 

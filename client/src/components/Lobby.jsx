@@ -9,12 +9,50 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
   const [timeoutSec, setTimeoutSec] = useState('20');
   const [activeTab, setActiveTab] = useState('single'); // 'single', 'create', 'join'
 
+  const [profile, setProfile] = useState(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [showNameSelector, setShowNameSelector] = useState(false);
+  const [newGamerName, setNewGamerName] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [isSavingName, setIsSavingName] = useState(false);
+
   useEffect(() => {
-    if (user) {
-      const authName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Player';
-      setPlayerName(authName);
-      localStorage.setItem('kkr_player_name', authName);
-    }
+    if (!supabase) return;
+
+    const fetchProfile = async () => {
+      if (!user) {
+        setProfile(null);
+        setIsLoadingProfile(false);
+        return;
+      }
+
+      setIsLoadingProfile(true);
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('gamer_name')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        if (data) {
+          setProfile(data);
+          setPlayerName(data.gamer_name);
+          localStorage.setItem('kkr_player_name', data.gamer_name);
+          setShowNameSelector(false);
+        } else {
+          // No profile found, onboarding required
+          setShowNameSelector(true);
+        }
+      } catch (err) {
+        console.error('Error fetching profile:', err.message);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+
+    fetchProfile();
   }, [user]);
 
   const handleGoogleSignIn = async () => {
@@ -45,6 +83,59 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
     }
   };
 
+  const handleSaveGamerName = async (e) => {
+    e.preventDefault();
+    setNameError('');
+    const cleanName = newGamerName.trim();
+    
+    if (cleanName.length < 3) {
+      setNameError('Name must be at least 3 characters.');
+      return;
+    }
+    if (cleanName.length > 15) {
+      setNameError('Name cannot exceed 15 characters.');
+      return;
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(cleanName)) {
+      setNameError('Alphanumeric characters and underscores only.');
+      return;
+    }
+
+    setIsSavingName(true);
+    try {
+      // Check uniqueness
+      const { data: existing, error: checkError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('gamer_name', cleanName)
+        .maybeSingle();
+
+      if (checkError) throw checkError;
+
+      if (existing && existing.id !== user.id) {
+        setNameError('This name is already taken by another player.');
+        return;
+      }
+
+      // Upsert profile
+      const { error: upsertError } = await supabase
+        .from('profiles')
+        .upsert({ id: user.id, gamer_name: cleanName, updated_at: new Date() });
+
+      if (upsertError) throw upsertError;
+
+      setProfile({ gamer_name: cleanName });
+      setPlayerName(cleanName);
+      localStorage.setItem('kkr_player_name', cleanName);
+      setShowNameSelector(false);
+      setNameError('');
+    } catch (err) {
+      setNameError(err.message || 'Error saving name.');
+    } finally {
+      setIsSavingName(false);
+    }
+  };
+
   const saveName = (name) => {
     setPlayerName(name);
     localStorage.setItem('kkr_player_name', name);
@@ -69,6 +160,78 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
       />
     </svg>
   );
+
+  if (isLoadingProfile) {
+    return (
+      <div className="felt-table flex-center" style={{ minHeight: '100vh', padding: '1rem' }}>
+        <div className="flex-col items-center" style={{ gap: '1rem', color: '#cbd5e1' }}>
+          <div className="animate-spin" style={{ width: '2rem', height: '2rem', border: '3px solid rgba(255,255,255,0.1)', borderTopColor: '#34d399', borderRadius: '50%' }}></div>
+          <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Loading profile...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (supabase && user && showNameSelector) {
+    return (
+      <div className="felt-table flex-center" style={{ minHeight: '100vh', padding: '1rem' }}>
+        <div className="glass-panel animate-pop-in flex-col items-center" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem 2rem', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '1.5rem', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', gap: '1.5rem' }}>
+          
+          <div style={{ textAlign: 'center' }}>
+            <span style={{ fontSize: '3rem', display: 'block', marginBottom: '0.5rem' }}>🎮</span>
+            <h1 style={{ 
+              fontSize: '2rem', 
+              fontWeight: 900, 
+              background: 'linear-gradient(135deg, #fcd34d 0%, #fbbf24 50%, #34d399 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              letterSpacing: '-0.02em',
+              margin: 0
+            }}>
+              Choose Gamer Name
+            </h1>
+            <p style={{ color: '#94a3b8', fontSize: '0.85rem', fontWeight: 500, marginTop: '0.5rem' }}>
+              Every player needs a unique display name to play.
+            </p>
+          </div>
+
+          <form onSubmit={handleSaveGamerName} className="flex-col" style={{ width: '100%', gap: '1rem' }}>
+            <div className="form-group">
+              <label className="form-label" style={{ color: '#cbd5e1' }}>Unique Username (3-15 characters)</label>
+              <input
+                type="text"
+                value={newGamerName}
+                onChange={(e) => {
+                  setNewGamerName(e.target.value);
+                  setNameError('');
+                }}
+                placeholder="Enter gamer name..."
+                className="form-input"
+                maxLength={15}
+                disabled={isSavingName}
+                required
+              />
+              {nameError && (
+                <p style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.35rem', fontWeight: 600 }}>
+                  ⚠️ {nameError}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-indigo flex-row flex-center"
+              style={{ width: '100%', padding: '0.875rem', fontSize: '0.9rem', fontWeight: 700, borderRadius: '0.75rem', cursor: isSavingName ? 'not-allowed' : 'pointer' }}
+              disabled={isSavingName}
+            >
+              {isSavingName ? 'Saving...' : 'Save and Enter Lobby'}
+            </button>
+          </form>
+
+        </div>
+      </div>
+    );
+  }
 
   if (supabase && !user) {
     return (
@@ -217,16 +380,28 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
           <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '0.75rem', padding: '0.75rem 1rem', marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#cbd5e1' }}>
               <span className="flex-row items-center" style={{ gap: '0.25rem' }}>
-                👤 <strong>{user.email}</strong>
+                👤 Gamer: <strong style={{ color: '#34d399' }}>{playerName}</strong>
               </span>
-              <button 
-                onClick={onSignOut} 
-                className="flex-row items-center" 
-                style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, gap: '0.25rem' }}
-              >
-                <LogOut size={12} />
-                Sign Out
-              </button>
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <button 
+                  onClick={() => {
+                    setNewGamerName(playerName);
+                    setShowNameSelector(true);
+                  }}
+                  style={{ background: 'none', border: 'none', color: '#fbbf24', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700 }}
+                >
+                  Edit Name
+                </button>
+                <span style={{ color: 'rgba(255,255,255,0.1)' }}>|</span>
+                <button 
+                  onClick={onSignOut} 
+                  className="flex-row items-center" 
+                  style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, gap: '0.25rem' }}
+                >
+                  <LogOut size={12} />
+                  Sign Out
+                </button>
+              </div>
             </div>
             <button
               onClick={handleRegisterPasskey}

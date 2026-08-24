@@ -82,7 +82,7 @@ io.use((socket, next) => {
     socket.user = {
       id: decoded.sub,
       email: decoded.email,
-      name: decoded.user_metadata?.full_name || decoded.email?.split('@')[0] || 'Player'
+      name: socket.handshake.auth?.name || decoded.user_metadata?.full_name || decoded.email?.split('@')[0] || 'Player'
     };
     next();
   } catch (err) {
