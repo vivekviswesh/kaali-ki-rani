@@ -105,6 +105,11 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
       return;
     }
 
+    if (!supabase || !supabase.auth || !supabase.auth.passkey) {
+      alert('Passkey support is not available or enabled in your Supabase client initialization settings.');
+      return;
+    }
+
     const { error } = await supabase.auth.passkey.signInWithPasskey({
       email: cleanEmail
     });
@@ -114,6 +119,10 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
   };
 
   const handleRegisterPasskey = async () => {
+    if (!supabase || !supabase.auth || !supabase.auth.passkey) {
+      alert('Passkey support is not available or enabled in your Supabase configuration.');
+      return;
+    }
     const { data, error } = await supabase.auth.passkey.register();
     if (error) {
       alert('Error registering passkey: ' + error.message);

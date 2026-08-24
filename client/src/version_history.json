@@ -1,6 +1,15 @@
 {
-  "currentVersion": "v2.1.7",
+  "currentVersion": "v2.1.8",
   "history": [
+    {
+      "version": "v2.1.8",
+      "date": "2026-08-24",
+      "summary": "Upgrade Supabase Client SDK for Passkeys Support",
+      "changes": [
+        "Upgrade @supabase/supabase-js package dependencies to version 2.112.3 to support native experimental passkeys API",
+        "Add defensive guard checks inside Lobby passkey triggers to gracefully handle uninitialized properties"
+      ]
+    },
     {
       "version": "v2.1.7",
       "date": "2026-08-24",
