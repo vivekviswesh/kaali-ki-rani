@@ -106,15 +106,19 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
     }
 
     if (!supabase || !supabase.auth || !supabase.auth.passkey) {
-      alert('Passkey support is not available or enabled in your Supabase client initialization settings.');
+      alert('Passkey support is not available or enabled in your Supabase client settings.');
       return;
     }
 
-    const { error } = await supabase.auth.passkey.signInWithPasskey({
-      email: cleanEmail
-    });
-    if (error) {
-      alert('Passkey authentication failed. Make sure you have already registered your passkey on this device for this account:\n' + error.message);
+    try {
+      const { error } = await supabase.auth.passkey.signInWithPasskey({
+        email: cleanEmail
+      });
+      if (error) {
+        alert('Passkey authentication failed: ' + error.message);
+      }
+    } catch (err) {
+      alert('Unexpected Passkey Sign In Exception:\n' + err.message);
     }
   };
 
@@ -123,11 +127,15 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
       alert('Passkey support is not available or enabled in your Supabase configuration.');
       return;
     }
-    const { data, error } = await supabase.auth.passkey.register();
-    if (error) {
-      alert('Error registering passkey: ' + error.message);
-    } else {
-      alert('Passkey successfully registered on this device!');
+    try {
+      const { data, error } = await supabase.auth.passkey.register();
+      if (error) {
+        alert('Error registering passkey: ' + error.message + '\n\nMake sure Passkey Authentication is enabled in your Supabase Auth dashboard.');
+      } else {
+        alert('Passkey successfully registered on this device!');
+      }
+    } catch (err) {
+      alert('Unexpected Exception during passkey registration:\n' + err.message + '\n\nMake sure your Supabase Project settings have Passkey authentication enabled under Authentication -> Passkeys.');
     }
   };
 
