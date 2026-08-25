@@ -15,10 +15,30 @@ app.get('/health', (req, res) => {
 
 const server = createServer(app);
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
+const ALLOWED_ORIGINS = [
+  'http://localhost:5173',
+  'https://kaali-ki-rani.pages.dev',
+  'https://kaali-ki-rani-prod.pages.dev'
+];
+if (process.env.CLIENT_ORIGIN) {
+  ALLOWED_ORIGINS.push(process.env.CLIENT_ORIGIN);
+}
 
 const io = new Server(server, {
   cors: {
-    origin: CLIENT_ORIGIN,
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      
+      const isAllowed = ALLOWED_ORIGINS.includes(origin) || 
+                        origin.endsWith('.pages.dev') || 
+                        origin.startsWith('http://localhost:');
+                        
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST'],
     credentials: true
   }

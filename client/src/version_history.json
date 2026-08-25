@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.2.0",
+  "currentVersion": "v2.2.1",
   "history": [
+    {
+      "version": "v2.2.1",
+      "date": "2026-08-25",
+      "summary": "Optimize Server CORS Security Policies",
+      "changes": [
+        "Dynamically authorize WebSocket origins matching localhost ports or Cloudflare Pages subdomains to prevent connection rejections across environments"
+      ]
+    },
     {
       "version": "v2.2.0",
       "date": "2026-08-24",
