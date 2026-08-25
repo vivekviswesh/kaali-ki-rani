@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.2.1",
+  "currentVersion": "v2.2.2",
   "history": [
+    {
+      "version": "v2.2.2",
+      "date": "2026-08-25",
+      "summary": "Add Socket Connection Error Interceptors",
+      "changes": [
+        "Listen to connect_error events on Socket.io client to bubble up real-time connection rejection alerts (CORS/Authentication fail) directly to the user"
+      ]
+    },
     {
       "version": "v2.2.1",
       "date": "2026-08-25",

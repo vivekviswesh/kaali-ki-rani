@@ -388,6 +388,11 @@ export default function App() {
       setActionLog(prev => [...prev, data.message]);
     });
 
+    socket.on('connect_error', (err) => {
+      console.error('Socket Connection Error:', err);
+      alert(`Socket Connection Failed: ${err.message}`);
+    });
+
     socket.on('disconnect', () => {
       setActionLog(prev => [...prev, 'Disconnected from server. Try refreshing.']);
     });
