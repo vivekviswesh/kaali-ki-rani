@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.2.2",
+  "currentVersion": "v2.2.3",
   "history": [
+    {
+      "version": "v2.2.3",
+      "date": "2026-08-25",
+      "summary": "Extend Socket Error Interceptor with Target URL Details",
+      "changes": [
+        "Include target SERVER_URL configuration details directly inside connect_error alerts to assist in cloud environment setup troubleshooting"
+      ]
+    },
     {
       "version": "v2.2.2",
       "date": "2026-08-25",

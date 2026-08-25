@@ -390,7 +390,7 @@ export default function App() {
 
     socket.on('connect_error', (err) => {
       console.error('Socket Connection Error:', err);
-      alert(`Socket Connection Failed: ${err.message}`);
+      alert(`Socket Connection Failed: ${err.message}\n\n(Target Server URL: ${SERVER_URL})`);
     });
 
     socket.on('disconnect', () => {
