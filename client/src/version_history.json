@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.2.3",
+  "currentVersion": "v2.2.4",
   "history": [
+    {
+      "version": "v2.2.4",
+      "date": "2026-08-25",
+      "summary": "Support Asymmetric ES256 Token JWT Verification",
+      "changes": [
+        "Update backend verification to parse and verify asymmetric ES256 PEM public keys alongside legacy HS256 shared secrets"
+      ]
+    },
     {
       "version": "v2.2.3",
       "date": "2026-08-25",

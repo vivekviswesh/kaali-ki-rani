@@ -98,7 +98,13 @@ io.use((socket, next) => {
       socket.user = { id: 'dev-guest', email: 'dev@example.com', name: 'Dev Guest' };
       return next();
     }
-    const decoded = jwt.verify(token, SUPABASE_JWT_SECRET);
+    const secretOrKey = SUPABASE_JWT_SECRET.includes('BEGIN PUBLIC KEY')
+      ? SUPABASE_JWT_SECRET.replace(/\\n/g, '\n')
+      : SUPABASE_JWT_SECRET;
+
+    const decoded = jwt.verify(token, secretOrKey, {
+      algorithms: ['HS256', 'ES256']
+    });
     socket.user = {
       id: decoded.sub,
       email: decoded.email,
