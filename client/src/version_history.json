@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.2.4",
+  "currentVersion": "v2.2.5",
   "history": [
+    {
+      "version": "v2.2.5",
+      "date": "2026-08-25",
+      "summary": "Fix Next Hand Game Transition Handler",
+      "changes": [
+        "Bypass active turn validation check on server for non-gameplay moves to allow players inside the room to trigger start next hand transitions"
+      ]
+    },
     {
       "version": "v2.2.4",
       "date": "2026-08-25",

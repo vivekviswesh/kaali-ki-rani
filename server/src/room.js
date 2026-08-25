@@ -315,7 +315,7 @@ export class Room {
   handlePlayerAction(socketId, type, data) {
     const seat = this.seats.findIndex(s => s && s.socketId === socketId);
     if (seat === -1) throw new Error('Player not in room.');
-    if (this.game.activeSeat !== seat) throw new Error('Not your turn.');
+    if (type !== 'next_hand' && this.game.activeSeat !== seat) throw new Error('Not your turn.');
 
     if (type === 'bid') {
       logTelemetry(this.gameId, 'bid', { seat, bid: data.bid, currentHighestBid: this.game.biddingState.currentHighestBid, hand: [...this.game.hands[seat]] });
