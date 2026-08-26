@@ -130,7 +130,7 @@ export default function App() {
       const partner = gameState.partnership.partnerSeat;
       const isSolo = gameState.partnership.isSolo;
       
-      const biddingPoints = gameState.handPoints[bidWinner] + (isSolo ? 0 : (partner !== null ? gameState.handPoints[partner] : 0));
+      const biddingPoints = gameState.handPoints[bidWinner] + ((isSolo || partner === bidWinner) ? 0 : (partner !== null ? gameState.handPoints[partner] : 0));
       if (biddingPoints >= bidVal) {
         triggerConfettiSuccess();
       }
@@ -1070,7 +1070,7 @@ export default function App() {
         const { players, handPoints, biddingState, partnership, handCount } = gameState;
         const { currentHighestBid } = biddingState;
         const { bidWinnerSeat, partnerSeat, isSolo } = partnership;
-        const biddingPoints = (handPoints[bidWinnerSeat] || 0) + (isSolo ? 0 : (partnerSeat !== null ? (handPoints[partnerSeat] || 0) : 0));
+        const biddingPoints = (handPoints[bidWinnerSeat] || 0) + ((isSolo || partnerSeat === bidWinnerSeat) ? 0 : (partnerSeat !== null ? (handPoints[partnerSeat] || 0) : 0));
         const defendingPoints = 150 - biddingPoints;
         const isBiddingSuccess = biddingPoints >= currentHighestBid;
 

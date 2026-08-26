@@ -1,6 +1,14 @@
 {
-  "currentVersion": "v2.2.5",
+  "currentVersion": "v2.2.6",
   "history": [
+    {
+      "version": "v2.2.6",
+      "date": "2026-08-26",
+      "summary": "Fix Solo Play Double Scoring Count Bug",
+      "changes": [
+        "Update client-side and server-side engine logic to verify if partner matches bidWinner seat index before adding points, preventing double scoring in solo declarations"
+      ]
+    },
     {
       "version": "v2.2.5",
       "date": "2026-08-25",

@@ -342,7 +342,7 @@ export class Game {
     const partner = this.partnership.actualPartnerSeat;
     const isSolo = this.partnership.isSolo;
     
-    const biddingTeamPoints = this.handPoints[bidWinner] + (isSolo ? 0 : this.handPoints[partner]);
+    const biddingTeamPoints = this.handPoints[bidWinner] + ((isSolo || partner === bidWinner) ? 0 : this.handPoints[partner]);
     
     // Points actually captured by defending team
     let defendingTeamPoints = 0;
@@ -374,7 +374,7 @@ export class Game {
     const partner = this.partnership.actualPartnerSeat;
     const isSolo = this.partnership.isSolo;
 
-    const biddingTeamPoints = this.handPoints[bidWinner] + (isSolo ? 0 : this.handPoints[partner]);
+    const biddingTeamPoints = this.handPoints[bidWinner] + ((isSolo || partner === bidWinner) ? 0 : this.handPoints[partner]);
     const bidSuccess = biddingTeamPoints >= bidValue;
 
     // Scoring Distribution
