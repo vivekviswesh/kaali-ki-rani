@@ -34,6 +34,15 @@ const SERVER_URL = getBackendUrl();
 const suitEmoji = { S: '♠', H: '♥', D: '♦', C: '♣' };
 const suitColors = { S: '#818cf8', H: '#f43f5e', D: '#f59e0b', C: '#10b981' };
 
+const FUNNY_ROOM_ERRORS = [
+  "Whoops! That room doesn't exist. Did a bot steal it? 🤖",
+  "Uh oh! That room code is as lost as a spade in a heart deck! 🃏",
+  "Ah! That room is currently hiding. Double-check your spelling! 🕵️",
+  "Yikes! That room doesn't exist. Maybe the Queen of Spades confiscated it? 👑",
+  "That room is in another castle! 🏰 Check the code and try again.",
+  "Oops! No room found with that name. Did the dealer shuffle it away? 🔀"
+];
+
 export default function App() {
   // Game Setup States
   const [inGame, setInGame] = useState(false);
@@ -369,7 +378,10 @@ export default function App() {
         setInGame(true);
         setActionLog([`Joined Room ${res.roomCode}! Waiting for players...`]);
       } else {
-        setLobbyError(res.message);
+        const errorMsg = res.message === 'Room not found.'
+          ? FUNNY_ROOM_ERRORS[Math.floor(Math.random() * FUNNY_ROOM_ERRORS.length)]
+          : res.message;
+        setLobbyError(errorMsg);
         socket.disconnect();
       }
     });
@@ -404,7 +416,12 @@ export default function App() {
 
     socket.on('connect_error', (err) => {
       console.error('Socket Connection Error:', err);
-      setLobbyError(`Socket Connection Failed: ${err.message} (Target Server URL: ${SERVER_URL})`);
+      if (err.message && (err.message.toLowerCase().includes('auth') || err.message.toLowerCase().includes('session'))) {
+        handleSignOut();
+        setLobbyError("Your login session expired. Please sign in again. 🔑");
+      } else {
+        setLobbyError(`Socket Connection Failed: ${err.message} (Target Server URL: ${SERVER_URL})`);
+      }
     });
 
     socket.on('disconnect', () => {
