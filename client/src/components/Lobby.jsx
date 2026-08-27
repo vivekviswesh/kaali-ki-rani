@@ -3,7 +3,7 @@ import { Play, Users, UserPlus, Info, BookOpen, Key, LogOut } from 'lucide-react
 import versionHistory from '../version_history.json';
 import { supabase } from '../supabaseClient';
 
-export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory, onShowRules, user, onSignOut, error, onError }) {
+export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory, onShowRules, user, onSignOut, error, onError, onBackToLanding }) {
   const [playerName, setPlayerName] = useState(localStorage.getItem('kkr_player_name') || '');
   const [roomCode, setRoomCode] = useState('');
   const [timeoutSec, setTimeoutSec] = useState('20');
@@ -437,8 +437,12 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
             className="flex-row flex-center" 
             style={{ gap: '0.5rem', marginBottom: '0.5rem', cursor: 'pointer', transition: 'transform 0.2s ease, opacity 0.2s ease' }}
             onClick={() => {
-              setActiveTab('single');
-              setShowRules(false);
+              if (onBackToLanding) {
+                onBackToLanding();
+              } else {
+                setActiveTab('single');
+                setShowRules(false);
+              }
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.02)';
