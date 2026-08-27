@@ -329,7 +329,7 @@ export default function App() {
     setIsSinglePlayer(false);
     
     const socket = io(SERVER_URL, {
-      transports: ['websocket'],
+      transports: ['polling', 'websocket'],
       auth: session ? { token: session.access_token, name: name } : {}
     });
     socketRef.current = socket;
@@ -354,7 +354,7 @@ export default function App() {
     setIsSinglePlayer(false);
 
     const socket = io(SERVER_URL, {
-      transports: ['websocket'],
+      transports: ['polling', 'websocket'],
       auth: session ? { token: session.access_token, name: name } : {}
     });
     socketRef.current = socket;
