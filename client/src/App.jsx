@@ -40,7 +40,17 @@ const FUNNY_ROOM_ERRORS = [
   "Ah! That room is currently hiding. Double-check your spelling! 🕵️",
   "Yikes! That room doesn't exist. Maybe the Queen of Spades confiscated it? 👑",
   "That room is in another castle! 🏰 Check the code and try again.",
-  "Oops! No room found with that name. Did the dealer shuffle it away? 🔀"
+  "Oops! No room found with that name. Did the dealer shuffle it away? 🔀",
+  "Did you make up that room code? The dealer is looking at you suspiciously... 🤨",
+  "That room code is a bluff! And a bad one at that. 🤥",
+  "A wild error appeared! The room you are looking for has fled. 🏃‍♂️",
+  "No room found. Perhaps you forgot to pay your entry fee of 1 Queen of Spades? 💸",
+  "Error 404: Room vanished into thin air! Did someone play a vanish card? 💨",
+  "Whoa! That code didn't work. Did you let the bot type it? 🤖",
+  "Incorrect code! The Queen of Spades declines your invitation. 👑🙅‍♂️",
+  "That room is locked tighter than a player holding the Ace of Spades! 🔒",
+  "We checked the cards, we checked the table, but that room code is just a fable! 📖",
+  "Error: Room not found. Did you type it clockwise or counter-clockwise? 🔄"
 ];
 
 export default function App() {
