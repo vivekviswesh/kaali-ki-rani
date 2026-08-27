@@ -1,0 +1,5 @@
+# Redirect default pages.dev domain to custom production domain
+https://kaali-ki-rani.pages.dev/* https://kaalikirani.co.uk/:splat 301
+
+# SPA routing fallback (prevents 404 errors on page refresh)
+/* /index.html 200

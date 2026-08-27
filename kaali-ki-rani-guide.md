@@ -246,3 +246,31 @@ These are implementation-level decisions, not core gameplay ambiguities — they
 - [ ] Timeout/auto-act logic implemented per Section 1.7
 - [ ] Engine unit tests cover every row in Section 2
 - [ ] No secrets committed to the repo — all config via environment variables
+
+---
+
+## 7. Trunk-Based Development & Preview Deployments (Option A)
+
+This project uses **Trunk-Based Development** to keep delivery speed high and configuration overhead low. 
+
+### 7.1 Git Branching Workflow
+1. **Production Branch (`main`):** This is the single source of truth. Every push or merge to `main` triggers a production release to Cloudflare Pages (frontend) and Render (backend).
+2. **Feature Branches (`feat/...` or `fix/...`):** Short-lived branches created for specific tasks. Developers open a Pull Request (PR) from their feature branch into `main`.
+3. **CI Check:** Every PR automatically triggers a GitHub Actions run to run backend unit tests and verify the frontend builds successfully.
+4. **Merge & Deploy:** Once the PR checks pass and review is complete, the PR is merged into `main`.
+
+### 7.2 Preview Environments Setup
+Rather than maintaining a permanent UAT git branch, the project uses ephemeral Preview Deployments.
+
+#### Frontend Previews (Cloudflare Pages)
+* Cloudflare Pages automatically creates a unique Preview Deployment URL for every branch push and PR (e.g., `https://<pr-id>.kaali-ki-rani.pages.dev`).
+* **Environment Configuration:** 
+  1. In Cloudflare Pages Console, go to **Settings → Environment variables**.
+  2. Define `VITE_SERVER_URL` under the **Production** environment to point to your Production backend (e.g., `https://api.kaalikirani.com`).
+  3. Define `VITE_SERVER_URL` under the **Preview** environment to point to a stable **Staging/UAT backend** (e.g., `https://api-staging.onrender.com`), or if changes are backward-compatible, connect it to your production backend.
+
+#### Backend Previews (Render)
+* Render supports **PR Previews** (available on paid plans or via Blueprints).
+* When a PR is opened, Render can automatically deploy a temporary clone of your backend.
+* For free/indie setups, it is easiest to maintain a single static **Staging/UAT backend service** on Render that deploys automatically from a dedicated branch, or simply allow frontend previews to connect to the production backend if the networking schemas are compatible.
+
