@@ -31,6 +31,8 @@ const io = new Server(server, {
       
       const isAllowed = ALLOWED_ORIGINS.includes(origin) || 
                         origin.endsWith('.pages.dev') || 
+                        origin.endsWith('.kaalikirani.co.uk') || 
+                        origin === 'https://kaalikirani.co.uk' || 
                         origin.startsWith('http://localhost:');
                         
       if (isAllowed) {
