@@ -17,8 +17,19 @@ import { makeBotBid, makeBotDeclaration, makeBotPlay } from './engine/bot.js';
 import { generateBotName, logClientEvent, getClientLogs } from './engine/logger.js';
 import versionHistory from './version_history.json';
 
-// Resolve Server URL with local dev fallback
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+// Resolve Server URL dynamically based on the browser's current domain name
+const getBackendUrl = () => {
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:3001';
+  }
+  if (hostname === 'test.kaalikirani.co.uk') {
+    return 'https://api-staging.kaalikirani.co.uk';
+  }
+  return 'https://api.kaalikirani.co.uk';
+};
+
+const SERVER_URL = getBackendUrl();
 
 const suitEmoji = { S: '♠', H: '♥', D: '♦', C: '♣' };
 const suitColors = { S: '#818cf8', H: '#f43f5e', D: '#f59e0b', C: '#10b981' };
