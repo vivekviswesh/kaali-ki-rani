@@ -3,7 +3,7 @@ import { Play, Users, UserPlus, Info, BookOpen, Key, LogOut } from 'lucide-react
 import versionHistory from '../version_history.json';
 import { supabase } from '../supabaseClient';
 
-export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory, onShowRules, user, onSignOut }) {
+export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory, onShowRules, user, onSignOut, error, onError }) {
   const [playerName, setPlayerName] = useState(localStorage.getItem('kkr_player_name') || '');
   const [roomCode, setRoomCode] = useState('');
   const [timeoutSec, setTimeoutSec] = useState('20');
@@ -412,7 +412,7 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
   const handleCreate = (e) => {
     e.preventDefault();
     const name = playerName.trim();
-    if (!name) return alert('Please enter your name.');
+    if (!name) return onError('Please enter your name.');
     saveName(name);
     onCreateRoom(name, { timeoutDuration: parseInt(timeoutSec, 10) });
   };
@@ -421,8 +421,8 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
     e.preventDefault();
     const name = playerName.trim();
     const code = roomCode.trim().toUpperCase();
-    if (!name) return alert('Please enter your name.');
-    if (!code) return alert('Please enter a valid room code.');
+    if (!name) return onError('Please enter your name.');
+    if (!code) return onError('Please enter a valid room code.');
     saveName(name);
     onJoinRoom(name, code);
   };
@@ -501,6 +501,33 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
             >
               <Key size={11} />
               Register this device for Biometric Passkey
+            </button>
+          </div>
+        )}
+
+        {/* Error Banner */}
+        {error && (
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.2)',
+            borderRadius: '0.75rem',
+            padding: '0.75rem 1rem',
+            marginBottom: '1.5rem',
+            color: '#fca5a5',
+            fontSize: '0.85rem',
+            fontWeight: 500,
+            display: 'flex',
+            alignItems: 'start',
+            gap: '0.5rem',
+            lineHeight: '1.25'
+          }}>
+            <span style={{ fontSize: '1.1rem', lineHeight: '1' }}>⚠️</span>
+            <div style={{ flex: 1 }}>{error}</div>
+            <button 
+              onClick={() => onError(null)} 
+              style={{ background: 'none', border: 'none', color: '#fca5a5', cursor: 'pointer', fontSize: '0.9rem', padding: '0 0.25rem', fontWeight: 'bold' }}
+            >
+              ×
             </button>
           </div>
         )}

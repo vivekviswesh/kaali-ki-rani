@@ -53,6 +53,7 @@ export default function App() {
   const [copiedRoomCode, setCopiedRoomCode] = useState(false);
   const [showLogsPopup, setShowLogsPopup] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
+  const [lobbyError, setLobbyError] = useState(null);
   const [showVerdictHistory, setShowVerdictHistory] = useState(window.innerWidth >= 640);
   const [showScoreboard, setShowScoreboard] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -327,6 +328,7 @@ export default function App() {
   const createOnlineRoom = (name, settings) => {
     setPlayerName(name);
     setIsSinglePlayer(false);
+    setLobbyError(null);
     
     const socket = io(SERVER_URL, {
       transports: ['polling', 'websocket'],
@@ -341,7 +343,7 @@ export default function App() {
         setInGame(true);
         setActionLog([`Room created! Code: ${res.roomCode}. Share it to let players join.`]);
       } else {
-        alert(res.message);
+        setLobbyError(res.message);
         socket.disconnect();
       }
     });
@@ -352,6 +354,7 @@ export default function App() {
   const joinOnlineRoom = (name, code) => {
     setPlayerName(name);
     setIsSinglePlayer(false);
+    setLobbyError(null);
 
     const socket = io(SERVER_URL, {
       transports: ['polling', 'websocket'],
@@ -366,7 +369,7 @@ export default function App() {
         setInGame(true);
         setActionLog([`Joined Room ${res.roomCode}! Waiting for players...`]);
       } else {
-        alert(res.message);
+        setLobbyError(res.message);
         socket.disconnect();
       }
     });
@@ -401,7 +404,7 @@ export default function App() {
 
     socket.on('connect_error', (err) => {
       console.error('Socket Connection Error:', err);
-      alert(`Socket Connection Failed: ${err.message}\n\n(Target Server URL: ${SERVER_URL})`);
+      setLobbyError(`Socket Connection Failed: ${err.message} (Target Server URL: ${SERVER_URL})`);
     });
 
     socket.on('disconnect', () => {
@@ -477,6 +480,8 @@ export default function App() {
           onShowRules={() => setShowRules(true)}
           user={user}
           onSignOut={handleSignOut}
+          error={lobbyError}
+          onError={setLobbyError}
         />
       ) : (
         <div className="flex-col animate-pop-in" style={{ width: '100%', maxWidth: '100%', padding: '0.75rem', gap: '0.75rem' }}>
