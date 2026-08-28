@@ -4,6 +4,7 @@ import confetti from 'canvas-confetti';
 import { Copy, Check, X, RotateCcw, Crown, Home, ChevronDown, ChevronUp, Menu, Trophy } from 'lucide-react';
 
 import Lobby from './components/Lobby';
+import LandingPage from './components/LandingPage';
 import GameBoard from './components/GameBoard';
 import BiddingPanel from './components/BiddingPanel';
 import DeclarationOverlay from './components/DeclarationOverlay';
@@ -56,6 +57,8 @@ const FUNNY_ROOM_ERRORS = [
 export default function App() {
   // Game Setup States
   const [inGame, setInGame] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
+  const [pendingAction, setPendingAction] = useState(null);
   const [isSinglePlayer, setIsSinglePlayer] = useState(false);
   const [playerName, setPlayerName] = useState('Player');
   
@@ -496,7 +499,31 @@ export default function App() {
   return (
     <div className="flex-col" style={{ minHeight: '100vh', justifyContent: 'space-between', background: '#020617' }}>
       
-      {showRules ? (
+      {showLanding ? (
+        <LandingPage
+          onPlaySinglePlayer={() => {
+            if (supabase && !user) {
+              setPendingAction('single');
+              setShowLanding(false);
+            } else {
+              const savedName = localStorage.getItem('kkr_player_name') || 'Player';
+              setPlayerName(savedName);
+              startSinglePlayer(savedName);
+              setShowLanding(false);
+            }
+          }}
+          onPlayMultiplayer={() => {
+            if (supabase && !user) {
+              setPendingAction('multi');
+            }
+            setShowLanding(false);
+          }}
+          onShowRules={() => {
+            setShowLanding(false);
+            setShowRules(true);
+          }}
+        />
+      ) : showRules ? (
         <RulesPresentation onClose={() => setShowRules(false)} />
       ) : !inGame ? (
         <Lobby
@@ -509,6 +536,12 @@ export default function App() {
           onSignOut={handleSignOut}
           error={lobbyError}
           onError={setLobbyError}
+          onBackToLanding={() => {
+            setPendingAction(null);
+            setShowLanding(true);
+          }}
+          pendingAction={pendingAction}
+          clearPendingAction={() => setPendingAction(null)}
         />
       ) : (
         <div className="flex-col animate-pop-in" style={{ width: '100%', maxWidth: '100%', padding: '0.75rem', gap: '0.75rem' }}>

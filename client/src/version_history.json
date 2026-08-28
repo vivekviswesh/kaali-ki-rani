@@ -1,6 +1,16 @@
 {
-  "currentVersion": "v2.2.6",
+  "currentVersion": "v2.3.0",
   "history": [
+    {
+      "version": "v2.3.0",
+      "date": "2026-08-28",
+      "summary": "Interactive Animated Landing Page",
+      "changes": [
+        "Create an attractive landing page with render.com inspired dark mode styles, animated grids, moving laser beams, and cursor spotlight highlights",
+        "Add a simulated gameplay demo showcasing dealing, clockwise bidding, contract declarations, trick play, and secret partner reveal",
+        "Integrate lobby transitions and home redirection handlers to allow navigating back and forth"
+      ]
+    },
     {
       "version": "v2.2.6",
       "date": "2026-08-26",

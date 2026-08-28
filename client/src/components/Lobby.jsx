@@ -3,7 +3,7 @@ import { Play, Users, UserPlus, Info, BookOpen, Key, LogOut } from 'lucide-react
 import versionHistory from '../version_history.json';
 import { supabase } from '../supabaseClient';
 
-export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory, onShowRules, user, onSignOut, error, onError }) {
+export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, onShowVersionHistory, onShowRules, user, onSignOut, error, onError, onBackToLanding, pendingAction, clearPendingAction }) {
   const [playerName, setPlayerName] = useState(localStorage.getItem('kkr_player_name') || '');
   const [roomCode, setRoomCode] = useState('');
   const [timeoutSec, setTimeoutSec] = useState('20');
@@ -43,6 +43,12 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
           setPlayerName(data.gamer_name);
           localStorage.setItem('kkr_player_name', data.gamer_name);
           setShowNameSelector(false);
+          if (pendingAction === 'single') {
+            onStartSinglePlayer(data.gamer_name);
+            if (clearPendingAction) clearPendingAction();
+          } else if (pendingAction === 'multi') {
+            if (clearPendingAction) clearPendingAction();
+          }
         } else {
           // No profile found, onboarding required
           setShowNameSelector(true);
@@ -60,7 +66,7 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
     };
 
     fetchProfile();
-  }, [user]);
+  }, [user, pendingAction, clearPendingAction]);
 
   const handleGoogleSignIn = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -185,6 +191,12 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
       localStorage.setItem('kkr_player_name', cleanName);
       setShowNameSelector(false);
       setNameError('');
+      if (pendingAction === 'single') {
+        onStartSinglePlayer(cleanName);
+        if (clearPendingAction) clearPendingAction();
+      } else if (pendingAction === 'multi') {
+        if (clearPendingAction) clearPendingAction();
+      }
     } catch (err) {
       setNameError(err.message || 'Error saving name.');
     } finally {
@@ -295,19 +307,36 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
         <div className="glass-panel animate-pop-in flex-col items-center" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem 2rem', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '1.5rem', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', gap: '1.25rem' }}>
           
           {/* Title Header */}
-          <div style={{ textAlign: 'center' }}>
-            <span style={{ fontSize: '3rem', display: 'block', marginBottom: '0.5rem' }}>👑</span>
-            <h1 style={{ 
-              fontSize: '2.25rem', 
-              fontWeight: 900, 
-              background: 'linear-gradient(135deg, #fcd34d 0%, #fbbf24 50%, #34d399 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '-0.02em',
-              margin: 0
-            }}>
-              KAALI KI RANI
-            </h1>
+          <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
+            <div 
+              className="flex-col items-center" 
+              style={{ cursor: 'pointer', transition: 'transform 0.2s ease, opacity 0.2s ease' }}
+              onClick={() => {
+                if (onBackToLanding) onBackToLanding();
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.02)';
+                e.currentTarget.style.opacity = '0.9';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.opacity = '1';
+              }}
+              title="Go to Home"
+            >
+              <span style={{ fontSize: '3rem', display: 'block', marginBottom: '0.5rem' }}>👑</span>
+              <h1 style={{ 
+                fontSize: '2.25rem', 
+                fontWeight: 900, 
+                background: 'linear-gradient(135deg, #fcd34d 0%, #fbbf24 50%, #34d399 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                letterSpacing: '-0.02em',
+                margin: 0
+              }}>
+                KAALI KI RANI
+              </h1>
+            </div>
             <p style={{ color: '#94a3b8', fontSize: '0.85rem', fontWeight: 500, marginTop: '0.5rem' }}>
               Sign in to play the trick-taking classic
             </p>
@@ -437,8 +466,12 @@ export default function Lobby({ onCreateRoom, onJoinRoom, onStartSinglePlayer, o
             className="flex-row flex-center" 
             style={{ gap: '0.5rem', marginBottom: '0.5rem', cursor: 'pointer', transition: 'transform 0.2s ease, opacity 0.2s ease' }}
             onClick={() => {
-              setActiveTab('single');
-              setShowRules(false);
+              if (onBackToLanding) {
+                onBackToLanding();
+              } else {
+                setActiveTab('single');
+                setShowRules(false);
+              }
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.02)';
