@@ -86,30 +86,30 @@ body {
 
 /* Core Design System Components */
 .felt-table {
-  background: radial-gradient(circle at center, #064e3b 0%, #022c22 65%, #021f18 100%);
+  background: radial-gradient(circle at center, #0f172a 0%, #030712 75%, #010309 100%);
   position: relative;
   overflow: hidden;
   border-radius: 1.5rem;
-  border: 1px solid rgba(16, 185, 129, 0.15);
-  box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.8), 0 0 30px rgba(16, 185, 129, 0.08);
 }
 .felt-table::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 0);
-  background-size: 20px 20px;
+  background-image: radial-gradient(rgba(16, 185, 129, 0.025) 1.5px, transparent 0);
+  background-size: 25px 25px;
   pointer-events: none;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 /* Glassmorphism Containers */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(17, 24, 39, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65);
   border-radius: 1.5rem;
 }
 
@@ -1022,11 +1022,11 @@ body {
 .rules-visuals-table {
   width: 320px;
   height: 220px;
-  background: radial-gradient(circle at center, #064e3b 0%, #022c22 65%, #021f18 100%);
-  border: 8px solid #3b2314;
+  background: radial-gradient(circle at center, #0f172a 0%, #030712 75%, #010309 100%);
+  border: 8px solid #1e293b;
   border-radius: 50%;
   position: relative;
-  box-shadow: inset 0 0 30px rgba(0,0,0,0.6), 0 10px 20px rgba(0,0,0,0.4);
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 10px 20px rgba(0,0,0,0.5), 0 0 15px rgba(16, 185, 129, 0.1);
 }
 
 .rules-visuals-table .seat {
@@ -1467,7 +1467,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: radial-gradient(circle at center, #022c22 0%, #021f18 70%, #020617 100%);
+  background: radial-gradient(circle at center, #0f172a 0%, #030712 75%, #010309 100%);
   color: #f8fafc;
   font-family: 'Outfit', sans-serif;
 }

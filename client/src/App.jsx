@@ -58,6 +58,7 @@ export default function App() {
   // Game Setup States
   const [inGame, setInGame] = useState(false);
   const [showLanding, setShowLanding] = useState(true);
+  const [pendingAction, setPendingAction] = useState(null);
   const [isSinglePlayer, setIsSinglePlayer] = useState(false);
   const [playerName, setPlayerName] = useState('Player');
   
@@ -501,12 +502,20 @@ export default function App() {
       {showLanding ? (
         <LandingPage
           onPlaySinglePlayer={() => {
-            const savedName = localStorage.getItem('kkr_player_name') || 'Player';
-            setPlayerName(savedName);
-            startSinglePlayer(savedName);
-            setShowLanding(false);
+            if (supabase && !user) {
+              setPendingAction('single');
+              setShowLanding(false);
+            } else {
+              const savedName = localStorage.getItem('kkr_player_name') || 'Player';
+              setPlayerName(savedName);
+              startSinglePlayer(savedName);
+              setShowLanding(false);
+            }
           }}
           onPlayMultiplayer={() => {
+            if (supabase && !user) {
+              setPendingAction('multi');
+            }
             setShowLanding(false);
           }}
           onShowRules={() => {
@@ -527,7 +536,12 @@ export default function App() {
           onSignOut={handleSignOut}
           error={lobbyError}
           onError={setLobbyError}
-          onBackToLanding={() => setShowLanding(true)}
+          onBackToLanding={() => {
+            setPendingAction(null);
+            setShowLanding(true);
+          }}
+          pendingAction={pendingAction}
+          clearPendingAction={() => setPendingAction(null)}
         />
       ) : (
         <div className="flex-col animate-pop-in" style={{ width: '100%', maxWidth: '100%', padding: '0.75rem', gap: '0.75rem' }}>
